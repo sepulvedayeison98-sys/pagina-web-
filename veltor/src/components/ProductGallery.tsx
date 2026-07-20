@@ -3,10 +3,22 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Placeholder from "./Placeholder";
+import { GALLERY_VIEW_LABELS } from "@/lib/products";
 
-/** Galería con miniaturas clicables. La vista activa se resalta. */
-export default function ProductGallery({ views }: { views: string[] }) {
+/**
+ * Galería con miniaturas clicables. Si hay fotos reales (`images`) las muestra;
+ * si no, cae a placeholders con etiquetas de vista.
+ */
+export default function ProductGallery({
+  images = [],
+  name,
+}: {
+  images?: string[];
+  name: string;
+}) {
   const [active, setActive] = useState(0);
+  const hasPhotos = images.length > 0;
+  const slots = hasPhotos ? images : GALLERY_VIEW_LABELS;
 
   return (
     <div className="flex flex-col gap-4">
@@ -20,17 +32,23 @@ export default function ProductGallery({ views }: { views: string[] }) {
             transition={{ duration: 0.3 }}
             className="h-full w-full"
           >
-            <Placeholder className="h-full w-full" label={views[active]} />
+            <Placeholder
+              className="h-full w-full"
+              src={hasPhotos ? slots[active] : undefined}
+              alt={name}
+              label={hasPhotos ? undefined : (slots[active] as string)}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </motion.div>
         </AnimatePresence>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
-        {views.map((view, i) => (
+        {slots.map((slot, i) => (
           <button
-            key={view}
+            key={i}
             onClick={() => setActive(i)}
-            aria-label={`Ver ${view}`}
+            aria-label={`Ver imagen ${i + 1}`}
             aria-pressed={i === active}
             className={`relative aspect-square overflow-hidden rounded-xl border-2 transition-colors ${
               i === active
@@ -38,7 +56,12 @@ export default function ProductGallery({ views }: { views: string[] }) {
                 : "border-transparent hover:border-text-dark/20"
             }`}
           >
-            <Placeholder className="h-full w-full" compact />
+            <Placeholder
+              className="h-full w-full"
+              src={hasPhotos ? (slot as string) : undefined}
+              alt={name}
+              compact
+            />
           </button>
         ))}
       </div>

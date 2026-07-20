@@ -18,7 +18,8 @@ import ZoomTile from "@/components/ZoomTile";
 import CatalogSection from "@/components/CatalogSection";
 import NewsletterForm from "@/components/NewsletterForm";
 import Stars from "@/components/Stars";
-import { CATEGORIES, REVIEWS } from "@/lib/products";
+import { CATEGORIES } from "@/lib/products";
+import { getProducts, getReviews } from "@/lib/data";
 
 const TRUST = [
   { Icon: Truck, label: "Envío gratis", sub: "desde $200.000" },
@@ -34,7 +35,9 @@ const TECH = [
   { Icon: Gauge, title: "Certificación ECE 22.06", body: "Superamos el estándar europeo más exigente en absorción de impactos." },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [products, reviews] = await Promise.all([getProducts(), getReviews()]);
+
   return (
     <>
       {/* ───────────────── HERO (oscuro) ───────────────── */}
@@ -141,7 +144,7 @@ export default function Home() {
             </h2>
           </Reveal>
           <Reveal delay={0.05}>
-            <CatalogSection />
+            <CatalogSection products={products} />
           </Reveal>
         </div>
       </section>
@@ -208,7 +211,7 @@ export default function Home() {
           </Reveal>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {REVIEWS.map((r, i) => (
+            {reviews.slice(0, 3).map((r, i) => (
               <Reveal key={r.author + r.date} delay={i * 0.08}>
                 <figure className="flex h-full flex-col rounded-2xl border border-text-dark/10 bg-white p-6">
                   <Stars rating={r.rating} />

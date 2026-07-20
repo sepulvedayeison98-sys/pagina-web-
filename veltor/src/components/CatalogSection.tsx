@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { PRODUCTS, type Category } from "@/lib/products";
+import { type Category, type Product } from "@/lib/products";
 import ProductCard from "./ProductCard";
 
 type Filter = "TODOS" | Category;
 
 const FILTERS: Filter[] = ["TODOS", "INTEGRAL", "JET", "MODULAR", "OFFROAD"];
 
-/** Catálogo con filtro por pills funcional. */
-export default function CatalogSection() {
+/** Catálogo con filtro por pills funcional. Recibe los productos por prop. */
+export default function CatalogSection({ products }: { products: Product[] }) {
   const [active, setActive] = useState<Filter>("TODOS");
 
   const items =
     active === "TODOS"
-      ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === active);
+      ? products
+      : products.filter((p) => p.category === active);
 
   return (
     <div>

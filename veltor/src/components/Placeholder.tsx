@@ -1,19 +1,40 @@
+import Image from "next/image";
 import { Camera } from "lucide-react";
 
 /**
  * Recuadro de imagen unificado (fondo "studio").
- * Mientras no haya foto real, muestra "FOTO PRÓXIMAMENTE".
- * `label` permite distinguir vistas (p. ej. en la galería de producto).
+ * Si `src` trae una foto real, la muestra (cubriendo el recuadro).
+ * Si no, muestra "FOTO PRÓXIMAMENTE".
  */
 export default function Placeholder({
+  src,
+  alt,
   label,
   className = "",
   compact = false,
+  sizes,
 }: {
+  src?: string | null;
+  alt?: string;
   label?: string;
   className?: string;
   compact?: boolean;
+  sizes?: string;
 }) {
+  if (src) {
+    return (
+      <div className={`relative overflow-hidden bg-studio ${className}`}>
+        <Image
+          src={src}
+          alt={alt ?? label ?? "Foto de producto VELTOR"}
+          fill
+          sizes={sizes ?? "(max-width: 768px) 100vw, 33vw"}
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`flex flex-col items-center justify-center gap-2 bg-studio text-text-dark/45 ${className}`}

@@ -54,7 +54,13 @@ export default function ProductCard({ product }: { product: Product }) {
             whileHover={reduce ? undefined : { scale: 1.05 }}
             transition={{ type: "spring", bounce: 0, duration: 0.6 }}
           >
-            <Placeholder className="h-full w-full" label={product.name} />
+            <Placeholder
+              className="h-full w-full"
+              src={product.imageUrl}
+              alt={product.name}
+              label={product.name}
+              sizes="(max-width: 640px) 50vw, 25vw"
+            />
           </motion.div>
           {product.badge && (
             <span className="absolute left-3 top-3 z-20 rounded-full bg-ink px-3 py-1 text-[0.6rem] font-mono uppercase tracking-widest text-text-light">

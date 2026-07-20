@@ -17,13 +17,7 @@ import SizeSelector from "@/components/SizeSelector";
 import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
-import { getProduct, SHPRO_609_GALLERY, PRODUCTS } from "@/lib/products";
-
-export const metadata: Metadata = {
-  title: "SHPRO-609 Jet · VELTOR",
-  description:
-    "Casco jet SHPRO-609: policarbonato de alta densidad, certificación ECE 22.06, visera solar interna y forro lavable. Premium accesible.",
-};
+import { getProduct, getProducts, getReviews } from "@/lib/data";
 
 const SEALS = [
   { Icon: ShieldCheck, label: "ECE 22.06 / DOT" },
@@ -31,11 +25,33 @@ const SEALS = [
   { Icon: RotateCcw, label: "30 días de cambio" },
 ];
 
-export default function ProductPage() {
-  const product = getProduct("shpro-609");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+  if (!product) return { title: "Producto no encontrado · VELTOR" };
+  return {
+    title: `${product.name} · VELTOR`,
+    description:
+      product.description ??
+      `${product.name}: equipamiento premium para motociclistas. Envíos a toda Colombia.`,
+  };
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
   if (!product) return notFound();
 
-  const related = PRODUCTS.filter((p) => p.slug !== product.slug).slice(0, 4);
+  const [all, reviews] = await Promise.all([getProducts(), getReviews()]);
+  const related = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
   return (
     <>
@@ -54,7 +70,7 @@ export default function ProductPage() {
       {/* Galería + compra */}
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 lg:grid-cols-2 lg:gap-14 lg:px-8">
         <Reveal>
-          <ProductGallery views={SHPRO_609_GALLERY} />
+          <ProductGallery images={product.gallery} name={product.name} />
         </Reveal>
 
         <Reveal delay={0.08} as="div">
@@ -82,24 +98,20 @@ export default function ProductPage() {
                   {formatCOP(product.compareAt)}
                 </span>
                 <span className="rounded-full bg-accent/10 px-2 py-1 text-xs font-bold text-accent">
-                  -
-                  {Math.round(
-                    (1 - product.price / product.compareAt) * 100
-                  )}
-                  %
+                  -{Math.round((1 - product.price / product.compareAt) * 100)}%
                 </span>
               </>
             )}
           </div>
           <p className="mt-1 text-xs text-text-dark/50">
-            o 4 cuotas sin interés de {formatCOP(product.price / 4)}
+            o 4 cuotas sin interés de {formatCOP(Math.round(product.price / 4))}
           </p>
 
-          <p className="mt-6 max-w-prose text-text-dark/70">
-            Casco jet de cara abierta que combina ligereza urbana con protección
-            certificada. Visera solar interna, forro lavable antibacterial y
-            cierre micrométrico para poner y quitar con una sola mano.
-          </p>
+          {product.description && (
+            <p className="mt-6 max-w-prose text-text-dark/70">
+              {product.description}
+            </p>
+          )}
 
           <div className="mt-8">
             <SizeSelector />
@@ -133,25 +145,27 @@ export default function ProductPage() {
       {/* Tabs */}
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-5 py-16 lg:px-8">
-          <ProductTabs />
+          <ProductTabs specs={product.specs} reviews={reviews} />
         </div>
       </section>
 
       {/* Relacionados */}
-      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <Reveal className="mb-8">
-          <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-            También te puede gustar
-          </h2>
-        </Reveal>
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-          {related.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 0.06} as="div">
-              <ProductCard product={p} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {related.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+          <Reveal className="mb-8">
+            <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+              También te puede gustar
+            </h2>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+            {related.map((p, i) => (
+              <Reveal key={p.slug} delay={i * 0.06} as="div">
+                <ProductCard product={p} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

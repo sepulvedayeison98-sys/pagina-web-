@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Truck, ShieldCheck, RotateCcw } from "lucide-react";
-import { SHPRO_609_SPECS, REVIEWS } from "@/lib/products";
+import { type Review, type Spec } from "@/lib/products";
 import Stars from "./Stars";
 
 type Tab = "specs" | "envios" | "resenas";
@@ -14,8 +14,14 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "resenas", label: "Reseñas" },
 ];
 
-/** Pestañas funcionales: specs / envíos / reseñas. */
-export default function ProductTabs() {
+/** Pestañas funcionales: specs / envíos / reseñas. Recibe specs y reseñas por prop. */
+export default function ProductTabs({
+  specs,
+  reviews,
+}: {
+  specs: Spec[];
+  reviews: Review[];
+}) {
   const [tab, setTab] = useState<Tab>("specs");
 
   return (
@@ -44,9 +50,9 @@ export default function ProductTabs() {
       </div>
 
       <div className="py-6">
-        {tab === "specs" && (
+        {tab === "specs" && specs.length > 0 && (
           <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {SHPRO_609_SPECS.map((s) => (
+            {specs.map((s) => (
               <div
                 key={s.label}
                 className="flex justify-between gap-4 border-b border-text-dark/10 pb-3"
@@ -56,6 +62,11 @@ export default function ProductTabs() {
               </div>
             ))}
           </dl>
+        )}
+        {tab === "specs" && specs.length === 0 && (
+          <p className="text-sm text-text-dark/55">
+            Especificaciones próximamente.
+          </p>
         )}
 
         {tab === "envios" && (
@@ -92,7 +103,7 @@ export default function ProductTabs() {
 
         {tab === "resenas" && (
           <ul className="space-y-6">
-            {REVIEWS.map((r) => (
+            {reviews.map((r) => (
               <li
                 key={r.author + r.date}
                 className="border-b border-text-dark/10 pb-6 last:border-0"
