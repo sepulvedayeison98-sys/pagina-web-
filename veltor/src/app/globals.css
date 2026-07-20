@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   VELTOR — tokens de diseño (Tailwind v4, sin tailwind.config)
+   Acento naranja, estética "hero oscuro + resto claro".
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-accent: #f2661f;
+  --color-accent-hover: #d9560f;
+  --color-ink: #0a0a0b;
+  --color-paper: #f5f3ef;
+  --color-studio: #dcd9d3;
+  --color-text-dark: #16161a;
+  --color-text-light: #efe9e3;
+
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+* {
+  border-color: color-mix(in srgb, var(--color-text-dark) 12%, transparent);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-text-dark);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* etiqueta técnica mono en versalitas */
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+}
+
+/* selección con acento */
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
