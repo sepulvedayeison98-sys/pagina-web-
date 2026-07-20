@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Cta from "@/components/Cta";
+import HeroBadge from "@/components/HeroBadge";
 import Placeholder from "@/components/Placeholder";
 import ZoomTile from "@/components/ZoomTile";
 import CatalogSection from "@/components/CatalogSection";
@@ -38,7 +39,12 @@ export default function Home() {
     <>
       {/* ───────────────── HERO (oscuro) ───────────────── */}
       <section className="relative overflow-hidden bg-ink text-text-light">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-28">
+        {/* Profundidad ambiental: resplandor naranja que deriva lento tras el contenido. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
+          <div className="ambient-glow absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-accent/25 blur-3xl" />
+          <div className="absolute right-[-10%] top-[-10%] h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
+        </div>
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-28">
           <Reveal>
             <p className="eyebrow mb-4 text-accent">Nueva colección · 2026</p>
             <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -73,10 +79,7 @@ export default function Home() {
                 className="aspect-[4/5] w-full rounded-3xl"
                 label="Piloto / moto"
               />
-              <div className="absolute -bottom-4 -left-4 rounded-2xl bg-accent px-5 py-4 text-white shadow-lg">
-                <p className="text-2xl font-extrabold leading-none">-20%</p>
-                <p className="text-xs">en la línea Jet</p>
-              </div>
+              <HeroBadge />
             </div>
           </Reveal>
         </div>
@@ -103,9 +106,8 @@ export default function Home() {
       <section id="categorias" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-10 flex items-end justify-between gap-4">
           <div>
-            <p className="eyebrow mb-2 text-accent">Encuentra el tuyo</p>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Categorías
+              Encuentra el tuyo
             </h2>
           </div>
           <Link
@@ -134,7 +136,6 @@ export default function Home() {
       <section id="catalogo" className="bg-white">
         <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
           <Reveal className="mb-4">
-            <p className="eyebrow mb-2 text-accent">Lo más buscado</p>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
               Catálogo de cascos
             </h2>
@@ -149,7 +150,6 @@ export default function Home() {
       <section className="bg-ink text-text-light">
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 py-16 lg:grid-cols-2 lg:px-8">
           <Reveal>
-            <p className="eyebrow mb-3 text-accent">Oferta por tiempo limitado</p>
             <h2 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
               Arma tu kit: casco + guantes con 15% de descuento
             </h2>
@@ -201,10 +201,10 @@ export default function Home() {
       <section className="bg-paper">
         <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
           <Reveal className="mb-12 text-center">
-            <p className="eyebrow mb-2 text-accent">Lo que dicen los pilotos</p>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
               4.8 / 5 en satisfacción
             </h2>
+            <p className="mt-3 text-text-dark/60">Lo que dicen los pilotos que ya ruedan con VELTOR.</p>
           </Reveal>
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -229,12 +229,11 @@ export default function Home() {
       {/* ───────────────── COMUNIDAD (Instagram) ───────────────── */}
       <section id="comunidad" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-10 text-center">
-          <p className="eyebrow mb-2 text-accent">#RuedaConVeltor</p>
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
             Comunidad VELTOR
           </h2>
           <p className="mt-3 text-text-dark/60">
-            Etiquétanos en tus rutas y aparece aquí.
+            Etiquétanos con #RuedaConVeltor en tus rutas y aparece aquí.
           </p>
         </Reveal>
 

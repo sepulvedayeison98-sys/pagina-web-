@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Search, ShoppingBag, Menu, X } from "lucide-react";
 import Wordmark from "./Wordmark";
 
@@ -13,12 +13,25 @@ const LINKS = [
   { label: "Comunidad", href: "/#comunidad" },
 ];
 
-/** Nav sticky oscura, responsive con menú móvil. */
+/** Nav sticky: material translúcido que se asienta y gana profundidad al hacer scroll. */
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (v) => {
+    const next = v > 8;
+    setScrolled((prev) => (prev === next ? prev : next));
+  });
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/95 backdrop-blur supports-[backdrop-filter]:bg-ink/80">
+    <header
+      className={`sticky top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 supports-[backdrop-filter]:bg-ink/70 ${
+        scrolled
+          ? "bg-ink/90 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+          : "bg-ink/80 backdrop-blur-md"
+      }`}
+    >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 lg:px-8">
         <Wordmark onDark className="text-xl" />
 
@@ -85,6 +98,14 @@ export default function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Scroll-edge: brillo suave donde el material flotante se encuentra con el contenido. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-ink/25 to-transparent transition-opacity duration-300 ${
+          scrolled ? "opacity-100" : "opacity-0"
+        }`}
+      />
     </header>
   );
 }
