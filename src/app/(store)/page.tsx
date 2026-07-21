@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Cta from "@/components/Cta";
-import HeroBadge from "@/components/HeroBadge";
+import Hero from "@/components/Hero";
 import Placeholder from "@/components/Placeholder";
 import ZoomTile from "@/components/ZoomTile";
 import CatalogSection from "@/components/CatalogSection";
@@ -40,53 +40,7 @@ export default async function Home() {
 
   return (
     <>
-      {/* ───────────────── HERO (oscuro) ───────────────── */}
-      <section className="relative overflow-hidden bg-ink text-text-light">
-        {/* Profundidad ambiental: resplandor naranja que deriva lento tras el contenido. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
-          <div className="ambient-glow absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-accent/25 blur-3xl" />
-          <div className="absolute right-[-10%] top-[-10%] h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-        </div>
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-28">
-          <Reveal>
-            <p className="eyebrow mb-4 text-accent">Nueva colección · 2026</p>
-            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-              Protección que se
-              <br />
-              siente <span className="text-accent">premium</span>.
-            </h1>
-            <p className="mt-6 max-w-md text-lg text-text-light/70">
-              Cascos, guantes y tecnología para motociclistas que no negocian
-              seguridad ni estilo. Diseñado para la ruta colombiana.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Cta href="/#catalogo" variant="primary">
-                Ver catálogo <ArrowRight size={16} />
-              </Cta>
-              <Cta href="/producto/shpro-609" variant="secondary" className="!text-text-light !border-white/25 hover:!border-white/60">
-                Producto destacado
-              </Cta>
-            </div>
-
-            <div className="mt-10 flex items-center gap-4">
-              <Stars rating={5} />
-              <span className="text-sm text-text-light/60">
-                +4.800 pilotos ya ruedan con VELTOR
-              </span>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.1}>
-            <div className="relative">
-              <Placeholder
-                className="aspect-[4/5] w-full rounded-3xl"
-                label="Piloto / moto"
-              />
-              <HeroBadge />
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <Hero />
 
       {/* ───────────────── TRUST BAR ───────────────── */}
       <section className="border-b border-text-dark/10 bg-paper">
