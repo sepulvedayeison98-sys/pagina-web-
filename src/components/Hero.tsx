@@ -57,6 +57,8 @@ export default function Hero() {
             <div className="absolute right-[-10%] top-[-10%] h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
           </>
         )}
+        {/* Capa translúcida negra uniforme: asegura contraste del texto sobre cualquier fotograma del video. */}
+        <div className="absolute inset-0 bg-black/45" />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/40 to-ink/90" />
       </div>
 
