@@ -15,7 +15,7 @@ import Cta from "@/components/Cta";
 import Hero from "@/components/Hero";
 import Placeholder from "@/components/Placeholder";
 import ZoomTile from "@/components/ZoomTile";
-import CatalogSection from "@/components/CatalogSection";
+import ProductShowcase from "@/components/ProductShowcase";
 import NewsletterForm from "@/components/NewsletterForm";
 import Stars from "@/components/Stars";
 import { CATEGORIES } from "@/lib/products";
@@ -89,19 +89,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ───────────────── CATÁLOGO (filtro pills) ───────────────── */}
-      <section id="catalogo" className="bg-white">
-        <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-          <Reveal className="mb-4">
-            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Catálogo de cascos
-            </h2>
-          </Reveal>
-          <Reveal delay={0.05}>
-            <CatalogSection products={products} />
-          </Reveal>
-        </div>
-      </section>
+      {/* ───────────────── CATÁLOGO (scroll horizontal anclado) ───────────────── */}
+      <ProductShowcase products={products} />
 
       {/* ───────────────── PROMO (banda oscura) ───────────────── */}
       <section className="bg-ink text-text-light">
