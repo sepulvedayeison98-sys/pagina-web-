@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import Placeholder from "./Placeholder";
+import Cta from "./Cta";
 import { formatCOP } from "@/lib/format";
 import type { Product } from "@/lib/products";
 
@@ -225,19 +226,23 @@ function PinnedShowcase({ products }: { products: Product[] }) {
 
             <div
               ref={ctaRef}
-              className="flex shrink-0 flex-col justify-center gap-5 rounded-3xl bg-ink px-8 py-14 text-text-light sm:px-14"
+              className="flex shrink-0 flex-col items-center justify-center gap-6 rounded-3xl bg-ink px-8 py-16 text-center text-text-light sm:px-14"
             >
-              <p className="font-display text-4xl font-extrabold leading-[0.95] tracking-tight sm:text-6xl">
+              <p className="eyebrow text-accent">Listo para rodar</p>
+              <p className="font-display text-6xl font-extrabold leading-[0.9] tracking-tight sm:text-7xl lg:text-8xl">
                 Elige.
                 <br />
                 Equípate.
                 <br />
                 <span className="text-accent">Rueda.</span>
               </p>
-              <p className="max-w-sm text-text-light/70">
+              <p className="max-w-xl text-base text-text-light/70 sm:text-lg">
                 Cascos certificados, guantes técnicos y accesorios pensados
                 para cada kilómetro de tu ruta.
               </p>
+              <Cta href="/#catalogo" variant="primary" className="mt-2">
+                Ver todos los productos <ArrowRight size={18} />
+              </Cta>
             </div>
           </motion.div>
         </div>
@@ -278,8 +283,9 @@ function SimpleShowcase({ products }: { products: Product[] }) {
             <ProductTile product={p} />
           </div>
         ))}
-        <div className="flex w-[78vw] shrink-0 snap-start flex-col justify-center gap-4 rounded-3xl bg-ink px-6 py-10 text-text-light sm:w-[360px]">
-          <p className="font-display text-3xl font-extrabold leading-[0.95] tracking-tight">
+        <div className="flex w-[78vw] shrink-0 snap-start flex-col items-center justify-center gap-5 rounded-3xl bg-ink px-6 py-12 text-center text-text-light sm:w-[360px]">
+          <p className="eyebrow text-accent">Listo para rodar</p>
+          <p className="font-display text-4xl font-extrabold leading-[0.9] tracking-tight sm:text-5xl">
             Elige.
             <br />
             Equípate.
@@ -290,6 +296,9 @@ function SimpleShowcase({ products }: { products: Product[] }) {
             Cascos certificados, guantes técnicos y accesorios para cada
             kilómetro de tu ruta.
           </p>
+          <Cta href="/#catalogo" variant="primary" className="mt-1">
+            Ver todos los productos <ArrowRight size={16} />
+          </Cta>
         </div>
       </div>
     </div>
