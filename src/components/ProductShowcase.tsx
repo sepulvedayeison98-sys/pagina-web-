@@ -124,6 +124,11 @@ function PinnedShowcase({ products }: { products: Product[] }) {
     offset: ["start start", "end end"],
   });
   const x = useTransform(scrollYProgress, (p) => -p * maxShiftRef.current);
+  // Al final del recorrido, cuando las tarjetas ya salieron y solo queda la
+  // tarjeta negra de cierre, oscurecemos el fondo del área anclada para que la
+  // última pantalla quede negra y se funda sin costura con la banda Promo
+  // (bg-ink) que va justo debajo.
+  const bleed = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
   useEffect(() => {
     function measure() {
@@ -176,7 +181,16 @@ function PinnedShowcase({ products }: { products: Product[] }) {
   return (
     <div ref={sectionRef} className="relative">
       <div className="sticky top-0 flex h-[100dvh] items-center overflow-hidden">
-        <div ref={viewportRef} className="w-full overflow-hidden px-5 lg:px-8">
+        {/* Fondo negro que se revela al final para fundir con la sección de abajo */}
+        <motion.div
+          aria-hidden
+          style={{ opacity: bleed }}
+          className="pointer-events-none absolute inset-0 z-0 bg-ink"
+        />
+        <div
+          ref={viewportRef}
+          className="relative z-[1] w-full overflow-hidden px-5 lg:px-8"
+        >
           <motion.div
             ref={trackRef}
             style={{ x }}
