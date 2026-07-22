@@ -202,7 +202,7 @@ export default function Hero() {
               initial={reduce ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE, delay: delayFor(0.58) }}
-              className="text-sm text-text-light/65"
+              className="hidden text-sm text-text-light/65 lg:block"
             >
               Equipamiento certificado bajo{" "}
               <strong className="font-semibold text-text-light">ECE 22.06</strong>,
@@ -235,7 +235,7 @@ export default function Hero() {
           initial={reduce ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: delayFor(0.8) }}
-          className="flex flex-wrap justify-center gap-x-10 gap-y-4 border-t border-white/10 pt-8 lg:justify-between"
+          className="hidden flex-wrap justify-center gap-x-10 gap-y-4 border-t border-white/10 pt-8 lg:flex lg:justify-between"
         >
           {TRUST.map((t) => (
             <div key={t.label} className="flex flex-col items-center gap-1 lg:items-start">
