@@ -128,7 +128,7 @@ export default function Hero() {
 
         {showVideo && !reduce && (
           <div
-            className={`absolute inset-0 transition-opacity duration-700 [&>iframe]:pointer-events-none [&>iframe]:absolute [&>iframe]:left-1/2 [&>iframe]:top-1/2 [&>iframe]:h-[56.25vw] [&>iframe]:min-h-full [&>iframe]:w-[177.78vh] [&>iframe]:min-w-full [&>iframe]:-translate-x-1/2 [&>iframe]:-translate-y-1/2 [&>iframe]:scale-[1.2] ${
+            className={`absolute inset-0 transition-opacity duration-700 [&>iframe]:pointer-events-none [&>iframe]:absolute [&>iframe]:left-1/2 [&>iframe]:top-1/2 [&>iframe]:h-[56.25vw] [&>iframe]:min-h-full [&>iframe]:w-[177.78vh] [&>iframe]:min-w-full [&>iframe]:-translate-x-1/2 [&>iframe]:-translate-y-1/2 [&>iframe]:scale-[1.04] ${
               playing ? "opacity-100" : "opacity-0"
             }`}
           >
