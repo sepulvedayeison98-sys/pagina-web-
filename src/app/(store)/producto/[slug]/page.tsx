@@ -3,17 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ChevronRight,
-  ShoppingBag,
-  Heart,
   ShieldCheck,
   Truck,
   RotateCcw,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import Cta from "@/components/Cta";
 import Stars from "@/components/Stars";
 import ProductGallery from "@/components/ProductGallery";
-import SizeSelector from "@/components/SizeSelector";
+import ProductBuy from "@/components/ProductBuy";
 import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
@@ -114,16 +111,12 @@ export default async function ProductPage({
           )}
 
           <div className="mt-8">
-            <SizeSelector />
-          </div>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Cta variant="primary" full className="sm:flex-1">
-              <ShoppingBag size={18} /> Agregar al carrito
-            </Cta>
-            <Cta variant="secondary">
-              <Heart size={18} /> Guardar
-            </Cta>
+            <ProductBuy
+              slug={product.slug}
+              name={product.name}
+              price={product.price}
+              imageUrl={product.imageUrl}
+            />
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-3">

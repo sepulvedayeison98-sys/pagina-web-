@@ -12,6 +12,8 @@ import {
 } from "motion/react";
 import { Search, ShoppingBag, Menu, X } from "lucide-react";
 import Wordmark from "./Wordmark";
+import SearchModal from "./SearchModal";
+import { useCart } from "@/lib/cart/CartContext";
 
 const LEFT = [
   { label: "Cascos", href: "/#catalogo" },
@@ -34,7 +36,9 @@ const EASE = "cubic-bezier(.32,.72,0,1)";
  */
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { count, open: openCart } = useCart();
   const reduce = useReducedMotion();
   const pathname = usePathname();
   const overHero = pathname === "/";
@@ -89,22 +93,25 @@ export default function Nav() {
         </nav>
 
         <button
+          onClick={() => setSearchOpen(true)}
           aria-label="Buscar"
           className="hidden h-10 w-10 items-center justify-center rounded-full text-text-light/85 transition-colors hover:bg-white/10 hover:text-text-light lg:flex"
         >
           <Search size={19} />
         </button>
 
-        <Link
-          href="#"
-          aria-label="Carrito (2)"
+        <button
+          onClick={openCart}
+          aria-label={`Carrito (${count})`}
           className="relative flex h-10 w-10 items-center justify-center rounded-full text-text-light/85 transition-colors hover:bg-white/10 hover:text-text-light"
         >
           <ShoppingBag size={19} />
-          <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[0.6rem] font-bold text-white">
-            2
-          </span>
-        </Link>
+          {count > 0 && (
+            <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[0.6rem] font-bold text-white">
+              {count}
+            </span>
+          )}
+        </button>
 
         <button
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -155,18 +162,35 @@ export default function Nav() {
                 delay: reduce ? 0 : 0.05 + ALL.length * 0.05,
                 ease: [0.32, 0.72, 0, 1],
               }}
+              className="mt-2 flex flex-col gap-1"
             >
-              <Link
-                href="#"
-                onClick={() => setOpen(false)}
-                className="mt-2 inline-flex items-center gap-2 py-1.5 font-display text-3xl font-semibold tracking-tight text-accent"
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  setSearchOpen(true);
+                }}
+                className="inline-flex items-center gap-2 py-1.5 font-display text-3xl font-semibold tracking-tight text-text-light hover:text-accent"
+              >
+                <Search size={26} /> Buscar
+              </button>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  openCart();
+                }}
+                className="inline-flex items-center gap-2 py-1.5 font-display text-3xl font-semibold tracking-tight text-accent"
               >
                 <ShoppingBag size={26} /> Carrito
-              </Link>
+                {count > 0 && (
+                  <span className="text-text-light/50">({count})</span>
+                )}
+              </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }
