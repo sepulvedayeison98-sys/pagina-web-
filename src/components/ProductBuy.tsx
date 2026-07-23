@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { ShoppingBag, Heart, Check } from "lucide-react";
 import Cta from "./Cta";
+import SizeGuideModal from "./SizeGuideModal";
 import { SIZES, type Size } from "@/lib/products";
 import { useCart } from "@/lib/cart/CartContext";
+import { useFavorites } from "@/lib/favorites/FavoritesContext";
 
 /**
  * Caja de compra de la ficha: selección de talla + "Agregar al carrito"
- * (conectado al carrito real) + "Guardar". Requiere elegir talla antes de
- * agregar. Al agregar, el carrito se abre solo (ver CartContext).
+ * (conectado al carrito real) + "Guardar" (favoritos con persistencia).
+ * El enlace "Guía de tallas" abre el modal con la lámina de tallas.
+ * Requiere elegir talla antes de agregar; al agregar, el carrito se abre solo.
  */
 export default function ProductBuy({
   slug,
@@ -23,9 +26,13 @@ export default function ProductBuy({
   imageUrl?: string | null;
 }) {
   const { add } = useCart();
+  const { isFavorite, toggle } = useFavorites();
   const [size, setSize] = useState<Size | null>(null);
   const [error, setError] = useState(false);
   const [added, setAdded] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  const saved = isFavorite(slug);
 
   function handleAdd() {
     if (!size) {
@@ -43,7 +50,11 @@ export default function ProductBuy({
       <div>
         <div className="mb-3 flex items-center justify-between">
           <span className="eyebrow text-text-dark/60">Talla</span>
-          <button className="text-xs text-accent underline-offset-2 hover:underline">
+          <button
+            type="button"
+            onClick={() => setGuideOpen(true)}
+            className="text-xs text-accent underline-offset-2 hover:underline"
+          >
             Guía de tallas
           </button>
         </div>
@@ -88,10 +99,17 @@ export default function ProductBuy({
             </>
           )}
         </Cta>
-        <Cta variant="secondary">
-          <Heart size={18} /> Guardar
+        <Cta
+          variant="secondary"
+          onClick={() => toggle(slug)}
+          className={saved ? "border-accent text-accent" : ""}
+        >
+          <Heart size={18} className={saved ? "fill-accent" : ""} />
+          {saved ? "Guardado" : "Guardar"}
         </Cta>
       </div>
+
+      <SizeGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </div>
   );
 }

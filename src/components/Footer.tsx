@@ -1,19 +1,41 @@
 import Link from "next/link";
 import Wordmark from "./Wordmark";
 import { SOCIALS } from "./icons/Social";
+import { WHATSAPP_NUMBER } from "@/lib/config";
+
+/** Enlace de WhatsApp con un mensaje prellenado (tienda atendida por chat). */
+function wa(msg: string) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
 
 const COLUMNS = [
   {
     title: "Tienda",
-    links: ["Cascos integrales", "Cascos jet", "Modulares", "Off-road", "Accesorios"],
+    links: [
+      { label: "Cascos integrales", href: "/#catalogo" },
+      { label: "Cascos jet", href: "/#catalogo" },
+      { label: "Modulares", href: "/#catalogo" },
+      { label: "Off-road", href: "/#catalogo" },
+      { label: "Accesorios", href: "/#catalogo" },
+    ],
   },
   {
     title: "Ayuda",
-    links: ["Guía de tallas", "Envíos y entregas", "Cambios y garantía", "Preguntas frecuentes"],
+    links: [
+      { label: "Guía de tallas", href: "/guia-de-tallas" },
+      { label: "Envíos y entregas", href: wa("Hola VELTOR, tengo una duda sobre envíos y entregas.") },
+      { label: "Cambios y garantía", href: wa("Hola VELTOR, quiero consultar sobre cambios y garantía.") },
+      { label: "Preguntas frecuentes", href: wa("Hola VELTOR, tengo una pregunta.") },
+    ],
   },
   {
     title: "VELTOR",
-    links: ["Nuestra historia", "Puntos de venta", "Trabaja con nosotros", "Contacto"],
+    links: [
+      { label: "Nuestra historia", href: "/#comunidad" },
+      { label: "Puntos de venta", href: wa("Hola VELTOR, ¿dónde puedo ver los cascos en persona?") },
+      { label: "Trabaja con nosotros", href: wa("Hola VELTOR, me interesa trabajar con ustedes.") },
+      { label: "Contacto", href: wa("Hola VELTOR, quiero más información.") },
+    ],
   },
 ];
 
@@ -34,6 +56,8 @@ export default function Footer() {
                 key={label}
                 href={href}
                 aria-label={label}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-text-light/70 transition-colors hover:border-accent hover:text-accent"
               >
                 <Icon size={16} />
@@ -46,16 +70,21 @@ export default function Footer() {
           <div key={col.title}>
             <h4 className="eyebrow mb-4 text-text-light/50">{col.title}</h4>
             <ul className="space-y-3">
-              {col.links.map((l) => (
-                <li key={l}>
-                  <Link
-                    href="#"
-                    className="text-sm text-text-light/75 transition-colors hover:text-accent"
-                  >
-                    {l}
-                  </Link>
-                </li>
-              ))}
+              {col.links.map((l) => {
+                const external = l.href.startsWith("http");
+                return (
+                  <li key={l.label}>
+                    <Link
+                      href={l.href}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noopener noreferrer" : undefined}
+                      className="text-sm text-text-light/75 transition-colors hover:text-accent"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}
@@ -65,9 +94,18 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-xs text-text-light/50 sm:flex-row lg:px-8">
           <p>© {new Date().getFullYear()} VELTOR. Todos los derechos reservados.</p>
           <div className="flex gap-5">
-            <Link href="#" className="hover:text-accent">Términos</Link>
-            <Link href="#" className="hover:text-accent">Privacidad</Link>
-            <Link href="#" className="hover:text-accent">Hecho en Colombia 🇨🇴</Link>
+            <Link href="/guia-de-tallas" className="hover:text-accent">
+              Guía de tallas
+            </Link>
+            <Link
+              href={wa("Hola VELTOR, quiero más información.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-accent"
+            >
+              Contacto
+            </Link>
+            <span>Hecho en Colombia 🇨🇴</span>
           </div>
         </div>
       </div>
