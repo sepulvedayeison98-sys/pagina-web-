@@ -8,20 +8,38 @@ import { useCart } from "@/lib/cart/CartContext";
 import { formatCOP } from "@/lib/format";
 import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
 
-/** Arma el texto del pedido y devuelve el enlace wa.me para finalizar por WhatsApp. */
+/**
+ * Arma el texto del pedido y devuelve el enlace wa.me para finalizar por WhatsApp.
+ * Usa el formato nativo de WhatsApp (*negrita*, _cursiva_) y un layout ordenado:
+ * cabecera, cada producto numerado con talla/cantidad/precio, y un total
+ * destacado, con campos para que el cliente complete envío y pago.
+ */
 function buildWhatsAppLink(
   items: { name: string; size: string; qty: number; price: number }[],
   subtotal: number
 ) {
-  const lines = items.map(
-    (i) =>
-      `• ${i.name} (Talla ${i.size}) x${i.qty} — ${formatCOP(i.price * i.qty)}`
-  );
+  const divider = "━━━━━━━━━━━━━━━";
+
+  const productos = items
+    .map(
+      (i, idx) =>
+        `*${idx + 1}.* ${i.name}\n` +
+        `      Talla ${i.size}  ·  ${i.qty} und\n` +
+        `      ${formatCOP(i.price * i.qty)}`
+    )
+    .join("\n\n");
+
   const text =
-    `¡Hola ${STORE_NAME}! Quiero hacer este pedido:\n\n` +
-    lines.join("\n") +
-    `\n\nSubtotal: ${formatCOP(subtotal)}` +
-    `\n\n¿Me confirman disponibilidad y forma de pago?`;
+    `🏍️  *PEDIDO ${STORE_NAME.toUpperCase()}*\n` +
+    `${divider}\n\n` +
+    `${productos}\n\n` +
+    `${divider}\n` +
+    `*TOTAL:  ${formatCOP(subtotal)}*\n` +
+    `${divider}\n\n` +
+    `📦 *Envío a:* _(ciudad y dirección)_\n` +
+    `💳 *Pago:* _(transferencia / contraentrega)_\n\n` +
+    `¡Quedo atento para confirmar disponibilidad! 🙌`;
+
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
