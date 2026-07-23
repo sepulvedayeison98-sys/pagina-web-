@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Upload, Trash2, X, Plus, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import type { Spec } from "@/lib/products";
+import { SIZES, type Spec } from "@/lib/products";
 
 export interface ProductRow {
   id: string;
@@ -21,6 +21,7 @@ export interface ProductRow {
   gallery: string[];
   description: string | null;
   specs: Spec[];
+  sizes: string[];
   active: boolean;
   sort_order: number;
 }
@@ -65,6 +66,15 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
   );
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
   const [specs, setSpecs] = useState<Spec[]>(initial?.specs ?? []);
+  const [sizes, setSizes] = useState<string[]>(
+    initial?.sizes ?? [...SIZES]
+  );
+
+  function toggleSize(s: string) {
+    setSizes((prev) =>
+      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+    );
+  }
 
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -139,6 +149,8 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
       image_url: imageUrl,
       gallery,
       specs: specs.filter((s) => s.label || s.value),
+      // Guardar en el orden canónico de SIZES (XS→XL).
+      sizes: SIZES.filter((s) => sizes.includes(s)),
     };
 
     const { error } = isEdit
@@ -321,6 +333,40 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Tallas disponibles */}
+        <div className="rounded-2xl border border-text-dark/10 bg-white p-5">
+          <h3 className="mb-1 font-semibold">Tallas disponibles</h3>
+          <p className="mb-3 text-sm text-text-dark/50">
+            Marca las tallas con stock. Las que desmarques aparecerán tachadas
+            y no se podrán seleccionar en la ficha del producto.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {SIZES.map((s) => {
+              const on = sizes.includes(s);
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => toggleSize(s)}
+                  aria-pressed={on}
+                  className={`h-11 w-14 rounded-xl border text-sm font-semibold transition-colors ${
+                    on
+                      ? "border-accent bg-accent text-white"
+                      : "border-text-dark/20 text-text-dark/40 line-through hover:border-text-dark/40"
+                  }`}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+          {sizes.length === 0 && (
+            <p className="mt-3 text-sm text-amber-600">
+              Sin tallas marcadas: el producto aparecerá como agotado.
+            </p>
+          )}
         </div>
       </div>
 

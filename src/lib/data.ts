@@ -2,9 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import {
   MOCK_PRODUCTS,
   MOCK_REVIEWS,
+  SIZES,
   type Category,
   type Product,
   type Review,
+  type Size,
   type Spec,
 } from "./products";
 
@@ -23,6 +25,13 @@ function rowToProduct(r: any): Product {
     gallery: Array.isArray(r.gallery) ? r.gallery : [],
     description: r.description,
     specs: Array.isArray(r.specs) ? (r.specs as Spec[]) : [],
+    // Sin tallas definidas → todas disponibles (compatibilidad hacia atrás).
+    sizes:
+      Array.isArray(r.sizes) && r.sizes.length
+        ? (r.sizes.filter((s: string) =>
+            (SIZES as readonly string[]).includes(s)
+          ) as Size[])
+        : [...SIZES],
   };
 }
 
