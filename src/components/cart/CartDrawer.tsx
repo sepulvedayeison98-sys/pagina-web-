@@ -13,6 +13,11 @@ import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
  * Usa el formato nativo de WhatsApp (*negrita*, _cursiva_) y un layout ordenado:
  * cabecera, cada producto numerado con talla/cantidad/precio, y un total
  * destacado, con campos para que el cliente complete envío y pago.
+ *
+ * Nota: se evitan emojis a propósito. Al abrir wa.me en iOS, los caracteres
+ * del plano astral (emojis, 4 bytes) se corrompen en el texto prellenado y
+ * llegan como "�". Los acentos y los separadores (planos básicos) sí viajan
+ * bien, así que la estructura se apoya solo en negritas y líneas divisorias.
  */
 function buildWhatsAppLink(
   items: { name: string; size: string; qty: number; price: number }[],
@@ -30,15 +35,15 @@ function buildWhatsAppLink(
     .join("\n\n");
 
   const text =
-    `🏍️  *PEDIDO ${STORE_NAME.toUpperCase()}*\n` +
+    `*PEDIDO ${STORE_NAME.toUpperCase()}*\n` +
     `${divider}\n\n` +
     `${productos}\n\n` +
     `${divider}\n` +
     `*TOTAL:  ${formatCOP(subtotal)}*\n` +
     `${divider}\n\n` +
-    `📦 *Envío a:* _(ciudad y dirección)_\n` +
-    `💳 *Pago:* _(transferencia / contraentrega)_\n\n` +
-    `¡Quedo atento para confirmar disponibilidad! 🙌`;
+    `*Envío a:* _(ciudad y dirección)_\n` +
+    `*Pago:* _(transferencia / contraentrega)_\n\n` +
+    `¡Quedo atento para confirmar disponibilidad!`;
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
