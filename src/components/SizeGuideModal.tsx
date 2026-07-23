@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
-import guiaTallas from "@/assets/guia-tallas.png";
+import guiaTallas from "@/assets/guia-tallas.webp";
 
 /** Tallas y su circunferencia de cabeza (cm), según la guía VELTOR. */
 const ROWS = [

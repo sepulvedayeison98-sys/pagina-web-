@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
-import guiaTallas from "@/assets/guia-tallas.png";
+import guiaTallas from "@/assets/guia-tallas.webp";
 
 export const metadata: Metadata = {
   title: "Guía de tallas · VELTOR",
