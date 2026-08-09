@@ -12,7 +12,7 @@ declare global {
         destroy: () => void;
         getIframe: () => HTMLIFrameElement;
       };
-      PlayerState: { PLAYING: number };
+      PlayerState: { PLAYING: number; ENDED: number };
     };
     onYouTubeIframeAPIReady?: () => void;
   }
@@ -70,8 +70,9 @@ export default function Hero() {
         playerVars: {
           autoplay: 1,
           mute: 1,
-          loop: 1,
-          playlist: VIDEO_ID,
+          // Sin loop/playlist: ese modo hace que YouTube RECARGUE el video en
+          // cada vuelta (se ve un salto/parpadeo). El bucle se hace a mano en
+          // onStateChange con seekTo(0), que es instantáneo y continuo.
           controls: 0,
           rel: 0,
           modestbranding: 1,
@@ -86,9 +87,16 @@ export default function Hero() {
               .getIframe()
               .setAttribute("title", "VELTOR — motociclistas en ruta");
           },
-          onStateChange: (e: { data: number }) => {
-            if (window.YT && e.data === window.YT.PlayerState.PLAYING) {
-              setPlaying(true);
+          onStateChange: (e: {
+            data: number;
+            target: { seekTo: (s: number, allow: boolean) => void; playVideo: () => void };
+          }) => {
+            if (!window.YT) return;
+            if (e.data === window.YT.PlayerState.PLAYING) setPlaying(true);
+            // Bucle continuo: al terminar, rebobina y sigue sin recargar.
+            if (e.data === window.YT.PlayerState.ENDED) {
+              e.target.seekTo(0, true);
+              e.target.playVideo();
             }
           },
         },
