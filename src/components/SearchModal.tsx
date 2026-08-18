@@ -6,6 +6,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, X, ImageOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useModal } from "@/lib/useModal";
 import { formatCOP } from "@/lib/format";
 
 interface Hit {
@@ -53,17 +54,15 @@ export default function SearchModal({
     };
   }, [open, loaded]);
 
-  // Enfocar el input y cerrar con Escape.
+  // Escape, bloqueo del scroll de fondo y devolución del foco al cerrar.
+  useModal(open, onClose);
+
+  // El foco va al buscador, no al panel: es lo que el usuario quiere usar.
   useEffect(() => {
     if (!open) return;
     const id = setTimeout(() => inputRef.current?.focus(), 60);
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => {
-      clearTimeout(id);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open, onClose]);
+    return () => clearTimeout(id);
+  }, [open]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

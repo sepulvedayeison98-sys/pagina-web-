@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart/CartContext";
+import { useModal } from "@/lib/useModal";
 import { formatCOP } from "@/lib/format";
 import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
 
@@ -51,6 +52,7 @@ function buildWhatsAppLink(
 export default function CartDrawer() {
   const { items, isOpen, close, setQty, remove, subtotal, count, clear } =
     useCart();
+  const panelRef = useModal(isOpen, close);
 
   return (
     <AnimatePresence>
@@ -73,9 +75,12 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.5 }}
-            className="fixed right-0 top-0 z-[61] flex h-[100dvh] w-full max-w-md flex-col bg-paper text-text-dark shadow-2xl"
+            className="fixed right-0 top-0 z-[61] flex h-[100dvh] w-full max-w-md flex-col bg-paper text-text-dark shadow-2xl focus:outline-none"
             role="dialog"
+            aria-modal="true"
             aria-label="Carrito de compras"
+            ref={panelRef as React.Ref<HTMLElement>}
+            tabIndex={-1}
           >
             <header className="flex items-center justify-between border-b border-text-dark/10 px-5 py-4">
               <div className="flex items-center gap-2">

@@ -36,6 +36,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Reserva el hueco de la barra de scroll siempre. Así, cuando una capa
+     modal bloquea el scroll del fondo, la página no da un salto lateral. */
+  scrollbar-gutter: stable;
 }
 
 body {

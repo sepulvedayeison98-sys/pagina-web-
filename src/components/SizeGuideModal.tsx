@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
+import { useModal } from "@/lib/useModal";
 import guiaTallas from "@/assets/guia-tallas.webp";
 
 /** Tallas y su circunferencia de cabeza (cm), según la guía ROVEX. */
@@ -27,12 +27,7 @@ export default function SizeGuideModal({
   open: boolean;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  const panelRef = useModal(open, onClose);
 
   return (
     <AnimatePresence>
@@ -54,7 +49,9 @@ export default function SizeGuideModal({
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative my-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-paper shadow-2xl"
+            className="relative my-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-paper shadow-2xl focus:outline-none"
+            ref={panelRef as React.Ref<HTMLDivElement>}
+            tabIndex={-1}
           >
             <button
               onClick={onClose}
