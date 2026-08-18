@@ -18,7 +18,7 @@ interface FavoritesState {
 }
 
 const FavoritesContext = createContext<FavoritesState | null>(null);
-const STORAGE_KEY = "veltor-favorites-v1";
+const STORAGE_KEY = "rovex-favorites-v1";
 
 /**
  * Guarda los slugs de los productos marcados como favoritos ("Guardar") en

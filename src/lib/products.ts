@@ -69,12 +69,12 @@ const SHPRO_SPECS: Spec[] = [
 
 /** Fallback: se usa solo si Supabase no responde o está vacío. */
 export const MOCK_PRODUCTS: Product[] = [
-  { slug: "shpro-609", name: "SHPRO-609 Jet", brand: "VELTOR", category: "JET", price: 489000, compareAt: 589000, rating: 4.8, reviewCount: 126, badge: "MÁS VENDIDO", gallery: [], description: "Casco jet de cara abierta que combina ligereza urbana con protección certificada.", specs: SHPRO_SPECS, sizes: [...SIZES] },
-  { slug: "aero-gt-carbon", name: "Aero GT Carbon", brand: "VELTOR", category: "INTEGRAL", price: 1290000, rating: 4.9, reviewCount: 87, badge: "CARBONO", gallery: [], specs: [], sizes: [...SIZES] },
-  { slug: "urban-flip-pro", name: "Urban Flip Pro", brand: "VELTOR", category: "MODULAR", price: 749000, compareAt: 829000, rating: 4.6, reviewCount: 54, gallery: [], specs: [], sizes: [...SIZES] },
-  { slug: "integral-rs-7", name: "Integral RS-7", brand: "VELTOR", category: "INTEGRAL", price: 899000, rating: 4.7, reviewCount: 63, gallery: [], specs: [], sizes: [...SIZES] },
-  { slug: "trail-x-adventure", name: "Trail-X Adventure", brand: "VELTOR", category: "OFFROAD", price: 969000, rating: 4.5, reviewCount: 41, badge: "NUEVO", gallery: [], specs: [], sizes: [...SIZES] },
-  { slug: "city-jet-lite", name: "City Jet Lite", brand: "VELTOR", category: "JET", price: 329000, rating: 4.4, reviewCount: 98, gallery: [], specs: [], sizes: [...SIZES] },
+  { slug: "shpro-609", name: "SHPRO-609 Jet", brand: "ROVEX", category: "JET", price: 489000, compareAt: 589000, rating: 4.8, reviewCount: 126, badge: "MÁS VENDIDO", gallery: [], description: "Casco jet de cara abierta que combina ligereza urbana con protección certificada.", specs: SHPRO_SPECS, sizes: [...SIZES] },
+  { slug: "aero-gt-carbon", name: "Aero GT Carbon", brand: "ROVEX", category: "INTEGRAL", price: 1290000, rating: 4.9, reviewCount: 87, badge: "CARBONO", gallery: [], specs: [], sizes: [...SIZES] },
+  { slug: "urban-flip-pro", name: "Urban Flip Pro", brand: "ROVEX", category: "MODULAR", price: 749000, compareAt: 829000, rating: 4.6, reviewCount: 54, gallery: [], specs: [], sizes: [...SIZES] },
+  { slug: "integral-rs-7", name: "Integral RS-7", brand: "ROVEX", category: "INTEGRAL", price: 899000, rating: 4.7, reviewCount: 63, gallery: [], specs: [], sizes: [...SIZES] },
+  { slug: "trail-x-adventure", name: "Trail-X Adventure", brand: "ROVEX", category: "OFFROAD", price: 969000, rating: 4.5, reviewCount: 41, badge: "NUEVO", gallery: [], specs: [], sizes: [...SIZES] },
+  { slug: "city-jet-lite", name: "City Jet Lite", brand: "ROVEX", category: "JET", price: 329000, rating: 4.4, reviewCount: 98, gallery: [], specs: [], sizes: [...SIZES] },
 ];
 
 export const MOCK_REVIEWS: Review[] = [

@@ -1,17 +1,30 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   VELTOR — tokens de diseño (Tailwind v4, sin tailwind.config)
-   Acento naranja, estética "hero oscuro + resto claro".
+   ROVEX — tokens de diseño (Tailwind v4, sin tailwind.config)
+   Identidad negro + cromo + rojo. Estética "hero oscuro + resto claro".
+   Los rojos y el negro salen del muestreo del logotipo.
    ───────────────────────────────────────────────────────────── */
 @theme {
-  --color-accent: #f2661f;
-  --color-accent-hover: #d9560f;
-  --color-ink: #0a0a0b;
-  --color-paper: #f5f3ef;
-  --color-studio: #dcd9d3;
-  --color-text-dark: #16161a;
-  --color-text-light: #efe9e3;
+  /* Acento de marca. Blanco encima contrasta 5.08 (mínimo legible: 4.5). */
+  --color-accent: #d81e24;
+  --color-accent-hover: #b0161b;
+  /* Rojo brillante: para TEXTO de acento sobre negro, donde el anterior
+     se apaga (4.65 sobre tinta, frente a 3.89 del acento normal). */
+  --color-accent-bright: #f02020;
+
+  --color-ink: #08080a;
+  /* Neutros fríos: acompañan al cromo del logo. Antes eran cálidos (crema). */
+  --color-paper: #f4f4f5;
+  --color-studio: #dcdce0;
+  --color-text-dark: #141417;
+  --color-text-light: #eaeaee;
+
+  /* Estados. Separados del rojo de marca para que "comprar" nunca se
+     confunda con "borrar": los errores son ámbar y lo destructivo vive
+     en botones sin relleno que solo se tiñen al pasar el cursor. */
+  --color-warn: #b45309;
+  --color-danger: #b42318;
 
   --font-display: var(--font-archivo), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -56,7 +69,7 @@ h2 {
 
 /* Resplandor ambiental del hero: deriva lenta, solo si el usuario acepta motion. */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes veltor-ambient {
+  @keyframes rovex-ambient {
     0% {
       transform: translate3d(-4%, -2%, 0) scale(1);
       opacity: 0.55;
@@ -71,13 +84,13 @@ h2 {
     }
   }
   .ambient-glow {
-    animation: veltor-ambient 14s ease-in-out infinite;
+    animation: rovex-ambient 14s ease-in-out infinite;
     will-change: transform, opacity;
   }
 }
 
 /* Barrido de brillo para skeletons / superficies "materializando". */
-@keyframes veltor-shimmer {
+@keyframes rovex-shimmer {
   100% {
     transform: translateX(100%);
   }

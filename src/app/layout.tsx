@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VELTOR — Equipamiento premium para motociclistas",
+  title: "ROVEX — Equipamiento, tecnología y estilo",
   description:
     "Cascos, guantes, accesorios y tecnología para motociclistas. Protección y diseño premium accesible. Envíos a toda Colombia.",
 };

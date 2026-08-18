@@ -145,7 +145,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => remove(item.slug, item.size)}
                             aria-label="Quitar del carrito"
-                            className="shrink-0 text-text-dark/35 transition-colors hover:text-red-600"
+                            className="shrink-0 text-text-dark/35 transition-colors hover:text-danger"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -204,7 +204,7 @@ export default function CartDrawer() {
                   </a>
                   <button
                     onClick={clear}
-                    className="mt-2 w-full py-1 text-center text-xs text-text-dark/45 transition-colors hover:text-red-600"
+                    className="mt-2 w-full py-1 text-center text-xs text-text-dark/45 transition-colors hover:text-danger"
                   >
                     Vaciar carrito
                   </button>

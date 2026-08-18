@@ -85,7 +85,7 @@ export default function Hero() {
           onReady: (e: { target: { getIframe: () => HTMLIFrameElement } }) => {
             e.target
               .getIframe()
-              .setAttribute("title", "VELTOR — motociclistas en ruta");
+              .setAttribute("title", "ROVEX — motociclistas en ruta");
           },
           onStateChange: (e: {
             data: number;

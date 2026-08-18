@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import guiaTallas from "@/assets/guia-tallas.webp";
 
-/** Tallas y su circunferencia de cabeza (cm), según la guía VELTOR. */
+/** Tallas y su circunferencia de cabeza (cm), según la guía ROVEX. */
 const ROWS = [
   { size: "S", cm: "55 – 56 cm" },
   { size: "M", cm: "57 – 58 cm" },
@@ -15,7 +15,7 @@ const ROWS = [
 ];
 
 /**
- * Modal con la guía de tallas de VELTOR. Muestra la lámina de marca (imagen)
+ * Modal con la guía de tallas de ROVEX. Muestra la lámina de marca (imagen)
  * como pieza principal y una tabla en texto debajo para que las medidas se
  * lean nítidas y sean accesibles en cualquier pantalla. Cierra con Escape,
  * clic en el fondo o el botón X.
@@ -67,7 +67,7 @@ export default function SizeGuideModal({
             {/* Lámina de marca */}
             <Image
               src={guiaTallas}
-              alt="Guía de tallas VELTOR: mide la circunferencia de tu cabeza 1 pulgada sobre las cejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
+              alt="Guía de tallas ROVEX: mide la circunferencia de tu cabeza 1 pulgada sobre las cejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
               placeholder="blur"
               sizes="(max-width: 640px) 100vw, 42rem"
               className="h-auto w-full"

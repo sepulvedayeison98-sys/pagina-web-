@@ -85,7 +85,7 @@ export default function ProductTabs({
               {
                 Icon: ShieldCheck,
                 title: "2 años de garantía",
-                body: "Garantía contra defectos de fabricación y soporte postventa directo con VELTOR.",
+                body: "Garantía contra defectos de fabricación y soporte postventa directo con ROVEX.",
               },
             ].map(({ Icon, title, body }) => (
               <li key={title} className="flex gap-4">

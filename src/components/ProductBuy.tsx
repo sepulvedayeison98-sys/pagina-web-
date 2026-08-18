@@ -91,12 +91,12 @@ export default function ProductBuy({
           })}
         </div>
         {error && (
-          <p className="mt-2 text-xs text-red-600">
+          <p className="mt-2 text-xs text-warn">
             Selecciona una talla para continuar.
           </p>
         )}
         {soldOut && (
-          <p className="mt-2 text-xs text-amber-600">
+          <p className="mt-2 text-xs text-warn">
             Sin tallas disponibles por el momento.
           </p>
         )}

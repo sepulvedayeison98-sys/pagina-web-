@@ -29,9 +29,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: "Producto no encontrado · VELTOR" };
+  if (!product) return { title: "Producto no encontrado · ROVEX" };
   return {
-    title: `${product.name} · VELTOR`,
+    title: `${product.name} · ROVEX`,
     description:
       product.description ??
       `${product.name}: equipamiento premium para motociclistas. Envíos a toda Colombia.`,

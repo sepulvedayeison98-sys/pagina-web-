@@ -23,18 +23,18 @@ const COLUMNS = [
     title: "Ayuda",
     links: [
       { label: "Guía de tallas", href: "/guia-de-tallas" },
-      { label: "Envíos y entregas", href: wa("Hola VELTOR, tengo una duda sobre envíos y entregas.") },
-      { label: "Cambios y garantía", href: wa("Hola VELTOR, quiero consultar sobre cambios y garantía.") },
-      { label: "Preguntas frecuentes", href: wa("Hola VELTOR, tengo una pregunta.") },
+      { label: "Envíos y entregas", href: wa("Hola ROVEX, tengo una duda sobre envíos y entregas.") },
+      { label: "Cambios y garantía", href: wa("Hola ROVEX, quiero consultar sobre cambios y garantía.") },
+      { label: "Preguntas frecuentes", href: wa("Hola ROVEX, tengo una pregunta.") },
     ],
   },
   {
-    title: "VELTOR",
+    title: "ROVEX",
     links: [
       { label: "Nuestra historia", href: "/#comunidad" },
-      { label: "Puntos de venta", href: wa("Hola VELTOR, ¿dónde puedo ver los cascos en persona?") },
-      { label: "Trabaja con nosotros", href: wa("Hola VELTOR, me interesa trabajar con ustedes.") },
-      { label: "Contacto", href: wa("Hola VELTOR, quiero más información.") },
+      { label: "Puntos de venta", href: wa("Hola ROVEX, ¿dónde puedo ver los cascos en persona?") },
+      { label: "Trabaja con nosotros", href: wa("Hola ROVEX, me interesa trabajar con ustedes.") },
+      { label: "Contacto", href: wa("Hola ROVEX, quiero más información.") },
     ],
   },
 ];
@@ -47,8 +47,8 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-1">
           <Wordmark onDark className="text-2xl" />
           <p className="mt-4 max-w-xs text-sm text-text-light/60">
-            Equipamiento premium para motociclistas. Protección, diseño y
-            tecnología en cada kilómetro.
+            Equipamiento, tecnología y estilo para motociclistas. Protección y
+            diseño premium en cada kilómetro.
           </p>
           <div className="mt-6 flex gap-3">
             {SOCIALS.map(({ label, href, Icon }) => (
@@ -92,13 +92,13 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-xs text-text-light/50 sm:flex-row lg:px-8">
-          <p>© {new Date().getFullYear()} VELTOR. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} ROVEX. Todos los derechos reservados.</p>
           <div className="flex gap-5">
             <Link href="/guia-de-tallas" className="hover:text-accent">
               Guía de tallas
             </Link>
             <Link
-              href={wa("Hola VELTOR, quiero más información.")}
+              href={wa("Hola ROVEX, quiero más información.")}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-accent"

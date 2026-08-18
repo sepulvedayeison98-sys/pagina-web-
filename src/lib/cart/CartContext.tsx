@@ -33,7 +33,7 @@ interface CartState {
 }
 
 const CartContext = createContext<CartState | null>(null);
-const STORAGE_KEY = "veltor-cart-v1";
+const STORAGE_KEY = "rovex-cart-v1";
 
 /**
  * Estado global del carrito. Guarda los productos en localStorage, así que

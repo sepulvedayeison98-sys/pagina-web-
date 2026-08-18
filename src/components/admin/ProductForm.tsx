@@ -320,7 +320,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
                   onClick={() =>
                     setSpecs((arr) => arr.filter((_, j) => j !== i))
                   }
-                  className="shrink-0 rounded-lg px-2 text-text-dark/40 hover:text-red-600"
+                  className="shrink-0 rounded-lg px-2 text-text-dark/40 hover:text-danger"
                   aria-label="Quitar"
                 >
                   <X size={16} />
@@ -363,7 +363,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
             })}
           </div>
           {sizes.length === 0 && (
-            <p className="mt-3 text-sm text-amber-600">
+            <p className="mt-3 text-sm text-warn">
               Sin tallas marcadas: el producto aparecerá como agotado.
             </p>
           )}
@@ -497,7 +497,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
 
       {/* Barra de acciones */}
       <div className="lg:col-span-3 flex flex-wrap items-center gap-3">
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-warn">{error}</p>}
         {uploading && (
           <span className="inline-flex items-center gap-1 text-sm text-text-dark/50">
             <Loader2 size={14} className="animate-spin" /> Subiendo…
@@ -509,7 +509,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
               type="button"
               onClick={handleDelete}
               disabled={saving}
-              className="inline-flex items-center gap-1 rounded-full border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+              className="inline-flex items-center gap-1 rounded-full border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger hover:bg-danger/5 disabled:opacity-60"
             >
               <Trash2 size={15} /> Eliminar
             </button>

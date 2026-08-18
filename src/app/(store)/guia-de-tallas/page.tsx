@@ -4,9 +4,9 @@ import Reveal from "@/components/Reveal";
 import guiaTallas from "@/assets/guia-tallas.webp";
 
 export const metadata: Metadata = {
-  title: "Guía de tallas · VELTOR",
+  title: "Guía de tallas · ROVEX",
   description:
-    "Encuentra tu talla de casco VELTOR. Mide la circunferencia de tu cabeza y elige entre S, M, L y XL. Envíos a toda Colombia.",
+    "Encuentra tu talla de casco ROVEX. Mide la circunferencia de tu cabeza y elige entre S, M, L y XL. Envíos a toda Colombia.",
 };
 
 const ROWS = [
@@ -26,7 +26,7 @@ export default function GuiaDeTallasPage() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-14 lg:px-8">
       <Reveal className="mb-8 text-center">
-        <p className="eyebrow mb-2 text-accent">VELTOR · Cascos</p>
+        <p className="eyebrow mb-2 text-accent">ROVEX · Cascos</p>
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
           Guía de tallas
         </h1>
@@ -40,7 +40,7 @@ export default function GuiaDeTallasPage() {
         <div className="overflow-hidden rounded-2xl border border-text-dark/10 shadow-sm">
           <Image
             src={guiaTallas}
-            alt="Guía de tallas VELTOR: mide la circunferencia de tu cabeza 1 pulgada sobre las cejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
+            alt="Guía de tallas ROVEX: mide la circunferencia de tu cabeza 1 pulgada sobre las cejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
             placeholder="blur"
             sizes="(max-width: 896px) 100vw, 56rem"
             className="h-auto w-full"

@@ -14,7 +14,7 @@ function rowToProduct(r: any): Product {
   return {
     slug: r.slug,
     name: r.name,
-    brand: r.brand ?? "VELTOR",
+    brand: r.brand ?? "ROVEX",
     category: r.category as Category,
     price: r.price,
     compareAt: r.compare_at,

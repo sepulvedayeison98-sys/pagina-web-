@@ -101,7 +101,7 @@ export default async function Home() {
             </h2>
             <p className="mt-4 max-w-lg text-text-light/70">
               Combina cualquier casco de la línea Jet o Integral con un par de
-              guantes VELTOR y llévate el combo a precio de piloto.
+              guantes ROVEX y llévate el combo a precio de piloto.
             </p>
             <div className="mt-6">
               <Cta href="/#catalogo" variant="primary">
@@ -118,7 +118,7 @@ export default async function Home() {
       {/* ───────────────── TECNOLOGÍA ───────────────── */}
       <section id="tecnologia" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-12 max-w-2xl">
-          <p className="eyebrow mb-2 text-accent">Ingeniería VELTOR</p>
+          <p className="eyebrow mb-2 text-accent">Ingeniería ROVEX</p>
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
             Tecnología en cada detalle
           </h2>
@@ -150,7 +150,7 @@ export default async function Home() {
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
               4.8 / 5 en satisfacción
             </h2>
-            <p className="mt-3 text-text-dark/60">Lo que dicen los pilotos que ya ruedan con VELTOR.</p>
+            <p className="mt-3 text-text-dark/60">Lo que dicen los pilotos que ya ruedan con ROVEX.</p>
           </Reveal>
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -176,10 +176,10 @@ export default async function Home() {
       <section id="comunidad" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-10 text-center">
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Comunidad VELTOR
+            Comunidad ROVEX
           </h2>
           <p className="mt-3 text-text-dark/60">
-            Etiquétanos con #RuedaConVeltor en tus rutas y aparece aquí.
+            Etiquétanos con #RuedaConRovex en tus rutas y aparece aquí.
           </p>
         </Reveal>
 

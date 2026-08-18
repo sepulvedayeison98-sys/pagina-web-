@@ -1,4 +1,4 @@
-# VELTOR
+# ROVEX
 
 Tienda online de equipamiento premium para motociclistas (cascos, guantes,
 accesorios, tecnología). Español (Colombia), precios en COP. Estética "hero
@@ -50,5 +50,5 @@ src/
 ## Deploy
 
 Conectar el repositorio a Vercel; detecta Next.js automáticamente. Si el
-proyecto vive en la subcarpeta `veltor/`, configurar ese directorio como
+proyecto vive en la subcarpeta `rovex/`, configurar ese directorio como
 *Root Directory* en Vercel.

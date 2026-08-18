@@ -26,7 +26,7 @@ export default function Placeholder({
       <div className={`relative overflow-hidden bg-studio ${className}`}>
         <Image
           src={src}
-          alt={alt ?? label ?? "Foto de producto VELTOR"}
+          alt={alt ?? label ?? "Foto de producto ROVEX"}
           fill
           sizes={sizes ?? "(max-width: 768px) 100vw, 33vw"}
           className="object-cover"
