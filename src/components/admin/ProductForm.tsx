@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Upload, Trash2, X, Plus, Loader2 } from "lucide-react";
+import { Upload, Trash2, X, Plus, Loader2, Copy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES, type Spec } from "@/lib/products";
 import { BRANDS, specsForBrand, isUntouchedTemplate } from "@/lib/brands";
@@ -183,6 +183,52 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
       return;
     }
     router.push("/admin");
+    router.refresh();
+  }
+
+  /**
+   * Crea una copia del producto con los datos que hay ahora en el formulario
+   * y abre la copia para editarla. Nace oculta, para que no aparezca en la
+   * tienda a medio llenar. Sirve para cargar variantes de un mismo modelo
+   * sin repetir specs, tallas y precio.
+   */
+  async function handleDuplicate() {
+    if (!initial) return;
+    setSaving(true);
+    setError(null);
+
+    const base = slug || slugify(name) || "producto";
+    const copySlug = `${base}-copia-${Math.random().toString(36).slice(2, 6)}`;
+
+    const { data, error } = await supabase
+      .from("products")
+      .insert({
+        slug: copySlug,
+        name: `${name} (copia)`,
+        brand: brand || null,
+        category,
+        price: Number(price) || 0,
+        compare_at: compareAt ? Number(compareAt) : null,
+        badge: badge || null,
+        rating: Number(rating) || 0,
+        review_count: 0,
+        sort_order: Number(sortOrder) || 0,
+        active: false,
+        description: description || null,
+        image_url: imageUrl,
+        gallery,
+        specs: specs.filter((s) => s.label || s.value),
+        sizes: SIZES.filter((s) => sizes.includes(s)),
+      })
+      .select("id")
+      .single();
+
+    setSaving(false);
+    if (error || !data) {
+      setError("No se pudo duplicar. " + (error?.message ?? ""));
+      return;
+    }
+    router.push(`/admin/products/${data.id}`);
     router.refresh();
   }
 
@@ -549,14 +595,25 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
         )}
         <div className="ml-auto flex gap-3">
           {isEdit && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={saving}
-              className="inline-flex items-center gap-1 rounded-full border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger hover:bg-danger/5 disabled:opacity-60"
-            >
-              <Trash2 size={15} /> Eliminar
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={handleDuplicate}
+                disabled={saving}
+                title="Crea una copia oculta con estos mismos datos"
+                className="inline-flex items-center gap-1 rounded-full border border-text-dark/20 px-5 py-2.5 text-sm font-semibold text-text-dark/70 hover:border-text-dark/50 hover:text-text-dark disabled:opacity-60"
+              >
+                <Copy size={15} /> Duplicar
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={saving}
+                className="inline-flex items-center gap-1 rounded-full border border-danger/30 px-5 py-2.5 text-sm font-semibold text-danger hover:bg-danger/5 disabled:opacity-60"
+              >
+                <Trash2 size={15} /> Eliminar
+              </button>
+            </>
           )}
           <button
             type="submit"

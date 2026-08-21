@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, ExternalLink, Package, Type } from "lucide-react";
+import { LogOut, ExternalLink, Package, Type, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Wordmark from "../Wordmark";
 
 const TABS = [
   { href: "/admin", label: "Productos", Icon: Package },
   { href: "/admin/contenido", label: "Textos", Icon: Type },
+  { href: "/admin/resenas", label: "Reseñas", Icon: Star },
 ];
 
 /** Cabecera del panel admin: marca + pestañas + ver tienda + cerrar sesión. */
