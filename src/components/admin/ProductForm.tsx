@@ -6,11 +6,13 @@ import Image from "next/image";
 import { Upload, Trash2, X, Plus, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES, type Spec } from "@/lib/products";
+import { BRANDS, specsForBrand, isUntouchedTemplate } from "@/lib/brands";
 
 export interface ProductRow {
   id: string;
   slug: string;
   name: string;
+  brand: string | null;
   category: string;
   price: number;
   compare_at: number | null;
@@ -27,24 +29,6 @@ export interface ProductRow {
 }
 
 const CATEGORIES = ["INTEGRAL", "JET", "MODULAR", "OFFROAD"];
-
-/**
- * Plantilla de especificaciones: los campos que se repiten igual en el
- * catálogo (Norma, Interior, Sistema de retención y Ventilación son
- * idénticos entre los cascos ICH 501 y 503 ya cargados). El Peso queda
- * vacío porque cambia con cada modelo.
- */
-const DEFAULT_SPECS: Spec[] = [
-  { label: "Peso", value: "" },
-  { label: "Norma", value: "DOT" },
-  { label: "Interior", value: "Cacheteras desmontables" },
-  { label: "Sistema de retención", value: "Cierre micrométrico" },
-  {
-    label: "Ventilación",
-    value:
-      "Cámaras frontales superiores e inferiores y cámara trasera para la salida del aire",
-  },
-];
 
 const input =
   "w-full rounded-lg border border-text-dark/20 px-3 py-2.5 text-sm focus:border-accent focus:outline-none";
@@ -84,11 +68,19 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
     initial?.image_url ?? null
   );
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
-  // Producto nuevo, o uno existente sin especificaciones aún: arranca con
-  // la plantilla en vez de vacío, así solo hay que ajustar lo que cambie.
-  const [specs, setSpecs] = useState<Spec[]>(
-    initial?.specs && initial.specs.length > 0 ? initial.specs : DEFAULT_SPECS
-  );
+  const [brand, setBrand] = useState(initial?.brand ?? "");
+  const [specs, setSpecs] = useState<Spec[]>(initial?.specs ?? []);
+
+  /**
+   * Al elegir marca se carga su plantilla, pero solo si no hay nada escrito
+   * todavía (o si lo que hay es otra plantilla sin tocar). Así cambiar de
+   * marca por error nunca borra datos ya redactados; para esos casos queda
+   * el botón "Usar plantilla".
+   */
+  function handleBrandChange(next: string) {
+    setBrand(next);
+    if (isUntouchedTemplate(specs)) setSpecs(specsForBrand(next));
+  }
   const [sizes, setSizes] = useState<string[]>(
     initial?.sizes ?? [...SIZES]
   );
@@ -160,6 +152,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
     const payload = {
       slug: finalSlug,
       name,
+      brand: brand || null,
       category,
       price: Number(price),
       compare_at: compareAt ? Number(compareAt) : null,
@@ -241,6 +234,22 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
 
           <div className="grid grid-cols-2 gap-4">
             <label className={labelCls}>
+              <span className={labelText}>Marca</span>
+              <select
+                className={input}
+                value={brand}
+                onChange={(e) => handleBrandChange(e.target.value)}
+              >
+                <option value="">— Elegir marca —</option>
+                {BRANDS.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className={labelCls}>
               <span className={labelText}>Categoría</span>
               <select
                 className={input}
@@ -301,15 +310,27 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
 
         {/* Especificaciones */}
         <div className="rounded-2xl border border-text-dark/10 bg-white p-5">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <h3 className="font-semibold">Especificaciones</h3>
-            <button
-              type="button"
-              onClick={() => setSpecs((s) => [...s, { label: "", value: "" }])}
-              className="inline-flex items-center gap-1 text-sm text-accent hover:underline"
-            >
-              <Plus size={14} /> Añadir
-            </button>
+            <div className="flex items-center gap-4">
+              {brand && (
+                <button
+                  type="button"
+                  onClick={() => setSpecs(specsForBrand(brand))}
+                  className="text-sm text-text-dark/55 hover:text-accent hover:underline"
+                  title={`Reemplaza las filas por la plantilla de ${brand}`}
+                >
+                  Usar plantilla {brand}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setSpecs((s) => [...s, { label: "", value: "" }])}
+                className="inline-flex items-center gap-1 text-sm text-accent hover:underline"
+              >
+                <Plus size={14} /> Añadir
+              </button>
+            </div>
           </div>
           <div className="space-y-2">
             {specs.map((s, i) => (
