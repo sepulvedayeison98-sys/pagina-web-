@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "@/lib/site";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -16,10 +17,28 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const TITLE = "ROVEX — Equipamiento, tecnología y estilo";
+const DESCRIPTION =
+  "Cascos, guantes, accesorios y tecnología para motociclistas. Protección y diseño premium accesible. Envíos a toda Colombia.";
+
 export const metadata: Metadata = {
-  title: "ROVEX — Equipamiento, tecnología y estilo",
-  description:
-    "Cascos, guantes, accesorios y tecnología para motociclistas. Protección y diseño premium accesible. Envíos a toda Colombia.",
+  // Base absoluta: WhatsApp, Instagram y Facebook descartan las imágenes de
+  // vista previa si la URL es relativa.
+  metadataBase: new URL(siteUrl()),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: "ROVEX",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "es_CO",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

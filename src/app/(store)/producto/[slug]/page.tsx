@@ -30,11 +30,31 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return { title: "Producto no encontrado · ROVEX" };
+
+  const title = `${product.name} · ROVEX`;
+  const description =
+    product.description ??
+    `${product.name}: equipamiento premium para motociclistas. Envíos a toda Colombia.`;
+
   return {
-    title: `${product.name} · ROVEX`,
-    description:
-      product.description ??
-      `${product.name}: equipamiento premium para motociclistas. Envíos a toda Colombia.`,
+    title,
+    description,
+    // Al compartir la ficha por WhatsApp se ve la foto del casco. Si el
+    // producto aún no tiene foto, Next cae a la imagen de marca del sitio.
+    openGraph: {
+      type: "website",
+      siteName: "ROVEX",
+      title,
+      description,
+      locale: "es_CO",
+      ...(product.imageUrl ? { images: [{ url: product.imageUrl }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
+    },
   };
 }
 
