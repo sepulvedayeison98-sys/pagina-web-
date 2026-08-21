@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/lib/cart/CartContext";
+import { createClient } from "@/lib/supabase/client";
 import { useModal } from "@/lib/useModal";
 import { formatCOP } from "@/lib/format";
 import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
@@ -22,7 +24,8 @@ import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
  */
 function buildWhatsAppLink(
   items: { name: string; size: string; qty: number; price: number }[],
-  subtotal: number
+  subtotal: number,
+  code?: number
 ) {
   const divider = "━━━━━━━━━━━━━━━";
 
@@ -36,8 +39,9 @@ function buildWhatsAppLink(
     .join("\n\n");
 
   const text =
-    `*PEDIDO ${STORE_NAME.toUpperCase()}*\n` +
-    `${divider}\n\n` +
+    `*PEDIDO ${STORE_NAME.toUpperCase()}*` +
+    (code ? `  #${code}` : "") +
+    `\n${divider}\n\n` +
     `${productos}\n\n` +
     `${divider}\n` +
     `*TOTAL:  ${formatCOP(subtotal)}*\n` +
@@ -53,6 +57,44 @@ export default function CartDrawer() {
   const { items, isOpen, close, setQty, remove, subtotal, count, clear } =
     useCart();
   const panelRef = useModal(isOpen, close);
+  const [sending, setSending] = useState(false);
+
+  /**
+   * Deja el pedido registrado y abre WhatsApp con el número de pedido en el
+   * mensaje, para poder cruzar el chat con el registro del panel.
+   *
+   * La pestaña se abre ANTES de esperar la respuesta: si se abriera después,
+   * el navegador lo tomaría como una ventana emergente no pedida y la
+   * bloquearía. Si el registro falla, se abre WhatsApp igual — cerrar la
+   * venta importa más que guardar la estadística.
+   */
+  async function handleCheckout() {
+    if (sending) return;
+    setSending(true);
+    const win = window.open("", "_blank");
+
+    let code: number | undefined;
+    try {
+      const { data } = await createClient().rpc("place_order", {
+        p_customer_name: "",
+        p_customer_phone: "",
+        p_customer_city: "",
+        p_items: items.map((i) => ({
+          slug: i.slug,
+          size: i.size,
+          qty: i.qty,
+        })),
+      });
+      if (typeof data === "number") code = data;
+    } catch {
+      // sin conexión: seguimos igual al chat
+    }
+
+    const url = buildWhatsAppLink(items, subtotal, code);
+    if (win) win.location.href = url;
+    else window.location.href = url;
+    setSending(false);
+  }
 
   return (
     <AnimatePresence>
@@ -199,14 +241,13 @@ export default function CartDrawer() {
                   <p className="mb-3 text-xs text-text-dark/45">
                     El envío y los detalles finales se coordinan por WhatsApp.
                   </p>
-                  <a
-                    href={buildWhatsAppLink(items, subtotal)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+                  <button
+                    onClick={handleCheckout}
+                    disabled={sending}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-70"
                   >
-                    Finalizar pedido por WhatsApp
-                  </a>
+                    {sending ? "Abriendo WhatsApp…" : "Finalizar pedido por WhatsApp"}
+                  </button>
                   <button
                     onClick={clear}
                     className="mt-2 w-full py-1 text-center text-xs text-text-dark/45 transition-colors hover:text-danger"

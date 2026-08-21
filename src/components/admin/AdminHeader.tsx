@@ -2,13 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, ExternalLink, Package, Type, Star } from "lucide-react";
+import {
+  LogOut,
+  ExternalLink,
+  Package,
+  Type,
+  Star,
+  Boxes,
+  Receipt,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Wordmark from "../Wordmark";
 
 const TABS = [
   { href: "/admin", label: "Productos", Icon: Package },
   { href: "/admin/contenido", label: "Textos", Icon: Type },
+  { href: "/admin/inventario", label: "Inventario", Icon: Boxes },
+  { href: "/admin/pedidos", label: "Pedidos", Icon: Receipt },
   { href: "/admin/resenas", label: "Reseñas", Icon: Star },
 ];
 
