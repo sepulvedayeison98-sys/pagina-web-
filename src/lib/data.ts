@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { CONTENT_DEFAULTS, type SiteContent } from "./content";
 import {
   MOCK_PRODUCTS,
   MOCK_REVIEWS,
@@ -79,6 +80,29 @@ export async function getProduct(slug: string): Promise<Product | null> {
     return rowToProduct(data);
   } catch {
     return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
+  }
+}
+
+/**
+ * Textos editables de la tienda. Combina lo guardado en `site_content` sobre
+ * los valores por defecto del código, de modo que cualquier clave que falte
+ * (o si la base de datos no responde) siga mostrando su texto original.
+ */
+export async function getSiteContent(): Promise<SiteContent> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("site_content")
+      .select("key,value");
+    if (error || !data) return { ...CONTENT_DEFAULTS };
+    const saved = Object.fromEntries(
+      data
+        .filter((r) => typeof r.value === "string" && r.value.trim() !== "")
+        .map((r) => [r.key as string, r.value as string])
+    );
+    return { ...CONTENT_DEFAULTS, ...saved };
+  } catch {
+    return { ...CONTENT_DEFAULTS };
   }
 }
 

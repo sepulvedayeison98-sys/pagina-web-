@@ -2,6 +2,8 @@ import Link from "next/link";
 import Wordmark from "./Wordmark";
 import { SOCIALS } from "./icons/Social";
 import { WHATSAPP_NUMBER } from "@/lib/config";
+import { getSiteContent } from "@/lib/data";
+import { text } from "@/lib/content";
 
 /** Enlace de WhatsApp con un mensaje prellenado (tienda atendida por chat). */
 function wa(msg: string) {
@@ -40,15 +42,15 @@ const COLUMNS = [
 ];
 
 /** Footer de 4 columnas + redes. */
-export default function Footer() {
+export default async function Footer() {
+  const content = await getSiteContent();
   return (
     <footer className="bg-ink text-text-light">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-5 py-16 md:grid-cols-4 lg:px-8">
         <div className="col-span-2 md:col-span-1">
           <Wordmark onDark className="text-2xl" />
           <p className="mt-4 max-w-xs text-sm text-text-light/60">
-            Equipamiento, tecnología y estilo para motociclistas. Protección y
-            diseño premium en cada kilómetro.
+            {text(content, "footer.tagline")}
           </p>
           <div className="mt-6 flex gap-3">
             {SOCIALS.map(({ label, href, Icon }) => (

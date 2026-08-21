@@ -19,28 +19,33 @@ import ProductShowcase from "@/components/ProductShowcase";
 import NewsletterForm from "@/components/NewsletterForm";
 import Stars from "@/components/Stars";
 import { CATEGORIES } from "@/lib/products";
-import { getProducts, getReviews } from "@/lib/data";
+import { getProducts, getReviews, getSiteContent } from "@/lib/data";
+import { text } from "@/lib/content";
 
-const TRUST = [
-  { Icon: Truck, label: "Envío gratis", sub: "desde $200.000" },
-  { Icon: ShieldCheck, label: "2 años", sub: "de garantía" },
-  { Icon: RotateCcw, label: "30 días", sub: "para cambios" },
-  { Icon: CreditCard, label: "Paga a cuotas", sub: "sin interés" },
-];
-
-const TECH = [
-  { Icon: Wind, title: "Aeroventilación", body: "Canales internos que evacúan calor sin sacrificar aerodinámica." },
-  { Icon: Radio, title: "Listo para intercom", body: "Alojamientos internos para instalar tu sistema de comunicación." },
-  { Icon: Sun, title: "Visera solar interna", body: "Despliegue rápido con un control lateral, incluso con guantes." },
-  { Icon: Gauge, title: "Certificación ECE 22.06", body: "Superamos el estándar europeo más exigente en absorción de impactos." },
-];
+const TRUST_ICONS = [Truck, ShieldCheck, RotateCcw, CreditCard];
+const TECH_ICONS = [Wind, Radio, Sun, Gauge];
 
 export default async function Home() {
-  const [products, reviews] = await Promise.all([getProducts(), getReviews()]);
+  const [products, reviews, content] = await Promise.all([
+    getProducts(),
+    getReviews(),
+    getSiteContent(),
+  ]);
+
+  const TRUST = TRUST_ICONS.map((Icon, i) => ({
+    Icon,
+    label: text(content, `trust${i + 1}.label`),
+    sub: text(content, `trust${i + 1}.sub`),
+  }));
+  const TECH = TECH_ICONS.map((Icon, i) => ({
+    Icon,
+    title: text(content, `tech${i + 1}.title`),
+    body: text(content, `tech${i + 1}.body`),
+  }));
 
   return (
     <>
-      <Hero />
+      <Hero content={content} />
 
       {/* ───────────────── TRUST BAR ───────────────── */}
       <section className="border-b border-text-dark/10 bg-paper">
@@ -64,7 +69,7 @@ export default async function Home() {
         <Reveal className="mb-10 flex items-end justify-between gap-4">
           <div>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Encuentra el tuyo
+              {text(content, "categorias.title")}
             </h2>
           </div>
           <Link
@@ -97,15 +102,14 @@ export default async function Home() {
         <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 py-16 lg:grid-cols-2 lg:px-8">
           <Reveal>
             <h2 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-              Arma tu kit: casco + guantes con 15% de descuento
+              {text(content, "promo.title")}
             </h2>
             <p className="mt-4 max-w-lg text-text-light/70">
-              Combina cualquier casco de la línea Jet o Integral con un par de
-              guantes ROVEX y llévate el combo a precio de piloto.
+              {text(content, "promo.body")}
             </p>
             <div className="mt-6">
               <Cta href="/#catalogo" variant="primary">
-                Armar mi kit <ArrowRight size={16} />
+                {text(content, "promo.cta")} <ArrowRight size={16} />
               </Cta>
             </div>
           </Reveal>
@@ -118,13 +122,12 @@ export default async function Home() {
       {/* ───────────────── TECNOLOGÍA ───────────────── */}
       <section id="tecnologia" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-12 max-w-2xl">
-          <p className="eyebrow mb-2 text-accent">Ingeniería ROVEX</p>
+          <p className="eyebrow mb-2 text-accent">{text(content, "tech.eyebrow")}</p>
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Tecnología en cada detalle
+            {text(content, "tech.title")}
           </h2>
           <p className="mt-4 text-text-dark/60">
-            Cada casco combina materiales certificados, aerodinámica probada y
-            comodidad pensada para jornadas largas.
+            {text(content, "tech.body")}
           </p>
         </Reveal>
 
@@ -148,9 +151,9 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
           <Reveal className="mb-12 text-center">
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              4.8 / 5 en satisfacción
+              {text(content, "reviews.title")}
             </h2>
-            <p className="mt-3 text-text-dark/60">Lo que dicen los pilotos que ya ruedan con ROVEX.</p>
+            <p className="mt-3 text-text-dark/60">{text(content, "reviews.subtitle")}</p>
           </Reveal>
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -176,10 +179,10 @@ export default async function Home() {
       <section id="comunidad" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
         <Reveal className="mb-10 text-center">
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Comunidad ROVEX
+            {text(content, "community.title")}
           </h2>
           <p className="mt-3 text-text-dark/60">
-            Etiquétanos con #RuedaConRovex en tus rutas y aparece aquí.
+            {text(content, "community.subtitle")}
           </p>
         </Reveal>
 
@@ -196,13 +199,12 @@ export default async function Home() {
       <section className="bg-ink text-text-light">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-5 py-20 text-center lg:px-8">
           <Reveal>
-            <p className="eyebrow mb-2 text-accent">Únete al club</p>
+            <p className="eyebrow mb-2 text-accent">{text(content, "newsletter.eyebrow")}</p>
             <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              10% en tu primera compra
+              {text(content, "newsletter.title")}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-text-light/70">
-              Suscríbete y recibe ofertas, lanzamientos y contenido para pilotos.
-              Sin spam.
+              {text(content, "newsletter.body")}
             </p>
           </Reveal>
           <Reveal delay={0.1} className="flex w-full justify-center">

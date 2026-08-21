@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Cta from "./Cta";
+import { text, type SiteContent } from "@/lib/content";
 
 declare global {
   interface Window {
@@ -21,15 +22,6 @@ declare global {
 const VIDEO_ID = "5yZmy004TGw";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const HEADLINE = ["Protección", "que", "se", "siente", "premium."];
-const ACCENT_INDEX = HEADLINE.length - 1;
-
-const TRUST = [
-  { num: "4.8/5", label: "Valoración de pilotos" },
-  { num: "+4.800", label: "Motociclistas en Colombia" },
-  { num: "ECE 22.06", label: "Certificación homologada" },
-  { num: "1-3 días", label: "Envío a todo el país" },
-];
 
 /**
  * Hero a pantalla completa con video de fondo (YouTube, autoplay/mute/loop).
@@ -46,8 +38,16 @@ const TRUST = [
  * Mientras tanto (o si el autoplay nunca arranca) se ve el resplandor de
  * respaldo. Bajo prefers-reduced-motion el video no se carga en absoluto.
  */
-export default function Hero() {
+export default function Hero({ content }: { content: SiteContent }) {
   const reduce = useReducedMotion();
+
+  // Titular partido en palabras: la última se pinta con el acento de marca.
+  const HEADLINE = text(content, "hero.headline").split(" ").filter(Boolean);
+  const ACCENT_INDEX = HEADLINE.length - 1;
+  const TRUST = [1, 2, 3, 4].map((n) => ({
+    num: text(content, `hero.stat${n}.num`),
+    label: text(content, `hero.stat${n}.label`),
+  }));
   const [showVideo, setShowVideo] = useState(false);
   const [playing, setPlaying] = useState(false);
   const mountRef = useRef<HTMLDivElement>(null);
@@ -167,7 +167,7 @@ export default function Hero() {
             )}
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
           </span>
-          Envíos a toda Colombia
+          {text(content, "hero.eyebrow")}
         </motion.p>
 
         {/* Fila media: titular a la izquierda, propuesta + CTAs a la derecha */}
@@ -200,8 +200,7 @@ export default function Hero() {
               transition={{ duration: 0.6, ease: EASE, delay: delayFor(0.5) }}
               className="mt-6 max-w-md text-lg text-text-light/70"
             >
-              Cascos, guantes y tecnología para motociclistas que no negocian
-              seguridad ni estilo. Diseñado para la ruta colombiana.
+              {text(content, "hero.subtitle")}
             </motion.p>
           </div>
 
@@ -212,10 +211,7 @@ export default function Hero() {
               transition={{ duration: 0.6, ease: EASE, delay: delayFor(0.58) }}
               className="hidden text-sm text-text-light/65 lg:block"
             >
-              Equipamiento certificado bajo{" "}
-              <strong className="font-semibold text-text-light">ECE 22.06</strong>,
-              con materiales premium y acabados a la altura de cada kilómetro
-              que recorres.
+              {text(content, "hero.note")}
             </motion.p>
 
             <motion.div
@@ -225,14 +221,14 @@ export default function Hero() {
               className="flex flex-wrap gap-3 lg:justify-end"
             >
               <Cta href="/#catalogo" variant="primary">
-                Ver catálogo <ArrowRight size={16} />
+                {text(content, "hero.cta1")} <ArrowRight size={16} />
               </Cta>
               <Cta
-                href="/producto/shpro-609"
+                href={text(content, "hero.cta2Href")}
                 variant="secondary"
                 className="!border-white/25 !text-text-light hover:!border-white/60"
               >
-                Producto destacado
+                {text(content, "hero.cta2")}
               </Cta>
             </motion.div>
           </div>

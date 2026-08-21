@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, ExternalLink } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LogOut, ExternalLink, Package, Type } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Wordmark from "../Wordmark";
 
-/** Cabecera del panel admin: marca + ver tienda + cerrar sesión. */
+const TABS = [
+  { href: "/admin", label: "Productos", Icon: Package },
+  { href: "/admin/contenido", label: "Textos", Icon: Type },
+];
+
+/** Cabecera del panel admin: marca + pestañas + ver tienda + cerrar sesión. */
 export default function AdminHeader() {
+  const pathname = usePathname();
+
   async function logout() {
     await createClient().auth.signOut();
     window.location.assign("/admin/login");
@@ -35,6 +43,28 @@ export default function AdminHeader() {
           </button>
         </div>
       </div>
+
+      {/* Pestañas de sección */}
+      <nav className="mx-auto flex max-w-6xl gap-1 px-5" aria-label="Secciones">
+        {TABS.map(({ href, label, Icon }) => {
+          const on =
+            href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={on ? "page" : undefined}
+              className={`-mb-px inline-flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                on
+                  ? "border-accent text-text-dark"
+                  : "border-transparent text-text-dark/50 hover:text-text-dark"
+              }`}
+            >
+              <Icon size={15} /> {label}
+            </Link>
+          );
+        })}
+      </nav>
     </header>
   );
 }
