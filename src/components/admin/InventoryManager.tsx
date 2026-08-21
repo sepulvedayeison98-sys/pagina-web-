@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Check, Plus, Minus, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES } from "@/lib/products";
+import NewReferenceForm from "./NewReferenceForm";
 
 export interface StockRow {
   product_id: string;
@@ -133,6 +134,8 @@ export default function InventoryManager({ initial }: { initial: StockRow[] }) {
 
   return (
     <div className="space-y-5">
+      <NewReferenceForm />
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-5 text-sm">
           <span>
