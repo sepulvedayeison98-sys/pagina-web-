@@ -27,6 +27,25 @@ export interface ProductRow {
 }
 
 const CATEGORIES = ["INTEGRAL", "JET", "MODULAR", "OFFROAD"];
+
+/**
+ * Plantilla de especificaciones: los campos que se repiten igual en el
+ * catálogo (Norma, Interior, Sistema de retención y Ventilación son
+ * idénticos entre los cascos ICH 501 y 503 ya cargados). El Peso queda
+ * vacío porque cambia con cada modelo.
+ */
+const DEFAULT_SPECS: Spec[] = [
+  { label: "Peso", value: "" },
+  { label: "Norma", value: "DOT" },
+  { label: "Interior", value: "Cacheteras desmontables" },
+  { label: "Sistema de retención", value: "Cierre micrométrico" },
+  {
+    label: "Ventilación",
+    value:
+      "Cámaras frontales superiores e inferiores y cámara trasera para la salida del aire",
+  },
+];
+
 const input =
   "w-full rounded-lg border border-text-dark/20 px-3 py-2.5 text-sm focus:border-accent focus:outline-none";
 const labelCls = "flex flex-col gap-1.5 text-sm";
@@ -65,7 +84,11 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
     initial?.image_url ?? null
   );
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
-  const [specs, setSpecs] = useState<Spec[]>(initial?.specs ?? []);
+  // Producto nuevo, o uno existente sin especificaciones aún: arranca con
+  // la plantilla en vez de vacío, así solo hay que ajustar lo que cambie.
+  const [specs, setSpecs] = useState<Spec[]>(
+    initial?.specs && initial.specs.length > 0 ? initial.specs : DEFAULT_SPECS
+  );
   const [sizes, setSizes] = useState<string[]>(
     initial?.sizes ?? [...SIZES]
   );
