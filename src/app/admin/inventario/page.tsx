@@ -11,6 +11,9 @@ interface ProductRow {
   name: string;
   slug: string;
   brand: string | null;
+  model: string | null;
+  visor: string | null;
+  spoiler: string | null;
   sizes: string[] | null;
 }
 
@@ -20,7 +23,8 @@ export default async function InventarioPage() {
   const [{ data: products }, { data: stock }] = await Promise.all([
     supabase
       .from("products")
-      .select("id,name,slug,brand,sizes")
+      .select("id,name,slug,brand,model,visor,spoiler,sizes")
+      .order("model", { ascending: true, nullsFirst: false })
       .order("sort_order", { ascending: true }),
     supabase.from("inventory").select("product_id,size,qty"),
   ]);
@@ -39,6 +43,9 @@ export default async function InventarioPage() {
     name: p.name,
     slug: p.slug,
     brand: p.brand,
+    model: p.model,
+    visor: p.visor,
+    spoiler: p.spoiler,
     sizes: p.sizes ?? [],
     stock: porProducto.get(p.id) ?? {},
   }));

@@ -6,6 +6,7 @@ import { Loader2, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES } from "@/lib/products";
 import { BRANDS, specsForBrand } from "@/lib/brands";
+import { VISORES, ACABADOS, suggestName } from "@/lib/variants";
 
 const CATEGORIES = ["INTEGRAL", "JET", "MODULAR", "OFFROAD"];
 const input =
@@ -38,7 +39,12 @@ export default function NewReferenceForm() {
   const [open, setOpen] = useState(false);
   const [brand, setBrand] = useState("");
   const [otherBrand, setOtherBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [variant, setVariant] = useState("SOLID");
+  const [visor, setVisor] = useState("");
+  const [spoiler, setSpoiler] = useState("");
   const [name, setName] = useState("");
+  const [nameTouched, setNameTouched] = useState(false);
   const [category, setCategory] = useState("INTEGRAL");
   const [price, setPrice] = useState("");
   const [sizes, setSizes] = useState<string[]>([...SIZES]);
@@ -46,11 +52,18 @@ export default function NewReferenceForm() {
   const [error, setError] = useState<string | null>(null);
 
   const marcaFinal = brand === "__otra" ? otherBrand.trim() : brand;
+  const nombreSugerido = suggestName(marcaFinal, { model, variant });
+  const nombreFinal = nameTouched && name.trim() ? name.trim() : nombreSugerido;
 
   function reset() {
     setBrand("");
     setOtherBrand("");
+    setModel("");
+    setVariant("SOLID");
+    setVisor("");
+    setSpoiler("");
     setName("");
+    setNameTouched(false);
     setCategory("INTEGRAL");
     setPrice("");
     setSizes([...SIZES]);
@@ -59,19 +72,27 @@ export default function NewReferenceForm() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !price) {
-      setError("El nombre y el precio son obligatorios.");
+    if (!nombreFinal || !price) {
+      setError("Falta el modelo (o el nombre) y el precio.");
       return;
     }
     setSaving(true);
     setError(null);
 
-    const base = slugify(`${marcaFinal} ${name}`) || slugify(name);
+    // El slug incluye visor y spoiler: dos variantes del mismo modelo no
+    // pueden compartir URL.
+    const base =
+      slugify([nombreFinal, visor, spoiler].filter(Boolean).join(" ")) ||
+      slugify(nombreFinal);
 
     const { error } = await supabase.from("products").insert({
       slug: base,
-      name: name.trim(),
+      name: nombreFinal,
       brand: marcaFinal || null,
+      model: model.trim() || null,
+      variant: variant.trim() || null,
+      visor: visor || null,
+      spoiler: spoiler.trim() || null,
       category,
       price: Number(price) || 0,
       sizes: SIZES.filter((s) => sizes.includes(s)),
@@ -191,12 +212,73 @@ export default function NewReferenceForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className={labelText}>Referencia / modelo</span>
+          <span className={labelText}>Modelo</span>
           <input
             className={input}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ej. 503 SOLID"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            placeholder="Ej. 501"
+          />
+        </label>
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className={labelText}>Acabado / diseño</span>
+          <input
+            className={input}
+            list="acabados"
+            value={variant}
+            onChange={(e) => setVariant(e.target.value)}
+            placeholder="SOLID, Venom, gráfico…"
+          />
+          <datalist id="acabados">
+            {ACABADOS.map((a) => (
+              <option key={a} value={a} />
+            ))}
+          </datalist>
+        </label>
+      </div>
+
+      {/* Lo que diferencia una variante de otra dentro del mismo modelo */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className={labelText}>Visor</span>
+          <select
+            className={input}
+            value={visor}
+            onChange={(e) => setVisor(e.target.value)}
+          >
+            <option value="">— Sin especificar —</option>
+            {VISORES.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className={labelText}>Spoiler (color)</span>
+          <input
+            className={input}
+            value={spoiler}
+            onChange={(e) => setSpoiler(e.target.value)}
+            placeholder="Rojo, negro… (vacío si no trae)"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className={labelText}>
+            Nombre de la referencia{" "}
+            <span className="font-normal text-text-dark/40">(automático)</span>
+          </span>
+          <input
+            className={input}
+            value={nameTouched ? name : nombreSugerido}
+            onChange={(e) => {
+              setNameTouched(true);
+              setName(e.target.value);
+            }}
+            placeholder="ICH 501 SOLID"
           />
         </label>
         <label className="flex flex-col gap-1.5 text-sm">

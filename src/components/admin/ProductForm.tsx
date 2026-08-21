@@ -7,12 +7,17 @@ import { Upload, Trash2, X, Plus, Loader2, Copy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES, type Spec } from "@/lib/products";
 import { BRANDS, specsForBrand, isUntouchedTemplate } from "@/lib/brands";
+import { VISORES, ACABADOS } from "@/lib/variants";
 
 export interface ProductRow {
   id: string;
   slug: string;
   name: string;
   brand: string | null;
+  model: string | null;
+  variant: string | null;
+  visor: string | null;
+  spoiler: string | null;
   category: string;
   price: number;
   compare_at: number | null;
@@ -69,6 +74,10 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
   );
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
   const [brand, setBrand] = useState(initial?.brand ?? "");
+  const [model, setModel] = useState(initial?.model ?? "");
+  const [variant, setVariant] = useState(initial?.variant ?? "");
+  const [visor, setVisor] = useState(initial?.visor ?? "");
+  const [spoiler, setSpoiler] = useState(initial?.spoiler ?? "");
   const [specs, setSpecs] = useState<Spec[]>(initial?.specs ?? []);
 
   /**
@@ -153,6 +162,10 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
       slug: finalSlug,
       name,
       brand: brand || null,
+      model: model.trim() || null,
+      variant: variant.trim() || null,
+      visor: visor || null,
+      spoiler: spoiler.trim() || null,
       category,
       price: Number(price),
       compare_at: compareAt ? Number(compareAt) : null,
@@ -206,6 +219,10 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
         slug: copySlug,
         name: `${name} (copia)`,
         brand: brand || null,
+        model: model.trim() || null,
+        variant: variant.trim() || null,
+        visor: visor || null,
+        spoiler: spoiler.trim() || null,
         category,
         price: Number(price) || 0,
         compare_at: compareAt ? Number(compareAt) : null,
@@ -316,6 +333,61 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
                 value={badge}
                 onChange={(e) => setBadge(e.target.value)}
                 placeholder="NUEVO, CARBONO…"
+              />
+            </label>
+          </div>
+
+          {/* Variante: qué distingue esta referencia de otras del mismo modelo */}
+          <div className="grid grid-cols-2 gap-4">
+            <label className={labelCls}>
+              <span className={labelText}>Modelo</span>
+              <input
+                className={input}
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                placeholder="501"
+              />
+            </label>
+            <label className={labelCls}>
+              <span className={labelText}>Acabado / diseño</span>
+              <input
+                className={input}
+                list="acabados-prod"
+                value={variant}
+                onChange={(e) => setVariant(e.target.value)}
+                placeholder="SOLID, gráfico…"
+              />
+              <datalist id="acabados-prod">
+                {ACABADOS.map((a) => (
+                  <option key={a} value={a} />
+                ))}
+              </datalist>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <label className={labelCls}>
+              <span className={labelText}>Visor</span>
+              <select
+                className={input}
+                value={visor}
+                onChange={(e) => setVisor(e.target.value)}
+              >
+                <option value="">— Sin especificar —</option>
+                {VISORES.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={labelCls}>
+              <span className={labelText}>Spoiler (color)</span>
+              <input
+                className={input}
+                value={spoiler}
+                onChange={(e) => setSpoiler(e.target.value)}
+                placeholder="Rojo, negro…"
               />
             </label>
           </div>

@@ -6,12 +6,16 @@ import { Loader2, Check, Plus, Minus, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SIZES } from "@/lib/products";
 import NewReferenceForm from "./NewReferenceForm";
+import { variantSummary } from "@/lib/variants";
 
 export interface StockRow {
   product_id: string;
   name: string;
   slug: string;
   brand: string | null;
+  model: string | null;
+  visor: string | null;
+  spoiler: string | null;
   sizes: string[];
   stock: Record<string, number>;
 }
@@ -46,7 +50,8 @@ export default function InventoryManager({ initial }: { initial: StockRow[] }) {
     return rows.filter(
       (r) =>
         r.name.toLowerCase().includes(t) ||
-        (r.brand ?? "").toLowerCase().includes(t)
+        (r.brand ?? "").toLowerCase().includes(t) ||
+        (r.model ?? "").toLowerCase().includes(t)
     );
   }, [q, rows]);
 
@@ -171,8 +176,15 @@ export default function InventoryManager({ initial }: { initial: StockRow[] }) {
             className="rounded-2xl border border-text-dark/10 bg-white p-5"
           >
             <div className="mb-4 flex items-baseline justify-between gap-3">
-              <h3 className="font-semibold">{r.name}</h3>
-              <span className="text-xs text-text-dark/45">
+              <div className="min-w-0">
+                <h3 className="font-semibold">{r.name}</h3>
+                {variantSummary(r) && (
+                  <p className="text-xs text-text-dark/50">
+                    {variantSummary(r)}
+                  </p>
+                )}
+              </div>
+              <span className="shrink-0 text-xs text-text-dark/45">
                 {r.brand ? `${r.brand} · ` : ""}
                 {Object.values(r.stock).reduce((a, b) => a + b, 0)} und
               </span>
