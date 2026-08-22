@@ -17,6 +17,17 @@ export interface CartItem {
   imageUrl?: string | null;
   size: string;
   qty: number;
+  /**
+   * Detalle extra que se muestra bajo el nombre y viaja en el mensaje de
+   * WhatsApp. Se usa en los combos para decir qué eligió el cliente en cada
+   * casco ("Casco 1: talla M · SOLID").
+   */
+  detail?: string[];
+  /**
+   * Para combos: los cascos reales que lo componen. El pedido los guarda para
+   * que al confirmarlo el inventario descuente esas unidades y no el combo.
+   */
+  components?: { slug: string; size: string }[];
 }
 
 interface CartState {

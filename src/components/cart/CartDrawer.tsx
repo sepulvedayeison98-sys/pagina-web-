@@ -23,7 +23,13 @@ import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
  * bien, así que la estructura se apoya solo en negritas y líneas divisorias.
  */
 function buildWhatsAppLink(
-  items: { name: string; size: string; qty: number; price: number }[],
+  items: {
+    name: string;
+    size: string;
+    qty: number;
+    price: number;
+    detail?: string[];
+  }[],
   subtotal: number,
   code?: number
 ) {
@@ -34,6 +40,9 @@ function buildWhatsAppLink(
       (i, idx) =>
         `*${idx + 1}.* ${i.name}\n` +
         `      Talla ${i.size}  ·  ${i.qty} und\n` +
+        (i.detail?.length
+          ? i.detail.map((d) => `      ${d}\n`).join("")
+          : "") +
         `      ${formatCOP(i.price * i.qty)}`
     )
     .join("\n\n");
@@ -83,6 +92,7 @@ export default function CartDrawer() {
           slug: i.slug,
           size: i.size,
           qty: i.qty,
+          ...(i.components ? { components: i.components } : {}),
         })),
       });
       if (typeof data === "number") code = data;
@@ -188,6 +198,14 @@ export default function CartDrawer() {
                             <p className="text-xs text-text-dark/50">
                               Talla {item.size}
                             </p>
+                            {item.detail?.map((d) => (
+                              <p
+                                key={d}
+                                className="text-xs text-text-dark/45"
+                              >
+                                {d}
+                              </p>
+                            ))}
                           </div>
                           <button
                             onClick={() => remove(item.slug, item.size)}

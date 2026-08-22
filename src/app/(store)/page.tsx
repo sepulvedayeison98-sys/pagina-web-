@@ -17,20 +17,30 @@ import Placeholder from "@/components/Placeholder";
 import ZoomTile from "@/components/ZoomTile";
 import ProductShowcase from "@/components/ProductShowcase";
 import NewsletterForm from "@/components/NewsletterForm";
+import ComboOffer from "@/components/ComboOffer";
 import Stars from "@/components/Stars";
 import { CATEGORIES, categoryHref } from "@/lib/products";
-import { getProducts, getReviews, getSiteContent } from "@/lib/data";
+import {
+  getProducts,
+  getReviews,
+  getSiteContent,
+  getCombo,
+} from "@/lib/data";
 import { text } from "@/lib/content";
 
 const TRUST_ICONS = [Truck, ShieldCheck, RotateCcw, CreditCard];
 const TECH_ICONS = [Wind, Radio, Sun, Gauge];
 
 export default async function Home() {
-  const [products, reviews, content] = await Promise.all([
+  const [products, reviews, content, combo] = await Promise.all([
     getProducts(),
     getReviews(),
     getSiteContent(),
+    getCombo(),
   ]);
+
+  const mostrarCombo =
+    combo !== null && text(content, "combo.enabled").toLowerCase() !== "no";
 
   // Solo se muestran las categorías con al menos un producto: así
   // Multipropósito aparece sola cuando cargues el primero.
@@ -102,27 +112,7 @@ export default async function Home() {
       {/* ───────────────── CATÁLOGO (scroll horizontal anclado) ───────────────── */}
       <ProductShowcase products={products} />
 
-      {/* ───────────────── PROMO (banda oscura) ───────────────── */}
-      <section className="bg-ink text-text-light">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 py-16 lg:grid-cols-2 lg:px-8">
-          <Reveal>
-            <h2 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-              {text(content, "promo.title")}
-            </h2>
-            <p className="mt-4 max-w-lg text-text-light/70">
-              {text(content, "promo.body")}
-            </p>
-            <div className="mt-6">
-              <Cta href="/#catalogo" variant="primary">
-                {text(content, "promo.cta")} <ArrowRight size={16} />
-              </Cta>
-            </div>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <Placeholder className="aspect-video w-full rounded-3xl" label="Combo kit" />
-          </Reveal>
-        </div>
-      </section>
+      {mostrarCombo && <ComboOffer combo={combo!} content={content} />}
 
       {/* ───────────────── TECNOLOGÍA ───────────────── */}
       <section id="tecnologia" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">

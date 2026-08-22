@@ -122,24 +122,52 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     ],
   },
   {
-    id: "promo",
-    title: "Promoción",
+    id: "combo",
+    title: "Oferta combo",
     description:
-      "La banda oscura con la oferta destacada. Cámbiala cuando lances una promo nueva.",
+      "La oferta destacada de la portada. Los precios y las tallas salen del producto “Combo”, en la pestaña Productos.",
     fields: [
       {
-        key: "promo.title",
-        label: "Título de la promoción",
-        value: "Arma tu kit: casco + guantes con 15% de descuento",
+        key: "combo.enabled",
+        label: "Mostrar la oferta",
+        value: "si",
+        help: "Escribe «si» para mostrarla o «no» para ocultarla.",
+      },
+      { key: "combo.eyebrow", label: "Etiqueta superior", value: "OFERTA ROVEX" },
+      {
+        key: "combo.title",
+        label: "Titular",
+        value: "2 cascos 501 por $299.900",
       },
       {
-        key: "promo.body",
+        key: "combo.body",
         label: "Descripción",
         value:
-          "Combina cualquier casco de la línea Jet o Integral con un par de guantes ROVEX y llévate el combo a precio de piloto.",
+          "Dos cascos para rodar acompañado, con eliminador de olores incluido y envío gratis a todo Colombia.",
         multiline: true,
       },
-      { key: "promo.cta", label: "Texto del botón", value: "Armar mi kit" },
+      {
+        key: "combo.includes",
+        label: "Qué incluye",
+        value:
+          "2 cascos ICH 501\nEliminador de olores\nEnvío gratis a todo Colombia\nPago seguro",
+        multiline: true,
+        help: "Una línea por ítem. Cada una sale con su visto bueno.",
+      },
+      { key: "combo.cta", label: "Texto del botón", value: "Quiero mi combo" },
+      {
+        key: "combo.note",
+        label: "Nota bajo el botón",
+        value:
+          "Selecciona las tallas de tus 2 cascos y recibe el combo en tu casa.",
+        multiline: true,
+      },
+      {
+        key: "combo.stockNote",
+        label: "Aviso de disponibilidad",
+        value: "Oferta especial · disponible mientras haya existencias",
+        help: "Déjalo vacío si no quieres mostrarlo.",
+      },
     ],
   },
   {

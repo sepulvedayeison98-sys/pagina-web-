@@ -55,6 +55,7 @@ export async function getProducts(): Promise<Product[]> {
       .from("products")
       .select("*")
       .eq("active", true)
+      .eq("is_combo", false)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
     if (error || !data || data.length === 0) return MOCK_PRODUCTS;
@@ -77,6 +78,7 @@ export async function getProductsByCategory(
       .from("products")
       .select("*")
       .eq("active", true)
+      .eq("is_combo", false)
       .eq("category", category)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true });
@@ -96,6 +98,69 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
     acc[p.category] = (acc[p.category] ?? 0) + 1;
     return acc;
   }, {});
+}
+
+export interface ComboOption {
+  slug: string;
+  name: string;
+  variant: string | null;
+  sizes: string[];
+}
+
+export interface ComboData {
+  slug: string;
+  name: string;
+  price: number;
+  compareAt: number | null;
+  imageUrl: string | null;
+  /** Cascos entre los que el cliente elige (variantes del mismo modelo). */
+  options: ComboOption[];
+}
+
+/**
+ * La oferta combo: el producto con su precio y las variantes del modelo
+ * que el cliente puede elegir. Devuelve null si no hay combo activo o si
+ * no queda ningún casco de ese modelo publicado.
+ */
+export async function getCombo(): Promise<ComboData | null> {
+  try {
+    const supabase = await createClient();
+    const { data: combo } = await supabase
+      .from("products")
+      .select("slug,name,price,compare_at,image_url,model")
+      .eq("is_combo", true)
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (!combo) return null;
+
+    const { data: opciones } = await supabase
+      .from("products")
+      .select("slug,name,variant,sizes")
+      .eq("active", true)
+      .eq("is_combo", false)
+      .eq("model", combo.model)
+      .order("sort_order", { ascending: true });
+
+    if (!opciones || opciones.length === 0) return null;
+
+    return {
+      slug: combo.slug,
+      name: combo.name,
+      price: combo.price,
+      compareAt: combo.compare_at,
+      imageUrl: combo.image_url,
+      options: opciones.map((o) => ({
+        slug: o.slug,
+        name: o.name,
+        variant: o.variant,
+        sizes: Array.isArray(o.sizes) ? o.sizes : [],
+      })),
+    };
+  } catch {
+    return null;
+  }
 }
 
 /** Un producto por slug. */
