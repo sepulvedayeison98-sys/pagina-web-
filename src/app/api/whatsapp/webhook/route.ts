@@ -1,13 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import {
   parseIncomingMessage,
   sendWhatsAppMessage,
   verifyWebhookSignature,
+  type IncomingWhatsAppMessage,
 } from "@/lib/whatsapp/client";
 import { runEngine, type HistoryRow } from "@/lib/agent/engine";
 
 export const runtime = "nodejs";
+/** El asesor puede tardar ~30 s cuando encadena varias consultas al catálogo. */
+export const maxDuration = 60;
 
 /** Verificación del webhook: Meta llama esto una vez al configurarlo en developers.facebook.com. */
 export async function GET(request: NextRequest) {
@@ -22,7 +26,14 @@ export async function GET(request: NextRequest) {
   return new NextResponse("Verificación fallida", { status: 403 });
 }
 
-/** Recepción de mensajes entrantes de WhatsApp Cloud API. */
+/**
+ * Recepción de mensajes entrantes de WhatsApp Cloud API.
+ *
+ * Se responde 200 de inmediato y la conversación se procesa después con
+ * `after()`: generar la respuesta toma entre 10 y 30 segundos, y Meta
+ * reintenta los webhooks que tardan en contestar — sin esto, el cliente
+ * recibiría la misma respuesta varias veces.
+ */
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
 
@@ -38,16 +49,22 @@ export async function POST(request: NextRequest) {
   }
 
   const incoming = parseIncomingMessage(payload);
-  // Sin mensaje entrante (confirmaciones de entrega/lectura, estados, etc.): solo se confirma la recepción.
+  // Sin mensaje entrante (confirmaciones de entrega/lectura, estados, etc.).
   if (!incoming) return NextResponse.json({ ok: true });
 
+  after(() => atender(incoming));
+  return NextResponse.json({ ok: true });
+}
+
+/** Todo el trabajo pesado: ya se le respondió a Meta antes de llegar aquí. */
+async function atender(incoming: IncomingWhatsAppMessage) {
   try {
     if (!incoming.text) {
       await sendWhatsAppMessage(
         incoming.from,
         "Por ahora solo puedo leer mensajes de texto. ¿Me cuentas en palabras qué casco buscas?"
       );
-      return NextResponse.json({ ok: true });
+      return;
     }
 
     const supabase = await createClient();
@@ -66,12 +83,14 @@ export async function POST(request: NextRequest) {
       throw conversationError ?? new Error("No se pudo crear la conversación");
     }
 
-    await supabase.rpc("wa_log_message", {
+    // Candado de idempotencia: si Meta reenvía el mismo mensaje, aquí se corta
+    // y no se le responde dos veces al cliente.
+    const { data: esNuevo } = await supabase.rpc("wa_claim_incoming_message", {
       p_conversation_id: conversationId,
-      p_role: "customer",
       p_content: incoming.text,
       p_wa_message_id: incoming.waMessageId,
     });
+    if (esNuevo === false) return;
 
     const { data: historyRows } = await supabase.rpc("wa_recent_messages", {
       p_conversation_id: conversationId,
@@ -90,11 +109,7 @@ export async function POST(request: NextRequest) {
     });
 
     await sendWhatsAppMessage(incoming.from, reply);
-    return NextResponse.json({ ok: true });
   } catch (err) {
-    // Siempre se responde 200: si Meta recibe un error reintenta el mismo
-    // webhook varias veces, y el error ya quedó en los logs del servidor.
     console.error("whatsapp webhook error", err);
-    return NextResponse.json({ ok: true });
   }
 }
