@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { getCombo, getProducts, getSiteContent } from "@/lib/data";
+import { getCombo, getSiteContent } from "@/lib/data";
 import { text as contentText } from "@/lib/content";
 import { CATEGORIES } from "@/lib/products";
 
@@ -53,7 +53,7 @@ export const AGENT_TOOLS: Anthropic.Tool[] = [
   {
     name: "buscar_productos",
     description:
-      "Busca cascos activos del catálogo ROVEX por categoría, presupuesto máximo o texto libre. Usa esto antes de recomendar cualquier producto o mencionar un precio — nunca inventes catálogo.",
+      "Busca cascos activos del catálogo ROVEX por categoría, presupuesto máximo o texto libre. Devuelve precio, tallas, acabado/color, tipo de visor y spoiler de cada casco. Usa esto antes de recomendar cualquier producto, mencionar un precio o responder por colores y visores — nunca inventes catálogo.",
     input_schema: {
       type: "object",
       properties: {
@@ -188,7 +188,7 @@ export async function executeTool(
   try {
     switch (name) {
       case "buscar_productos":
-        return await buscarProductos(input);
+        return await buscarProductos(input, ctx);
       case "consultar_disponibilidad":
         return await consultarDisponibilidad(input, ctx);
       case "consultar_combo":
@@ -213,29 +213,53 @@ export async function executeTool(
   }
 }
 
-async function buscarProductos(input: Record<string, unknown>) {
+/**
+ * Consulta el catálogo directamente contra la base de datos.
+ *
+ * A propósito NO usa getProducts(): esa función cae a productos de ejemplo
+ * cuando la base de datos falla, lo que haría que el asesor cotizara cascos
+ * que no existen. Aquí, si la consulta falla, se devuelve el error para que
+ * el modelo diga que va a verificar en vez de inventar.
+ */
+async function buscarProductos(input: Record<string, unknown>, ctx: AgentContext) {
   const category = typeof input.category === "string" ? input.category : undefined;
   const maxPrice = typeof input.max_price === "number" ? input.max_price : undefined;
-  const query = typeof input.query === "string" ? input.query.toLowerCase() : undefined;
+  const query = typeof input.query === "string" ? input.query.trim() : undefined;
 
-  const productos = await getProducts();
-  const filtrados = productos
-    .filter((p) => !category || p.category === category)
-    .filter((p) => !maxPrice || p.price <= maxPrice)
-    .filter((p) => !query || p.name.toLowerCase().includes(query))
-    .slice(0, 8)
-    .map((p) => ({
-      slug: p.slug,
-      name: p.name,
-      category: p.category,
-      price: p.price,
-      compareAt: p.compareAt ?? null,
-      badge: p.badge ?? null,
-      sizes: p.sizes,
-      description: p.description ?? null,
-    }));
+  let consulta = ctx.supabase
+    .from("products")
+    .select(
+      "slug,name,category,price,compare_at,badge,sizes,description,model,variant,visor,spoiler"
+    )
+    .eq("active", true)
+    .eq("is_combo", false);
 
-  return JSON.stringify({ productos: filtrados });
+  if (category) consulta = consulta.eq("category", category);
+  if (maxPrice) consulta = consulta.lte("price", maxPrice);
+  if (query) consulta = consulta.ilike("name", `%${query}%`);
+
+  const { data, error } = await consulta
+    .order("sort_order", { ascending: true })
+    .limit(10);
+
+  if (error) return JSON.stringify({ error: error.message });
+
+  const productos = (data ?? []).map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    category: p.category,
+    price: p.price,
+    compareAt: p.compare_at,
+    badge: p.badge,
+    sizes: p.sizes,
+    description: p.description,
+    modelo: p.model,
+    acabado: p.variant,
+    visor: p.visor,
+    spoiler: p.spoiler,
+  }));
+
+  return JSON.stringify({ productos });
 }
 
 async function consultarDisponibilidad(input: Record<string, unknown>, ctx: AgentContext) {

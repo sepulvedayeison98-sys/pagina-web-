@@ -46,11 +46,20 @@ const ETAPAS: Record<string, { label: string; cls: string }> = {
 /** Panel de conversaciones del asesor virtual: lista + hilo + escalamientos pendientes. */
 export default function ConversationsManager({ initial }: { initial: ConversationRow[] }) {
   const supabase = createClient();
-  const [selected, setSelected] = useState<string | null>(initial[0]?.id ?? null);
+  const [pickedId, setPickedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [handoffs, setHandoffs] = useState<HandoffRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // Si la conversación elegida ya no está en la lista (se cerró, o el bot
+  // abrió una nueva), se cae a la más reciente en vez de quedar en blanco.
+  const activa =
+    initial.find((c) => c.id === pickedId) ?? initial[0] ?? null;
+  const selected = activa?.id ?? null;
+  // Al llegar un mensaje nuevo cambia `last_message_at`, y con eso se vuelve
+  // a cargar el hilo: sin esto la pantalla se queda con los mensajes viejos.
+  const lastMessageAt = activa?.last_message_at ?? null;
 
   useEffect(() => {
     if (!selected) return;
@@ -80,7 +89,7 @@ export default function ConversationsManager({ initial }: { initial: Conversatio
     return () => {
       cancelled = true;
     };
-  }, [selected, supabase]);
+  }, [selected, lastMessageAt, supabase]);
 
   async function cerrarConversacion(id: string) {
     setBusy(true);
@@ -99,8 +108,6 @@ export default function ConversationsManager({ initial }: { initial: Conversatio
     setBusy(false);
   }
 
-  const activa = initial.find((c) => c.id === selected) ?? null;
-
   return (
     <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
       <ul className="space-y-2 lg:max-h-[70vh] lg:overflow-y-auto">
@@ -109,7 +116,7 @@ export default function ConversationsManager({ initial }: { initial: Conversatio
           return (
             <li key={c.id}>
               <button
-                onClick={() => setSelected(c.id)}
+                onClick={() => setPickedId(c.id)}
                 className={`w-full rounded-2xl border p-4 text-left transition-colors ${
                   c.id === selected
                     ? "border-accent bg-accent/5"
