@@ -15,6 +15,7 @@ import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
 import { getProduct, getProducts, getReviews } from "@/lib/data";
+import { categoryLabel } from "@/lib/products";
 
 const SEALS = [
   { Icon: ShieldCheck, label: "ECE 22.06 / DOT" },
@@ -92,7 +93,7 @@ export default async function ProductPage({
 
         <Reveal delay={0.08} as="div">
           <p className="eyebrow mb-2 text-accent">
-            {product.brand} · {product.category}
+            {product.brand} · {categoryLabel(product.category)}
           </p>
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
             {product.name}

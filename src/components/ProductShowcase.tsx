@@ -13,7 +13,7 @@ import {
 import Placeholder from "./Placeholder";
 import Cta from "./Cta";
 import { formatCOP } from "@/lib/format";
-import type { Product } from "@/lib/products";
+import { categoryLabel, type Product } from "@/lib/products";
 
 /** Fracción del ancho de viewport que dura la entrada de cada tarjeta (0 a 1 de revelado). */
 const REVEAL_WINDOW = 0.42;
@@ -40,7 +40,7 @@ function ProductTile({ product }: { product: Product }) {
           sizes="(max-width: 768px) 84vw, 380px"
         />
         <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-1 text-[0.65rem] font-mono uppercase tracking-widest text-white/85 backdrop-blur-sm">
-          {product.badge ?? product.category}
+          {product.badge ?? categoryLabel(product.category)}
         </span>
       </Link>
 

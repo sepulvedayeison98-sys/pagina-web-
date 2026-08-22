@@ -32,6 +32,11 @@ export default async function Home() {
     getSiteContent(),
   ]);
 
+  // Solo se muestran las categorías con al menos un producto: así
+  // Multipropósito aparece sola cuando cargues el primero.
+  const conProductos = new Set(products.map((p) => p.category));
+  const categoriasVisibles = CATEGORIES.filter((c) => conProductos.has(c.id));
+
   const TRUST = TRUST_ICONS.map((Icon, i) => ({
     Icon,
     label: text(content, `trust${i + 1}.label`),
@@ -81,7 +86,7 @@ export default async function Home() {
         </Reveal>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.map((cat, i) => (
+          {categoriasVisibles.map((cat, i) => (
             <Reveal key={cat.id} delay={i * 0.06}>
               <ZoomTile
                 href="/#catalogo"

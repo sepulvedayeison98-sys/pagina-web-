@@ -10,6 +10,7 @@ import {
 import type { PointerEvent } from "react";
 import type { Product } from "@/lib/products";
 import { formatCOP } from "@/lib/format";
+import { categoryLabel } from "@/lib/products";
 import Placeholder from "./Placeholder";
 import Stars from "./Stars";
 
@@ -70,7 +71,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-1 flex-col gap-2 p-4">
-          <span className="eyebrow text-text-dark/40">{product.category}</span>
+          <span className="eyebrow text-text-dark/40">{categoryLabel(product.category)}</span>
           <h3 className="text-base font-semibold leading-snug">{product.name}</h3>
 
           <div className="flex items-center gap-2">

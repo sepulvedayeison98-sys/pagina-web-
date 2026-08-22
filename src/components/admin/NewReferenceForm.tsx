@@ -4,11 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { SIZES } from "@/lib/products";
+import { SIZES, CATEGORIES } from "@/lib/products";
 import { BRANDS, specsForBrand } from "@/lib/brands";
 import { VISORES, ACABADOS, suggestName } from "@/lib/variants";
 
-const CATEGORIES = ["INTEGRAL", "JET", "MODULAR", "OFFROAD"];
 const input =
   "w-full rounded-lg border border-text-dark/20 px-3 py-2 text-sm focus:border-accent focus:outline-none";
 const labelText = "font-medium text-text-dark/70";
@@ -184,8 +183,8 @@ export default function NewReferenceForm() {
               onChange={(e) => setCategory(e.target.value)}
             >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+                <option key={c.id} value={c.id}>
+                  {c.label}
                 </option>
               ))}
             </select>
@@ -202,8 +201,8 @@ export default function NewReferenceForm() {
             onChange={(e) => setCategory(e.target.value)}
           >
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+              <option key={c.id} value={c.id}>
+                {c.label}
               </option>
             ))}
           </select>

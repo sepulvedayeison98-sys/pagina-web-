@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Pencil, ImageOff, GripVertical, Loader2, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { formatCOP } from "@/lib/format";
+import { categoryLabel } from "@/lib/products";
 
 export interface ProductListRow {
   id: string;
@@ -164,7 +165,7 @@ export default function ProductList({ initial }: { initial: ProductListRow[] }) 
                 </div>
                 <span className="text-xs text-text-dark/50">
                   {p.brand ? `${p.brand} · ` : ""}
-                  {p.category} · {p.slug}
+                  {categoryLabel(p.category)} · {p.slug}
                 </span>
               </div>
 

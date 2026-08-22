@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Upload, Trash2, X, Plus, Loader2, Copy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { SIZES, type Spec } from "@/lib/products";
+import { SIZES, CATEGORIES, type Spec } from "@/lib/products";
 import { BRANDS, specsForBrand, isUntouchedTemplate } from "@/lib/brands";
 import { VISORES, ACABADOS } from "@/lib/variants";
 
@@ -33,8 +33,6 @@ export interface ProductRow {
   sort_order: number;
 }
 
-const CATEGORIES = ["INTEGRAL", "JET", "MODULAR", "OFFROAD"];
-
 const input =
   "w-full rounded-lg border border-text-dark/20 px-3 py-2.5 text-sm focus:border-accent focus:outline-none";
 const labelCls = "flex flex-col gap-1.5 text-sm";
@@ -56,7 +54,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
 
   const [name, setName] = useState(initial?.name ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
-  const [category, setCategory] = useState(initial?.category ?? "JET");
+  const [category, setCategory] = useState(initial?.category ?? "INTEGRAL");
   const [price, setPrice] = useState(String(initial?.price ?? ""));
   const [compareAt, setCompareAt] = useState(
     initial?.compare_at != null ? String(initial.compare_at) : ""
@@ -320,8 +318,8 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                  <option key={c.id} value={c.id}>
+                    {c.label}
                   </option>
                 ))}
               </select>

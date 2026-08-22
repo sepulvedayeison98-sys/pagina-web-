@@ -8,6 +8,7 @@ import { Search, X, ImageOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useModal } from "@/lib/useModal";
 import { formatCOP } from "@/lib/format";
+import { categoryLabel } from "@/lib/products";
 
 interface Hit {
   slug: string;
@@ -150,7 +151,7 @@ export default function SearchModal({
                               {p.name}
                             </span>
                             <span className="text-xs text-text-dark/50">
-                              {p.category}
+                              {categoryLabel(p.category)}
                             </span>
                           </span>
                           <span className="shrink-0 font-bold text-accent">
