@@ -34,6 +34,10 @@ export async function runEngine(
   history: HistoryRow[]
 ): Promise<string> {
   const messages = toMessageParams(history);
+  // Claude a veces escribe texto para el cliente en el mismo turno en que
+  // llama una tool (antes de que el loop continúe). Se acumula el texto de
+  // TODOS los turnos, no solo del último, para no perder esa respuesta.
+  const collectedText: string[] = [];
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const response = await client.messages.create({
@@ -44,12 +48,15 @@ export async function runEngine(
       messages,
     });
 
+    const turnText = extractText(response.content);
+    if (turnText) collectedText.push(turnText);
+
     const toolUseBlocks = response.content.filter(
       (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
     );
 
     if (toolUseBlocks.length === 0) {
-      return extractText(response.content);
+      return collectedText.join("\n\n") || FALLBACK_REPLY;
     }
 
     messages.push({ role: "assistant", content: response.content });
@@ -66,8 +73,11 @@ export async function runEngine(
     messages.push({ role: "user", content: toolResults });
   }
 
-  return "Dame un momento para confirmar bien ese dato y te escribo enseguida.";
+  return collectedText.join("\n\n") || FALLBACK_REPLY;
 }
+
+const FALLBACK_REPLY =
+  "Dame un momento para confirmar bien ese dato y te escribo enseguida.";
 
 function extractText(content: Anthropic.ContentBlock[]): string {
   return content
