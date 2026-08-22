@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { SYSTEM_PROMPT } from "./prompt";
+import { PRIMER_CONTACTO, SYSTEM_PROMPT } from "./prompt";
 import { AGENT_TOOLS, executeTool, type AgentContext } from "./tools";
 
 const client = new Anthropic();
@@ -39,11 +39,17 @@ export async function runEngine(
   // TODOS los turnos, no solo del último, para no perder esa respuesta.
   const collectedText: string[] = [];
 
+  // Solo el mensaje entrante en el historial ⇒ es el primer contacto y toca
+  // presentarse. En los turnos siguientes no se envía ese bloque, para que
+  // no vuelva a saludar a mitad de la conversación.
+  const system =
+    messages.length <= 1 ? `${SYSTEM_PROMPT}\n\n${PRIMER_CONTACTO}` : SYSTEM_PROMPT;
+
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const response = await client.messages.create({
       model: "claude-opus-5",
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system,
       tools: AGENT_TOOLS,
       messages,
     });

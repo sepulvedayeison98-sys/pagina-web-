@@ -7,3 +7,6 @@
  */
 export const WHATSAPP_NUMBER = "573246856614";
 export const STORE_NAME = "ROVEX";
+
+/** Nombre con el que se presenta el asesor virtual de WhatsApp. */
+export const ADVISOR_NAME = "Juliana";
