@@ -50,24 +50,33 @@ export interface Review {
  * la portada solo muestra las categorías que tienen productos publicados,
  * así que aparecerá sola cuando cargues el primero.
  */
-export const CATEGORIES: { id: Category; label: string; blurb: string }[] = [
+export const CATEGORIES: {
+  id: Category;
+  slug: string;
+  label: string;
+  blurb: string;
+}[] = [
   {
     id: "INTEGRAL",
+    slug: "integral",
     label: "Integral",
     blurb: "Máxima protección, cara cerrada.",
   },
   {
     id: "ABATIBLE",
+    slug: "abatible",
     label: "Abatible",
     blurb: "Mentonera que se levanta, versátil.",
   },
   {
     id: "ABIERTO",
+    slug: "abierto",
     label: "Abierto",
     blurb: "Ligereza urbana, cara descubierta.",
   },
   {
     id: "MULTIPROPOSITO",
+    slug: "multiproposito",
     label: "Multipropósito",
     blurb: "Ciudad y trocha en un solo casco.",
   },
@@ -76,6 +85,16 @@ export const CATEGORIES: { id: Category; label: string; blurb: string }[] = [
 /** Nombre legible de una categoría. Cae al código si llega algo inesperado. */
 export function categoryLabel(id: string): string {
   return CATEGORIES.find((c) => c.id === id)?.label ?? id;
+}
+
+/** Busca una categoría por la parte de la URL (/categoria/abatible). */
+export function categoryBySlug(slug: string) {
+  return CATEGORIES.find((c) => c.slug === slug);
+}
+
+/** Dirección de la página de una categoría. */
+export function categoryHref(slug: string): string {
+  return `/categoria/${slug}`;
 }
 
 export const SIZES = ["XS", "S", "M", "L", "XL"] as const;

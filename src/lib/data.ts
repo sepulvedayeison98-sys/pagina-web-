@@ -64,6 +64,40 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
+/**
+ * Productos activos de una categoría. Filtra en la base de datos en vez de
+ * traer todo el catálogo, para que siga siendo rápido cuando crezca.
+ */
+export async function getProductsByCategory(
+  category: string
+): Promise<Product[]> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .eq("category", category)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    if (error || !data) {
+      return MOCK_PRODUCTS.filter((p) => p.category === category);
+    }
+    return data.map(rowToProduct);
+  } catch {
+    return MOCK_PRODUCTS.filter((p) => p.category === category);
+  }
+}
+
+/** Cuántos productos activos hay por categoría, para pintar los contadores. */
+export async function getCategoryCounts(): Promise<Record<string, number>> {
+  const productos = await getProducts();
+  return productos.reduce<Record<string, number>>((acc, p) => {
+    acc[p.category] = (acc[p.category] ?? 0) + 1;
+    return acc;
+  }, {});
+}
+
 /** Un producto por slug. */
 export async function getProduct(slug: string): Promise<Product | null> {
   try {

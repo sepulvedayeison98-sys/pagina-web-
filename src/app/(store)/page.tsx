@@ -18,7 +18,7 @@ import ZoomTile from "@/components/ZoomTile";
 import ProductShowcase from "@/components/ProductShowcase";
 import NewsletterForm from "@/components/NewsletterForm";
 import Stars from "@/components/Stars";
-import { CATEGORIES } from "@/lib/products";
+import { CATEGORIES, categoryHref } from "@/lib/products";
 import { getProducts, getReviews, getSiteContent } from "@/lib/data";
 import { text } from "@/lib/content";
 
@@ -89,7 +89,7 @@ export default async function Home() {
           {categoriasVisibles.map((cat, i) => (
             <Reveal key={cat.id} delay={i * 0.06}>
               <ZoomTile
-                href="/#catalogo"
+                href={categoryHref(cat.slug)}
                 title={cat.label}
                 subtitle={cat.blurb}
                 className="aspect-[3/4]"
