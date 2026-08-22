@@ -1,4 +1,5 @@
 import AdminHeader from "@/components/admin/AdminHeader";
+import AgentTester from "@/components/admin/AgentTester";
 import ConversationsManager, {
   type ConversationRow,
 } from "@/components/admin/ConversationsManager";
@@ -39,6 +40,7 @@ export default async function ConversacionesPage() {
             hilo escalado y seguir la conversación tú mismo desde WhatsApp.
           </p>
         </div>
+        <AgentTester />
         <ConversationsManager initial={conversaciones} />
       </div>
     </>
