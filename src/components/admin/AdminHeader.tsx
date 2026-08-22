@@ -10,6 +10,7 @@ import {
   Star,
   Boxes,
   Receipt,
+  MessageCircle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Wordmark from "../Wordmark";
@@ -20,6 +21,7 @@ const TABS = [
   { href: "/admin/inventario", label: "Inventario", Icon: Boxes },
   { href: "/admin/pedidos", label: "Pedidos", Icon: Receipt },
   { href: "/admin/resenas", label: "Reseñas", Icon: Star },
+  { href: "/admin/conversaciones", label: "WhatsApp", Icon: MessageCircle },
 ];
 
 /** Cabecera del panel admin: marca + pestañas + ver tienda + cerrar sesión. */
