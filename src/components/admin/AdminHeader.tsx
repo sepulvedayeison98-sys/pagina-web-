@@ -11,6 +11,7 @@ import {
   Boxes,
   Receipt,
   MessageCircle,
+  KeyRound,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import Wordmark from "../Wordmark";
@@ -47,6 +48,14 @@ export default function AdminHeader() {
             className="inline-flex items-center gap-1 text-text-dark/60 hover:text-accent"
           >
             Ver tienda <ExternalLink size={14} />
+          </Link>
+          <Link
+            href="/admin/cuenta"
+            className={`inline-flex items-center gap-1 hover:text-accent ${
+              pathname === "/admin/cuenta" ? "text-accent" : "text-text-dark/60"
+            }`}
+          >
+            <KeyRound size={14} /> Mi cuenta
           </Link>
           <button
             onClick={logout}
