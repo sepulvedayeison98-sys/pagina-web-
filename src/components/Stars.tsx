@@ -1,14 +1,17 @@
 import { Star } from "lucide-react";
 
-/** 5 estrellas; las llenas van en acento naranja. */
+/** 5 estrellas; las llenas van en acento rojo. */
 export default function Stars({
   rating,
   size = 16,
   className = "",
+  emptyClassName = "text-text-dark/25",
 }: {
   rating: number;
   size?: number;
   className?: string;
+  /** Color del contorno de las estrellas vacías: ajustar en fondos oscuros. */
+  emptyClassName?: string;
 }) {
   return (
     <span
@@ -22,7 +25,7 @@ export default function Stars({
           <Star
             key={i}
             size={size}
-            className={filled ? "text-accent" : "text-text-dark/25"}
+            className={filled ? "text-accent" : emptyClassName}
             fill={filled ? "currentColor" : "none"}
             strokeWidth={filled ? 0 : 1.5}
           />

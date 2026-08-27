@@ -18,6 +18,7 @@ import ZoomTile from "@/components/ZoomTile";
 import ProductShowcase from "@/components/ProductShowcase";
 import NewsletterForm from "@/components/NewsletterForm";
 import ComboOffer from "@/components/ComboOffer";
+import PromoBanner from "@/components/PromoBanner";
 import Stars from "@/components/Stars";
 import { CATEGORIES, categoryHref } from "@/lib/products";
 import {
@@ -78,6 +79,9 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* ───────────────── CUADROS DESTACADOS ───────────────── */}
+      <PromoBanner content={content} />
 
       {/* ───────────────── CATEGORÍAS ───────────────── */}
       <section id="categorias" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">

@@ -110,6 +110,26 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     ],
   },
   {
+    id: "promo",
+    title: "Cuadros destacados",
+    description:
+      "Los tres recuadros bajo el banner principal, cada uno enlaza a una sección de la tienda.",
+    fields: [
+      { key: "promo1.title", label: "Recuadro 1 · título", value: "Nueva colección" },
+      { key: "promo1.badge", label: "Recuadro 1 · etiqueta (opcional)", value: "" },
+      { key: "promo1.cta", label: "Recuadro 1 · texto del enlace", value: "Descubrir" },
+      { key: "promo1.href", label: "Recuadro 1 · destino del enlace", value: "/#categorias" },
+      { key: "promo2.title", label: "Recuadro 2 · título", value: "Ofertas exclusivas" },
+      { key: "promo2.badge", label: "Recuadro 2 · etiqueta (opcional)", value: "Hasta 30% off" },
+      { key: "promo2.cta", label: "Recuadro 2 · texto del enlace", value: "Ver ofertas" },
+      { key: "promo2.href", label: "Recuadro 2 · destino del enlace", value: "/#catalogo" },
+      { key: "promo3.title", label: "Recuadro 3 · título", value: "Tecnología y rendimiento" },
+      { key: "promo3.badge", label: "Recuadro 3 · etiqueta (opcional)", value: "" },
+      { key: "promo3.cta", label: "Recuadro 3 · texto del enlace", value: "Explorar" },
+      { key: "promo3.href", label: "Recuadro 3 · destino del enlace", value: "/#tecnologia" },
+    ],
+  },
+  {
     id: "categorias",
     title: "Categorías",
     description: "Sección donde el cliente elige el tipo de casco.",
