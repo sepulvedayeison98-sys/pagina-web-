@@ -15,13 +15,11 @@ interface Panel {
   href: string;
 }
 
-function PromoPanel({ panel, tall = false }: { panel: Panel; tall?: boolean }) {
+function PromoPanel({ panel }: { panel: Panel }) {
   return (
     <Link
       href={panel.href}
-      className={`group relative block overflow-hidden rounded-3xl ${
-        tall ? "aspect-[4/5] lg:aspect-auto lg:h-full" : "aspect-[4/5]"
-      }`}
+      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl"
     >
       <motion.div
         className="h-full w-full"
@@ -65,16 +63,15 @@ export default function PromoBanner({ content }: { content: SiteContent }) {
   return (
     <section className="bg-ink">
       <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div className="grid gap-4 lg:h-[520px] lg:grid-cols-2">
-          <Reveal className="lg:row-span-2">
-            <PromoPanel panel={panels[0]} tall />
-          </Reveal>
-          <Reveal delay={0.06}>
-            <PromoPanel panel={panels[1]} />
-          </Reveal>
-          <Reveal delay={0.12}>
-            <PromoPanel panel={panels[2]} />
-          </Reveal>
+        {/* Tres recuadros iguales. La altura la marca la proporción de cada
+            uno (aspect-[4/3]); no se le fija altura al contenedor, si no los
+            recuadros se desbordan y se montan sobre la sección siguiente. */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {panels.map((panel, i) => (
+            <Reveal key={panel.title} delay={i * 0.06}>
+              <PromoPanel panel={panel} />
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
