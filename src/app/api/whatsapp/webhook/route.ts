@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { after } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/serviceClient";
 import {
   parseIncomingMessage,
   sendWhatsAppMessage,
@@ -67,7 +67,10 @@ async function atender(incoming: IncomingWhatsAppMessage) {
       return;
     }
 
-    const supabase = await createClient();
+    // Meta llama este endpoint sin sesión de usuario: la firma HMAC ya
+    // verificada arriba es la autenticación real, así que se usa la service
+    // role (las RPC wa_* ya no son ejecutables por `anon`/`authenticated`).
+    const supabase = await createServiceClient();
 
     const { data: customerId, error: customerError } = await supabase.rpc(
       "wa_touch_customer",

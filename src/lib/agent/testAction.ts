@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/serviceClient";
 import { runEngine, type HistoryRow } from "./engine";
 
 const TEST_PHONE = "test-admin-panel";
@@ -13,14 +14,18 @@ const TEST_PHONE = "test-admin-panel";
 export async function testAgentMessage(
   userText: string
 ): Promise<{ reply: string } | { error: string }> {
-  const supabase = await createClient();
+  const authClient = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await authClient.auth.getUser();
   if (!user) return { error: "No autenticado." };
 
   const text = userText.trim();
   if (!text) return { error: "Escribe un mensaje de prueba." };
+
+  // La sesión de admin ya se verificó arriba; las RPC wa_* corren con la
+  // service role porque dejaron de ser ejecutables por `authenticated`.
+  const supabase = await createServiceClient();
 
   const { data: customerId, error: e1 } = await supabase.rpc("wa_touch_customer", {
     p_phone: TEST_PHONE,
