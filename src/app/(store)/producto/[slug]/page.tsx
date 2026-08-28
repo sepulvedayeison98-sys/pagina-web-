@@ -72,6 +72,13 @@ export default async function ProductPage({
   const [all, reviews] = await Promise.all([getProducts(), getReviews()]);
   const related = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
+  // La foto principal (image_url) y la galería de ángulos adicionales
+  // (gallery) viven en columnas separadas: la ficha necesita las dos juntas,
+  // con la principal primero.
+  const images = product.imageUrl
+    ? [product.imageUrl, ...product.gallery.filter((u) => u !== product.imageUrl)]
+    : product.gallery;
+
   return (
     <div className="bg-ink text-text-light">
       {/* Breadcrumb */}
@@ -94,7 +101,7 @@ export default async function ProductPage({
               {product.badge}
             </span>
           )}
-          <ProductGallery images={product.gallery} name={product.name} />
+          <ProductGallery images={images} name={product.name} />
         </Reveal>
 
         <Reveal delay={0.08} as="div">
