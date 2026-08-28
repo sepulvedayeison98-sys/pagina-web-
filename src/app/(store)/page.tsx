@@ -133,32 +133,34 @@ export default async function Home() {
           </p>
         </Reveal>
 
-        <div className="mb-14 grid gap-6 lg:grid-cols-2 lg:items-start">
+        <div className="mb-14 grid gap-6 lg:grid-cols-2">
           <Reveal
             delay={0.1}
-            className="overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm"
+            className="relative aspect-square overflow-hidden rounded-3xl border border-text-dark/10 bg-black shadow-sm"
           >
             <Image
               src={anatomiaCasco}
               alt="Anatomía del casco ROVEX: ventilación superior, carcasa externa en ABS de alta resistencia, mecanismo de visor de liberación rápida, visor antirayas con protección UV, interior desmontable y lavable, ventilación frontal, deflector nasal y cierre micrométrico con ajuste milimétrico."
+              fill
               placeholder="blur"
               quality={95}
               sizes="(max-width: 1024px) 90vw, 38rem"
-              className="h-auto w-full"
+              className="object-contain"
             />
           </Reveal>
 
           <Reveal
             delay={0.16}
-            className="overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm"
+            className="relative aspect-square overflow-hidden rounded-3xl border border-text-dark/10 bg-black shadow-sm"
           >
             <Image
               src={anatomiaCasco3120}
               alt="Anatomía del casco ICH 3120: doble visor (externo transparente + interno parasol ahumado), ventilación superior y frontal, deflector nasal, carcasa en ABS de alta resistencia, mecanismo y palanca de visor, cierre micrométrico, spoiler y ventilación trasera. Peso 1.550 g, tallas S a XXL, certificación DOT / ECE R22.06."
+              fill
               placeholder="blur"
               quality={95}
               sizes="(max-width: 1024px) 90vw, 38rem"
-              className="h-auto w-full"
+              className="object-contain"
             />
           </Reveal>
         </div>
