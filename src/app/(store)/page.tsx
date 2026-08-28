@@ -22,6 +22,7 @@ import ComboOffer from "@/components/ComboOffer";
 import PromoBanner from "@/components/PromoBanner";
 import Stars from "@/components/Stars";
 import anatomiaCasco from "@/assets/anatomia-casco.webp";
+import anatomiaCasco3120 from "@/assets/anatomia-casco-3120.webp";
 import { CATEGORIES, categoryHref } from "@/lib/products";
 import {
   getProducts,
@@ -132,19 +133,35 @@ export default async function Home() {
           </p>
         </Reveal>
 
-        <Reveal
-          delay={0.1}
-          className="mx-auto mb-14 max-w-md overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm sm:max-w-lg"
-        >
-          <Image
-            src={anatomiaCasco}
-            alt="Anatomía del casco ROVEX: ventilación superior, carcasa externa en ABS de alta resistencia, mecanismo de visor de liberación rápida, visor antirayas con protección UV, interior desmontable y lavable, ventilación frontal, deflector nasal y cierre micrométrico con ajuste milimétrico."
-            placeholder="blur"
-            quality={95}
-            sizes="(max-width: 640px) 90vw, 32rem"
-            className="h-auto w-full"
-          />
-        </Reveal>
+        <div className="mb-14 grid gap-6 lg:grid-cols-2 lg:items-start">
+          <Reveal
+            delay={0.1}
+            className="overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm"
+          >
+            <Image
+              src={anatomiaCasco}
+              alt="Anatomía del casco ROVEX: ventilación superior, carcasa externa en ABS de alta resistencia, mecanismo de visor de liberación rápida, visor antirayas con protección UV, interior desmontable y lavable, ventilación frontal, deflector nasal y cierre micrométrico con ajuste milimétrico."
+              placeholder="blur"
+              quality={95}
+              sizes="(max-width: 1024px) 90vw, 38rem"
+              className="h-auto w-full"
+            />
+          </Reveal>
+
+          <Reveal
+            delay={0.16}
+            className="overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm"
+          >
+            <Image
+              src={anatomiaCasco3120}
+              alt="Anatomía del casco ICH 3120: doble visor (externo transparente + interno parasol ahumado), ventilación superior y frontal, deflector nasal, carcasa en ABS de alta resistencia, mecanismo y palanca de visor, cierre micrométrico, spoiler y ventilación trasera. Peso 1.550 g, tallas S a XXL, certificación DOT / ECE R22.06."
+              placeholder="blur"
+              quality={95}
+              sizes="(max-width: 1024px) 90vw, 38rem"
+              className="h-auto w-full"
+            />
+          </Reveal>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {TECH.map(({ Icon, title, body }, i) => (
