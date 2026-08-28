@@ -6,6 +6,7 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
+  Check,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import Stars from "@/components/Stars";
@@ -72,22 +73,27 @@ export default async function ProductPage({
   const related = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
   return (
-    <>
+    <div className="bg-ink text-text-light">
       {/* Breadcrumb */}
       <nav
         aria-label="Ruta de navegación"
-        className="mx-auto flex max-w-7xl items-center gap-1 px-5 py-5 text-xs text-text-dark/50 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center gap-1 px-5 py-5 text-xs text-text-light/50 lg:px-8"
       >
         <Link href="/" className="hover:text-accent">Inicio</Link>
         <ChevronRight size={13} />
         <Link href="/#catalogo" className="hover:text-accent">Cascos</Link>
         <ChevronRight size={13} />
-        <span className="text-text-dark/80">{product.name}</span>
+        <span className="text-text-light/80">{product.name}</span>
       </nav>
 
       {/* Galería + compra */}
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 lg:grid-cols-2 lg:gap-14 lg:px-8">
-        <Reveal>
+        <Reveal className="relative">
+          {product.badge && (
+            <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-white">
+              {product.badge}
+            </span>
+          )}
           <ProductGallery images={product.gallery} name={product.name} />
         </Reveal>
 
@@ -100,8 +106,8 @@ export default async function ProductPage({
           </h1>
 
           <div className="mt-3 flex items-center gap-3">
-            <Stars rating={product.rating} />
-            <span className="text-sm text-text-dark/55">
+            <Stars rating={product.rating} emptyClassName="text-text-light/25" />
+            <span className="text-sm text-text-light/55">
               {product.rating.toFixed(1)} · {product.reviewCount} reseñas
             </span>
           </div>
@@ -111,22 +117,22 @@ export default async function ProductPage({
               {formatCOP(product.price)}
             </span>
             {product.compareAt && (
-              <>
-                <span className="text-lg text-text-dark/40 line-through">
-                  {formatCOP(product.compareAt)}
-                </span>
-                <span className="rounded-full bg-accent/10 px-2 py-1 text-xs font-bold text-accent">
-                  -{Math.round((1 - product.price / product.compareAt) * 100)}%
-                </span>
-              </>
+              <span className="text-lg text-text-light/35 line-through">
+                {formatCOP(product.compareAt)}
+              </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-text-dark/50">
+          <p className="mt-1 text-xs text-text-light/50">
             o 4 cuotas sin interés de {formatCOP(Math.round(product.price / 4))}
           </p>
 
+          <div className="mt-3 flex items-center gap-2 text-sm text-text-light/70">
+            <ShieldCheck size={16} className="text-accent" />
+            2 años de garantía
+          </div>
+
           {product.description && (
-            <p className="mt-6 max-w-prose text-text-dark/70">
+            <p className="mt-6 max-w-prose text-text-light/70">
               {product.description}
             </p>
           )}
@@ -140,25 +146,67 @@ export default async function ProductPage({
               availableSizes={product.sizes}
             />
           </div>
-
-          <div className="mt-8 grid grid-cols-3 gap-3">
-            {SEALS.map(({ Icon, label }) => (
-              <div
-                key={label}
-                className="flex flex-col items-center gap-2 rounded-xl border border-text-dark/10 bg-white p-3 text-center"
-              >
-                <Icon size={20} className="text-accent" />
-                <span className="text-[0.7rem] leading-tight text-text-dark/60">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
         </Reveal>
       </section>
 
+      {/* Franja de sellos, a todo el ancho */}
+      <section className="border-y border-text-light/10 bg-white/[0.03]">
+        <div className="mx-auto grid max-w-7xl grid-cols-3 divide-x divide-text-light/10 px-5 lg:px-8">
+          {SEALS.map(({ Icon, label }) => (
+            <div
+              key={label}
+              className="flex flex-col items-center gap-2 px-3 py-6 text-center"
+            >
+              <Icon size={22} className="text-accent" />
+              <span className="text-xs leading-tight text-text-light/70">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Características + certificación */}
+      {product.specs.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+            <Reveal>
+              <h2 className="mb-6 text-xl font-extrabold tracking-tight">
+                Características principales
+              </h2>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {product.specs.map((s) => (
+                  <li key={s.label} className="flex items-start gap-2.5 text-sm">
+                    <Check size={16} className="mt-0.5 shrink-0 text-accent" />
+                    <span className="text-text-light/80">
+                      <span className="font-semibold text-text-light">{s.label}:</span>{" "}
+                      {s.value}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal delay={0.08} as="div">
+              <div className="rounded-2xl border border-text-light/10 bg-white/[0.03] p-6">
+                <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-light/50">
+                  Certificación
+                </h3>
+                <div className="flex items-center gap-3 rounded-xl border border-text-light/15 px-4 py-3">
+                  <ShieldCheck size={28} className="shrink-0 text-accent" />
+                  <div className="text-sm">
+                    <p className="font-bold">DOT / ECE 22.06</p>
+                    <p className="text-text-light/55">Certificado</p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
       {/* Tabs */}
-      <section className="bg-white">
+      <section className="border-t border-text-light/10">
         <div className="mx-auto max-w-4xl px-5 py-16 lg:px-8">
           <ProductTabs specs={product.specs} reviews={reviews} />
         </div>
@@ -181,6 +229,6 @@ export default async function ProductPage({
           </div>
         </section>
       )}
-    </>
+    </div>
   );
 }

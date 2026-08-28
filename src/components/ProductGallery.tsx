@@ -53,7 +53,7 @@ export default function ProductGallery({
             className={`relative aspect-square overflow-hidden rounded-xl border-2 transition-colors ${
               i === active
                 ? "border-accent"
-                : "border-transparent hover:border-text-dark/20"
+                : "border-transparent hover:border-text-light/25"
             }`}
           >
             <Placeholder

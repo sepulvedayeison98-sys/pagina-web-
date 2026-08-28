@@ -52,7 +52,7 @@ export default function ProductBuy({
       {/* Selector de talla */}
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <span className="eyebrow text-text-dark/60">Talla</span>
+          <span className="eyebrow text-text-light/60">Talla</span>
           <button
             type="button"
             onClick={() => setGuideOpen(true)}
@@ -79,10 +79,10 @@ export default function ProductBuy({
                 title={available ? undefined : "Talla no disponible"}
                 className={`h-11 w-14 rounded-xl border text-sm font-semibold transition-colors ${
                   !available
-                    ? "cursor-not-allowed border-text-dark/10 text-text-dark/30 line-through"
+                    ? "cursor-not-allowed border-text-light/10 text-text-light/25 line-through"
                     : on
                       ? "border-accent bg-accent text-white"
-                      : "border-text-dark/20 text-text-dark hover:border-text-dark/50"
+                      : "border-text-light/25 text-text-light hover:border-text-light/60"
                 }`}
               >
                 {s}
@@ -125,7 +125,7 @@ export default function ProductBuy({
         <Cta
           variant="secondary"
           onClick={() => toggle(slug)}
-          className={saved ? "border-accent text-accent" : ""}
+          className={`border-text-light/25 text-text-light hover:border-text-light/60 ${saved ? "border-accent text-accent" : ""}`}
         >
           <Heart size={18} className={saved ? "fill-accent" : ""} />
           {saved ? "Guardado" : "Guardar"}

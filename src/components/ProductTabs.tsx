@@ -26,7 +26,7 @@ export default function ProductTabs({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-1 border-b border-text-dark/10">
+      <div className="flex flex-wrap gap-1 border-b border-text-light/10">
         {TABS.map((t) => {
           const on = t.id === tab;
           return (
@@ -34,7 +34,7 @@ export default function ProductTabs({
               key={t.id}
               onClick={() => setTab(t.id)}
               className={`relative px-4 py-3 text-sm font-semibold transition-colors ${
-                on ? "text-text-dark" : "text-text-dark/45 hover:text-text-dark/70"
+                on ? "text-text-light" : "text-text-light/45 hover:text-text-light/70"
               }`}
             >
               {t.label}
@@ -55,16 +55,16 @@ export default function ProductTabs({
             {specs.map((s) => (
               <div
                 key={s.label}
-                className="flex justify-between gap-4 border-b border-text-dark/10 pb-3"
+                className="flex justify-between gap-4 border-b border-text-light/10 pb-3"
               >
-                <dt className="text-sm text-text-dark/55">{s.label}</dt>
-                <dd className="text-right text-sm font-medium">{s.value}</dd>
+                <dt className="text-sm text-text-light/55">{s.label}</dt>
+                <dd className="text-right text-sm font-medium text-text-light">{s.value}</dd>
               </div>
             ))}
           </dl>
         )}
         {tab === "specs" && specs.length === 0 && (
-          <p className="text-sm text-text-dark/55">
+          <p className="text-sm text-text-light/55">
             Especificaciones próximamente.
           </p>
         )}
@@ -93,8 +93,8 @@ export default function ProductTabs({
                   <Icon size={20} />
                 </span>
                 <div>
-                  <h4 className="font-semibold">{title}</h4>
-                  <p className="text-sm text-text-dark/60">{body}</p>
+                  <h4 className="font-semibold text-text-light">{title}</h4>
+                  <p className="text-sm text-text-light/60">{body}</p>
                 </div>
               </li>
             ))}
@@ -106,14 +106,14 @@ export default function ProductTabs({
             {reviews.map((r) => (
               <li
                 key={r.author + r.date}
-                className="border-b border-text-dark/10 pb-6 last:border-0"
+                className="border-b border-text-light/10 pb-6 last:border-0"
               >
                 <div className="mb-1 flex items-center justify-between">
-                  <span className="font-semibold">{r.title}</span>
-                  <Stars rating={r.rating} size={14} />
+                  <span className="font-semibold text-text-light">{r.title}</span>
+                  <Stars rating={r.rating} size={14} emptyClassName="text-text-light/25" />
                 </div>
-                <p className="text-sm text-text-dark/70">{r.body}</p>
-                <p className="mt-2 text-xs text-text-dark/45">
+                <p className="text-sm text-text-light/70">{r.body}</p>
+                <p className="mt-2 text-xs text-text-light/45">
                   {r.author} · {r.city}
                 </p>
               </li>
