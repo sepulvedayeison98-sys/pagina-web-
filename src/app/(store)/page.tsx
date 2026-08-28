@@ -132,33 +132,32 @@ export default async function Home() {
           </p>
         </Reveal>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-          <div className="grid gap-6 sm:grid-cols-2">
-            {TECH.map(({ Icon, title, body }, i) => (
-              <Reveal key={title} delay={i * 0.06}>
-                <div className="h-full rounded-2xl border border-text-dark/10 bg-white p-6">
-                  <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                    <Icon size={22} />
-                  </span>
-                  <h3 className="mb-2 font-bold">{title}</h3>
-                  <p className="text-sm text-text-dark/60">{body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+        <Reveal
+          delay={0.1}
+          className="mx-auto mb-14 max-w-md overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm sm:max-w-lg"
+        >
+          <Image
+            src={anatomiaCasco}
+            alt="Anatomía del casco ROVEX: ventilación superior, carcasa externa en ABS de alta resistencia, mecanismo de visor de liberación rápida, visor antirayas con protección UV, interior desmontable y lavable, ventilación frontal, deflector nasal y cierre micrométrico con ajuste milimétrico."
+            placeholder="blur"
+            quality={95}
+            sizes="(max-width: 640px) 90vw, 32rem"
+            className="h-auto w-full"
+          />
+        </Reveal>
 
-          <Reveal
-            delay={0.15}
-            className="overflow-hidden rounded-3xl border border-text-dark/10 shadow-sm"
-          >
-            <Image
-              src={anatomiaCasco}
-              alt="Anatomía del casco ROVEX: ventilación superior, carcasa externa en ABS de alta resistencia, mecanismo de visor de liberación rápida, visor antirayas con protección UV, interior desmontable y lavable, ventilación frontal, deflector nasal y cierre micrométrico con ajuste milimétrico."
-              placeholder="blur"
-              sizes="(max-width: 1024px) 100vw, 45rem"
-              className="h-auto w-full"
-            />
-          </Reveal>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {TECH.map(({ Icon, title, body }, i) => (
+            <Reveal key={title} delay={i * 0.06}>
+              <div className="h-full rounded-2xl border border-text-dark/10 bg-white p-6">
+                <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                  <Icon size={22} />
+                </span>
+                <h3 className="mb-2 font-bold">{title}</h3>
+                <p className="text-sm text-text-dark/60">{body}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
