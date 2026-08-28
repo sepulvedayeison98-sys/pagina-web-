@@ -8,6 +8,7 @@ import ComboSelector from "./ComboSelector";
 import { formatCOP } from "@/lib/format";
 import { text, type SiteContent } from "@/lib/content";
 import type { ComboData } from "@/lib/data";
+import comboFallback from "@/assets/combo-2-cascos-501.webp";
 
 /**
  * Oferta destacada de la portada.
@@ -47,7 +48,7 @@ export default function ComboOffer({
           <div className="relative">
             <Placeholder
               className="aspect-square w-full rounded-3xl"
-              src={combo.imageUrl ?? undefined}
+              src={combo.imageUrl ?? comboFallback.src}
               alt={combo.name}
               label="Los 2 cascos"
               sizes="(max-width: 1024px) 100vw, 50vw"
