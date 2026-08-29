@@ -100,13 +100,13 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     description: "La franja con los cuatro beneficios, bajo el banner.",
     fields: [
       { key: "trust1.label", label: "Garantía 1 · título", value: "Envío gratis" },
-      { key: "trust1.sub", label: "Garantía 1 · detalle", value: "desde $200.000" },
-      { key: "trust2.label", label: "Garantía 2 · título", value: "2 años" },
-      { key: "trust2.sub", label: "Garantía 2 · detalle", value: "de garantía" },
+      { key: "trust1.sub", label: "Garantía 1 · detalle", value: "desde $150.000" },
+      { key: "trust2.label", label: "Garantía 2 · título", value: "Envíos" },
+      { key: "trust2.sub", label: "Garantía 2 · detalle", value: "a todo el país" },
       { key: "trust3.label", label: "Garantía 3 · título", value: "30 días" },
       { key: "trust3.sub", label: "Garantía 3 · detalle", value: "para cambios" },
-      { key: "trust4.label", label: "Garantía 4 · título", value: "Paga a cuotas" },
-      { key: "trust4.sub", label: "Garantía 4 · detalle", value: "sin interés" },
+      { key: "trust4.label", label: "Garantía 4 · título", value: "Pagos" },
+      { key: "trust4.sub", label: "Garantía 4 · detalle", value: "contra entrega" },
     ],
   },
   {

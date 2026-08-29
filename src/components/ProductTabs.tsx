@@ -74,7 +74,7 @@ export default function ProductTabs({
             {[
               {
                 Icon: Truck,
-                title: "Envío gratis desde $200.000",
+                title: "Envío gratis desde $150.000",
                 body: "Entregas en 1–3 días hábiles en las principales ciudades. Cobertura nacional.",
               },
               {

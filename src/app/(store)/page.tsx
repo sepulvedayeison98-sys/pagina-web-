@@ -2,10 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  ShieldCheck,
+  Globe,
   Truck,
   RotateCcw,
-  CreditCard,
+  Banknote,
   Wind,
   Radio,
   Sun,
@@ -32,7 +32,7 @@ import {
 } from "@/lib/data";
 import { text } from "@/lib/content";
 
-const TRUST_ICONS = [Truck, ShieldCheck, RotateCcw, CreditCard];
+const TRUST_ICONS = [Truck, Globe, RotateCcw, Banknote];
 const TECH_ICONS = [Wind, Radio, Sun, Gauge];
 
 export default async function Home() {
