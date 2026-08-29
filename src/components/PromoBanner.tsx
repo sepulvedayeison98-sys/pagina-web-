@@ -11,8 +11,18 @@ import promoNuevaColeccion from "@/assets/promo-nueva-coleccion.webp";
 import promoOfertas from "@/assets/promo-ofertas.webp";
 import promoTecnologia from "@/assets/promo-tecnologia.webp";
 
-/** Fotos de respaldo de los 3 recuadros, en el mismo orden que promo1/2/3. */
-const PANEL_IMAGES = [promoNuevaColeccion.src, promoOfertas.src, promoTecnologia.src];
+/**
+ * Fotos de los 3 recuadros, en el mismo orden que promo1/2/3.
+ *
+ * Las dos primeras son piezas verticales: dentro de un recuadro horizontal
+ * hay que mostrarlas completas ("contain"), porque recortarlas se comía el
+ * casco y el texto de la promo. La tercera sí es horizontal y llena bien.
+ */
+const PANEL_IMAGES: { src: string; fit: "cover" | "contain" }[] = [
+  { src: promoNuevaColeccion.src, fit: "contain" },
+  { src: promoOfertas.src, fit: "contain" },
+  { src: promoTecnologia.src, fit: "cover" },
+];
 
 interface Panel {
   title: string;
@@ -20,20 +30,28 @@ interface Panel {
   cta: string;
   href: string;
   image: string;
+  fit: "cover" | "contain";
 }
 
 function PromoPanel({ panel }: { panel: Panel }) {
   return (
     <Link
       href={panel.href}
-      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl"
+      // El borde define la tarjeta también cuando la foto va en "contain" y
+      // no llega a los bordes: sin él, esos recuadros se funden con el fondo.
+      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10"
     >
       <motion.div
         className="h-full w-full"
         whileHover={{ scale: 1.06 }}
         transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
       >
-        <Placeholder className="h-full w-full" src={panel.image} compact />
+        <Placeholder
+          className="h-full w-full"
+          src={panel.image}
+          fit={panel.fit}
+          compact
+        />
       </motion.div>
 
       <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink via-ink/40 to-transparent p-6">
@@ -65,7 +83,8 @@ export default function PromoBanner({ content }: { content: SiteContent }) {
     badge: text(content, `promo${n}.badge`) || undefined,
     cta: text(content, `promo${n}.cta`),
     href: text(content, `promo${n}.href`),
-    image: PANEL_IMAGES[i],
+    image: PANEL_IMAGES[i].src,
+    fit: PANEL_IMAGES[i].fit,
   }));
 
   return (

@@ -17,6 +17,7 @@ export default function Placeholder({
   className = "",
   compact = false,
   sizes,
+  fit = "cover",
 }: {
   src?: string | null;
   alt?: string;
@@ -24,16 +25,26 @@ export default function Placeholder({
   className?: string;
   compact?: boolean;
   sizes?: string;
+  /**
+   * "cover" llena el recuadro recortando lo que sobre; "contain" muestra la
+   * foto completa dentro del recuadro. Usa "contain" cuando la proporción de
+   * la foto no coincide con la del recuadro y el recorte se comería parte
+   * importante de la imagen (por ejemplo una pieza vertical en un marco
+   * horizontal).
+   */
+  fit?: "cover" | "contain";
 }) {
   if (src) {
     return (
-      <div className={`relative overflow-hidden bg-studio ${className}`}>
+      <div
+        className={`relative overflow-hidden ${fit === "contain" ? "bg-ink" : "bg-studio"} ${className}`}
+      >
         <Image
           src={src}
           alt={alt ?? label ?? "Foto de producto ROVEX"}
           fill
           sizes={sizes ?? "(max-width: 768px) 100vw, 33vw"}
-          className="object-cover"
+          className={fit === "contain" ? "object-contain" : "object-cover"}
         />
       </div>
     );

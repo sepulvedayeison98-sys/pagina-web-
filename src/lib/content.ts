@@ -122,7 +122,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       { key: "promo2.title", label: "Recuadro 2 · título", value: "Ofertas exclusivas" },
       { key: "promo2.badge", label: "Recuadro 2 · etiqueta (opcional)", value: "Hasta 30% off" },
       { key: "promo2.cta", label: "Recuadro 2 · texto del enlace", value: "Ver ofertas" },
-      { key: "promo2.href", label: "Recuadro 2 · destino del enlace", value: "/#catalogo" },
+      { key: "promo2.href", label: "Recuadro 2 · destino del enlace", value: "/#combo" },
       { key: "promo3.title", label: "Recuadro 3 · título", value: "Tecnología y rendimiento" },
       { key: "promo3.badge", label: "Recuadro 3 · etiqueta (opcional)", value: "" },
       { key: "promo3.cta", label: "Recuadro 3 · texto del enlace", value: "Explorar" },
