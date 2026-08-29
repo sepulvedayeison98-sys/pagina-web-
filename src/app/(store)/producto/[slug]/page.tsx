@@ -17,6 +17,7 @@ import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
 import { getProduct, getProducts, getReviews } from "@/lib/data";
 import { categoryLabel } from "@/lib/products";
+import { SizeGuideProvider } from "@/lib/SizeGuideContext";
 
 const SEALS = [
   { Icon: ShieldCheck, label: "ECE 22.06 / DOT" },
@@ -93,7 +94,9 @@ export default async function ProductPage({
         <span className="text-text-light/80">{product.name}</span>
       </nav>
 
-      {/* Galería + compra */}
+      {/* Galería + compra. Un solo modal de guía de tallas compartido entre
+          las dos (ver SizeGuideContext): así nunca hay dos abiertas a la vez. */}
+      <SizeGuideProvider>
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 lg:grid-cols-2 lg:gap-14 lg:px-8">
         <Reveal className="relative">
           {product.badge && (
@@ -155,6 +158,7 @@ export default async function ProductPage({
           </div>
         </Reveal>
       </section>
+      </SizeGuideProvider>
 
       {/* Franja de sellos, a todo el ancho */}
       <section className="border-y border-text-light/10 bg-white/[0.03]">

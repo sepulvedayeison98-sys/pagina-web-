@@ -4,16 +4,18 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Ruler } from "lucide-react";
 import Placeholder from "./Placeholder";
-import SizeGuideModal from "./SizeGuideModal";
 import { GALLERY_VIEW_LABELS } from "@/lib/products";
+import { useSizeGuide } from "@/lib/SizeGuideContext";
+import guiaTallas from "@/assets/guia-tallas.webp";
 
 /**
  * Galería con miniaturas clicables. Si hay fotos reales (`images`) las muestra;
  * si no, cae a placeholders con etiquetas de vista.
  *
- * Trae su propio enlace a la guía de tallas: al vivir en este componente
- * compartido, queda anclado a la galería de todas las fichas de producto
- * (existentes y las que se creen después) sin tener que repetirlo en cada una.
+ * La última miniatura no es una foto del casco: abre la guía de tallas (modal
+ * compartido vía SizeGuideProvider). Al vivir en este componente compartido,
+ * queda anclada a la galería de todas las fichas de producto (existentes y
+ * las que se creen después) sin tener que repetirlo en cada una.
  */
 export default function ProductGallery({
   images = [],
@@ -23,7 +25,7 @@ export default function ProductGallery({
   name: string;
 }) {
   const [active, setActive] = useState(0);
-  const [guideOpen, setGuideOpen] = useState(false);
+  const openGuide = useSizeGuide();
   const hasPhotos = images.length > 0;
   const slots = hasPhotos ? images : GALLERY_VIEW_LABELS;
 
@@ -73,17 +75,29 @@ export default function ProductGallery({
             />
           </button>
         ))}
+
+        {/* Última miniatura: no es una foto del casco, abre la guía de tallas. */}
+        <button
+          type="button"
+          onClick={openGuide}
+          aria-label="Ver guía de tallas"
+          className="group relative aspect-square overflow-hidden rounded-xl border-2 border-transparent transition-colors hover:border-text-light/25"
+        >
+          <Placeholder
+            className="h-full w-full"
+            src={guiaTallas.src}
+            alt="Guía de tallas"
+            compact
+            fit="contain"
+          />
+          <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1 bg-ink/70 text-text-light transition-colors group-hover:bg-ink/55">
+            <Ruler size={16} />
+            <span className="text-[0.6rem] font-semibold uppercase tracking-widest">
+              Tallas
+            </span>
+          </span>
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={() => setGuideOpen(true)}
-        className="inline-flex w-fit items-center gap-1.5 text-sm text-text-light/60 transition-colors hover:text-accent"
-      >
-        <Ruler size={15} /> Guía de tallas
-      </button>
-
-      <SizeGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </div>
   );
 }

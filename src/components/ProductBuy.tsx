@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { ShoppingBag, Heart, Check } from "lucide-react";
 import Cta from "./Cta";
-import SizeGuideModal from "./SizeGuideModal";
 import { SIZES, type Size } from "@/lib/products";
 import { useCart } from "@/lib/cart/CartContext";
 import { useFavorites } from "@/lib/favorites/FavoritesContext";
+import { useSizeGuide } from "@/lib/SizeGuideContext";
 
 /**
  * Caja de compra de la ficha: selección de talla + "Agregar al carrito"
@@ -29,10 +29,10 @@ export default function ProductBuy({
 }) {
   const { add } = useCart();
   const { isFavorite, toggle } = useFavorites();
+  const openGuide = useSizeGuide();
   const [size, setSize] = useState<Size | null>(null);
   const [error, setError] = useState(false);
   const [added, setAdded] = useState(false);
-  const [guideOpen, setGuideOpen] = useState(false);
 
   const saved = isFavorite(slug);
   const soldOut = availableSizes.length === 0;
@@ -55,7 +55,7 @@ export default function ProductBuy({
           <span className="eyebrow text-text-light/60">Talla</span>
           <button
             type="button"
-            onClick={() => setGuideOpen(true)}
+            onClick={openGuide}
             className="text-xs text-accent underline-offset-2 hover:underline"
           >
             Guía de tallas
@@ -131,8 +131,6 @@ export default function ProductBuy({
           {saved ? "Guardado" : "Guardar"}
         </Cta>
       </div>
-
-      <SizeGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </div>
   );
 }
