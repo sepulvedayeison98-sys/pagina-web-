@@ -106,38 +106,52 @@ h2 {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Recuadros del "cuadro destacado" (PromoBanner): fondo premium
-   detrás de las fotos, sin tocar los archivos de imagen.
+   "Cuadro destacado" (PromoBanner): una sola banda continua.
+
+   Las tres fotos traen fondo negro puro (#000), así que la sección va
+   en negro puro y las capas decorativas se pintan ENCIMA en "screen":
+   así el resplandor y las líneas cruzan los tres bloques como una sola
+   escena, sin costuras ni recuadros, y sin alterar las fotos.
    ───────────────────────────────────────────────────────────── */
 
-/* Negro carbón con profundidad: halo rojo centrado (simula luz detrás
-   del casco), un resplandor cálido abajo (para que se sienta flotando
-   sobre una base de luz, no recortado) y un filo blanco arriba (luz de
-   estudio). Sustituye el bg-ink plano de Placeholder solo aquí. */
-.promo-panel-bg {
+/* Luz de piso bajo los cascos, como una sola capa que cruza la banda.
+   Va deliberadamente BAJA y tenue: en "screen" cualquier luz sobre el
+   producto lo tiñe de rojo, y el casco tiene que quedarse negro.
+   En móvil los bloques se apilan, así que la luz va centrada. */
+.promo-band-glow {
   background:
-    radial-gradient(ellipse 65% 55% at 50% 38%, rgba(216, 30, 36, 0.16), transparent 68%),
-    radial-gradient(ellipse 90% 45% at 50% 100%, rgba(216, 30, 36, 0.12), transparent 72%),
-    radial-gradient(ellipse 120% 70% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 62%),
-    linear-gradient(180deg, #0e0e11 0%, #08080a 55%, #050506 100%);
+    radial-gradient(ellipse 70% 12% at 50% 34%, rgba(216, 30, 36, 0.11), transparent 72%),
+    radial-gradient(ellipse 70% 12% at 50% 74%, rgba(216, 30, 36, 0.11), transparent 72%),
+    radial-gradient(ellipse 95% 18% at 50% 99%, rgba(216, 30, 36, 0.09), transparent 78%);
+  mix-blend-mode: screen;
 }
 
-/* Líneas de velocidad finas + trama de puntos, en "screen" para sumar
-   luz sin tapar la foto de abajo (funciona igual sobre el fondo o
-   sobre una foto que llene todo el recuadro). Extremadamente sutil. */
-.promo-panel-lines {
+/* A partir de lg los tres bloques van en fila: una luz por tercio,
+   bajo el casco (no detrás), para que se sienta suspendido. */
+@media (min-width: 64rem) {
+  .promo-band-glow {
+    background:
+      radial-gradient(ellipse 15% 13% at 16.67% 63%, rgba(216, 30, 36, 0.16), transparent 72%),
+      radial-gradient(ellipse 15% 13% at 50% 63%, rgba(216, 30, 36, 0.16), transparent 72%),
+      radial-gradient(ellipse 15% 13% at 83.33% 63%, rgba(216, 30, 36, 0.16), transparent 72%),
+      radial-gradient(ellipse 80% 16% at 50% 98%, rgba(216, 30, 36, 0.09), transparent 78%);
+  }
+}
+
+/* Líneas de velocidad finas + trama de puntos, cruzando toda la banda. */
+.promo-band-lines {
   background-image:
     repeating-linear-gradient(
-      118deg,
-      rgba(216, 30, 36, 0.6) 0px,
-      rgba(216, 30, 36, 0.6) 1px,
+      115deg,
+      rgba(216, 30, 36, 0.55) 0px,
+      rgba(216, 30, 36, 0.55) 1px,
       transparent 1px,
-      transparent 84px
+      transparent 120px
     ),
-    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0.6px, transparent 0.6px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0.6px, transparent 0.6px);
   background-size:
     auto,
-    26px 26px;
+    30px 30px;
   mix-blend-mode: screen;
-  opacity: 0.14;
+  opacity: 0.12;
 }
