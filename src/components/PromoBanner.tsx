@@ -39,7 +39,9 @@ function PromoPanel({ panel }: { panel: Panel }) {
       href={panel.href}
       // El borde define la tarjeta también cuando la foto va en "contain" y
       // no llega a los bordes: sin él, esos recuadros se funden con el fondo.
-      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10"
+      // El shadow-inset es un filo de luz roja extremadamente sutil sobre el
+      // borde de la tarjeta (rim light), independiente de la foto de abajo.
+      className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 shadow-[inset_0_0_50px_-28px_rgba(216,30,36,0.45)]"
     >
       {/* En las fotos "contain" se reserva una banda inferior para el texto:
           así la foto sube y el título deja de caerle encima al casco. Las
@@ -53,9 +55,14 @@ function PromoPanel({ panel }: { panel: Panel }) {
           className="h-full w-full"
           src={panel.image}
           fit={panel.fit}
+          bgClassName="promo-panel-bg"
           compact
         />
       </motion.div>
+
+      {/* Líneas de velocidad + trama tecnológica sutil, por encima de la
+          foto (sin tocarla) y por debajo del texto. */}
+      <div aria-hidden className="promo-panel-lines pointer-events-none absolute inset-0" />
 
       <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink via-ink/40 to-transparent px-6 pb-5 pt-6">
         {panel.badge && (

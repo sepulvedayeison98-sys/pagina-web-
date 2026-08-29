@@ -18,6 +18,7 @@ export default function Placeholder({
   compact = false,
   sizes,
   fit = "cover",
+  bgClassName,
 }: {
   src?: string | null;
   alt?: string;
@@ -33,11 +34,16 @@ export default function Placeholder({
    * horizontal).
    */
   fit?: "cover" | "contain";
+  /**
+   * Reemplaza el fondo que se ve detrás de la foto en modo "contain" (o bajo
+   * una "cover" que no llegue a cubrir del todo). Por defecto bg-ink/bg-studio.
+   */
+  bgClassName?: string;
 }) {
   if (src) {
     return (
       <div
-        className={`relative overflow-hidden ${fit === "contain" ? "bg-ink" : "bg-studio"} ${className}`}
+        className={`relative overflow-hidden ${bgClassName ?? (fit === "contain" ? "bg-ink" : "bg-studio")} ${className}`}
       >
         <Image
           src={src}

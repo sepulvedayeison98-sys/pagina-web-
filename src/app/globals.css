@@ -104,3 +104,40 @@ h2 {
   background: var(--color-accent);
   color: #fff;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Recuadros del "cuadro destacado" (PromoBanner): fondo premium
+   detrás de las fotos, sin tocar los archivos de imagen.
+   ───────────────────────────────────────────────────────────── */
+
+/* Negro carbón con profundidad: halo rojo centrado (simula luz detrás
+   del casco), un resplandor cálido abajo (para que se sienta flotando
+   sobre una base de luz, no recortado) y un filo blanco arriba (luz de
+   estudio). Sustituye el bg-ink plano de Placeholder solo aquí. */
+.promo-panel-bg {
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 38%, rgba(216, 30, 36, 0.16), transparent 68%),
+    radial-gradient(ellipse 90% 45% at 50% 100%, rgba(216, 30, 36, 0.12), transparent 72%),
+    radial-gradient(ellipse 120% 70% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 62%),
+    linear-gradient(180deg, #0e0e11 0%, #08080a 55%, #050506 100%);
+}
+
+/* Líneas de velocidad finas + trama de puntos, en "screen" para sumar
+   luz sin tapar la foto de abajo (funciona igual sobre el fondo o
+   sobre una foto que llene todo el recuadro). Extremadamente sutil. */
+.promo-panel-lines {
+  background-image:
+    repeating-linear-gradient(
+      118deg,
+      rgba(216, 30, 36, 0.6) 0px,
+      rgba(216, 30, 36, 0.6) 1px,
+      transparent 1px,
+      transparent 84px
+    ),
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0.6px, transparent 0.6px);
+  background-size:
+    auto,
+    26px 26px;
+  mix-blend-mode: screen;
+  opacity: 0.14;
+}
