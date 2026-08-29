@@ -31,6 +31,62 @@ interface Panel {
   image: string;
 }
 
+/**
+ * Líneas de velocidad, pegadas a los bordes verticales del recuadro.
+ *
+ * Se midió el canal alfa de las 3 fotos: el casco ocupa casi todo el ancho
+ * justo en su ecuador (hasta 96% en la más ancha), así que cualquier línea
+ * que cruce por el centro termina tapada por él. El margen que SÍ es libre
+ * en las tres, de arriba a abajo, es una franja angosta pegada a cada borde
+ * (por eso el x de estas líneas nunca pasa de ~7% ni baja de ~93%).
+ * viewBox fijo (400×500): escala con el recuadro sin recalcular por breakpoint.
+ */
+function SpeedLines() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 400 500"
+      preserveAspectRatio="xMidYMid slice"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+    >
+      <defs>
+        <filter id="pl-blur-sm" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="0.8" />
+        </filter>
+        <filter id="pl-blur-md" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.2" />
+        </filter>
+        <filter id="pl-blur-lg" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="10" />
+        </filter>
+      </defs>
+      <g strokeLinecap="round" fill="none">
+        {/* borde izquierdo: tres tramos de distinto largo/blur, como si el
+            flujo de aire pasara pegado al casco sin tocarlo */}
+        <line x1="9" y1="40" x2="2" y2="150" stroke="#fff" strokeWidth="1.6" opacity="0.55" filter="url(#pl-blur-sm)" />
+        <line x1="13" y1="170" x2="3" y2="330" stroke="#f02020" strokeWidth="2.4" opacity="0.5" filter="url(#pl-blur-md)" />
+        <line x1="16" y1="350" x2="4" y2="470" stroke="#d81e24" strokeWidth="2" opacity="0.4" filter="url(#pl-blur-md)" />
+
+        {/* borde derecho, espejado */}
+        <line x1="391" y1="55" x2="398" y2="165" stroke="#fff" strokeWidth="1.6" opacity="0.5" filter="url(#pl-blur-sm)" />
+        <line x1="387" y1="185" x2="397" y2="345" stroke="#f02020" strokeWidth="2.4" opacity="0.46" filter="url(#pl-blur-md)" />
+        <line x1="384" y1="365" x2="396" y2="460" stroke="#d81e24" strokeWidth="2" opacity="0.36" filter="url(#pl-blur-md)" />
+
+        {/* esquinas superiores: la única franja libre de sobra (por encima
+            del casco en las tres fotos), acentos cortos y brillantes */}
+        <line x1="0" y1="6" x2="76" y2="26" stroke="#fff" strokeWidth="1.8" opacity="0.6" filter="url(#pl-blur-sm)" />
+        <line x1="400" y1="4" x2="322" y2="24" stroke="#fff" strokeWidth="1.8" opacity="0.55" filter="url(#pl-blur-sm)" />
+
+        {/* dos trazos muy largos y muy difuminados, casi neblina, que cruzan
+            de esquina a esquina para dar profundidad de fondo sin competir
+            con el casco (opacidad mínima a propósito) */}
+        <line x1="-20" y1="20" x2="420" y2="480" stroke="#d81e24" strokeWidth="6" opacity="0.07" filter="url(#pl-blur-lg)" />
+        <line x1="420" y1="10" x2="-20" y2="460" stroke="#d81e24" strokeWidth="6" opacity="0.06" filter="url(#pl-blur-lg)" />
+      </g>
+    </svg>
+  );
+}
+
 function PromoPanel({ panel }: { panel: Panel }) {
   return (
     <Link
@@ -39,10 +95,12 @@ function PromoPanel({ panel }: { panel: Panel }) {
       // sola escena continua (el fondo y las luces viven en la sección).
       className="group relative block aspect-[4/3] overflow-hidden lg:aspect-[4/5]"
     >
+      <SpeedLines />
+
       {/* Se reserva una banda inferior para el texto: así el casco sube y el
           título deja de caerle encima. */}
       <motion.div
-        className="h-full w-full pb-20"
+        className="relative h-full w-full pb-20"
         whileHover={{ scale: 1.06 }}
         transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
       >
@@ -92,9 +150,10 @@ export default function PromoBanner({ content }: { content: SiteContent }) {
     // Negro puro: al ser recortes con transparencia, es lo que se ve
     // alrededor de cada casco. Los tres bloques se funden sin costura.
     <section className="relative overflow-hidden bg-black">
-      {/* Halo detrás de los cascos: va PRIMERO (z-0) para que las fotos,
-          ya transparentes, se vean flotando delante de la luz. */}
+      {/* Halo + neblina mínima detrás de los cascos: van PRIMERO (z-0) para
+          que las fotos, ya transparentes, floten delante de la luz. */}
       <div aria-hidden className="promo-band-glow pointer-events-none absolute inset-0 z-0" />
+      <div aria-hidden className="promo-band-mist pointer-events-none absolute inset-0 z-0" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-5 py-10 lg:px-8">
         {/* Sin separación entre bloques: los tres forman una sola escena.
