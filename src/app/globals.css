@@ -136,29 +136,23 @@ h2 {
   }
 }
 
-/* Trama de puntos tecnológica muy sutil, por encima de todo en "screen":
-   las líneas de velocidad ya no van aquí (son el SVG por-panel, con
-   longitud/opacidad/desenfoque variables); esto es solo textura fina. */
+/* Líneas de velocidad finas + trama de puntos, por encima de todo en
+   "screen": suman luz sin tapar ni alterar las fotos. */
 .promo-band-lines {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0.6px, transparent 0.6px);
-  background-size: 30px 30px;
+  background-image:
+    repeating-linear-gradient(
+      115deg,
+      rgba(216, 30, 36, 0.55) 0px,
+      rgba(216, 30, 36, 0.55) 1px,
+      transparent 1px,
+      transparent 120px
+    ),
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0.6px, transparent 0.6px);
+  background-size:
+    auto,
+    30px 30px;
   mix-blend-mode: screen;
-  opacity: 0.1;
-}
-
-/* Neblina mínima cerca de la base del casco, solo para integrar el halo
-   con el fondo (no es decorativa por sí sola: es deliberadamente tenue). */
-.promo-band-mist {
-  background: radial-gradient(ellipse 70% 35% at 50% 82%, rgba(40, 40, 44, 0.35), transparent 75%);
-  filter: blur(2px);
-}
-@media (min-width: 64rem) {
-  .promo-band-mist {
-    background:
-      radial-gradient(ellipse 20% 20% at 16.67% 62%, rgba(40, 40, 44, 0.4), transparent 75%),
-      radial-gradient(ellipse 20% 20% at 50% 62%, rgba(40, 40, 44, 0.4), transparent 75%),
-      radial-gradient(ellipse 20% 20% at 83.33% 62%, rgba(40, 40, 44, 0.4), transparent 75%);
-  }
+  opacity: 0.12;
 }
 
 /* Efecto "flotando" sobre el casco mismo: como es un recorte con
