@@ -7,12 +7,19 @@ import Placeholder from "./Placeholder";
 import Reveal from "./Reveal";
 import type { SiteContent } from "@/lib/content";
 import { text } from "@/lib/content";
+import promoNuevaColeccion from "@/assets/promo-nueva-coleccion.webp";
+import promoOfertas from "@/assets/promo-ofertas.webp";
+import promoTecnologia from "@/assets/promo-tecnologia.webp";
+
+/** Fotos de respaldo de los 3 recuadros, en el mismo orden que promo1/2/3. */
+const PANEL_IMAGES = [promoNuevaColeccion.src, promoOfertas.src, promoTecnologia.src];
 
 interface Panel {
   title: string;
   badge?: string;
   cta: string;
   href: string;
+  image: string;
 }
 
 function PromoPanel({ panel }: { panel: Panel }) {
@@ -26,7 +33,7 @@ function PromoPanel({ panel }: { panel: Panel }) {
         whileHover={{ scale: 1.06 }}
         transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
       >
-        <Placeholder className="h-full w-full" compact />
+        <Placeholder className="h-full w-full" src={panel.image} compact />
       </motion.div>
 
       <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink via-ink/40 to-transparent p-6">
@@ -49,15 +56,16 @@ function PromoPanel({ panel }: { panel: Panel }) {
 /**
  * Los tres recuadros promocionales bajo el banner principal ("cuadro
  * destacado"): cada uno enlaza a una sección de la tienda. El texto y los
- * enlaces se editan desde /admin/contenido; las imágenes de fondo caen al
- * panel de marca (Placeholder) hasta que se suban fotos reales.
+ * enlaces se editan desde /admin/contenido; las fotos de fondo son fijas
+ * (PANEL_IMAGES, en el mismo orden que promo1/2/3).
  */
 export default function PromoBanner({ content }: { content: SiteContent }) {
-  const panels: Panel[] = [1, 2, 3].map((n) => ({
+  const panels: Panel[] = [1, 2, 3].map((n, i) => ({
     title: text(content, `promo${n}.title`),
     badge: text(content, `promo${n}.badge`) || undefined,
     cta: text(content, `promo${n}.cta`),
     href: text(content, `promo${n}.href`),
+    image: PANEL_IMAGES[i],
   }));
 
   return (
