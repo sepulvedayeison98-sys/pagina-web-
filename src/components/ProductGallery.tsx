@@ -38,6 +38,7 @@ export default function ProductGallery({
               alt={name}
               label={hasPhotos ? undefined : (slots[active] as string)}
               sizes="(max-width: 1024px) 100vw, 50vw"
+              fit="contain"
             />
           </motion.div>
         </AnimatePresence>
@@ -61,6 +62,7 @@ export default function ProductGallery({
               src={hasPhotos ? (slot as string) : undefined}
               alt={name}
               compact
+              fit="contain"
             />
           </button>
         ))}
