@@ -17,7 +17,7 @@ const ROWS = [
 ];
 
 const STEPS = [
-  "Mide el contorno de tu cabeza en la parte más ancha, aprox. 1 pulgada por encima de las cejas.",
+  "Mide el contorno de tu cabeza en la parte más ancha, unos 2 dedos por encima de las cejas.",
   "Si quedas entre dos tallas, elige la mayor para mayor comodidad.",
   "Asegúrate de que el casco se sienta firme, pero sin puntos de presión excesivos.",
 ];
@@ -40,7 +40,7 @@ export default function GuiaDeTallasPage() {
         <div className="overflow-hidden rounded-2xl border border-text-dark/10 shadow-sm">
           <Image
             src={guiaTallas}
-            alt="Guía de tallas ROVEX: mide la circunferencia de tu cabeza 1 pulgada sobre las cejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
+            alt="Guía de tallas ROVEX: mide la circunferencia de tu cabeza 2 dedos sobre las cejas, con la cinta pasando por encima de las orejas. S 55-56 cm, M 57-58 cm, L 59-60 cm, XL 61-62 cm."
             placeholder="blur"
             sizes="(max-width: 896px) 100vw, 56rem"
             className="h-auto w-full"

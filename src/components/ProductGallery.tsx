@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Ruler } from "lucide-react";
 import Placeholder from "./Placeholder";
+import SizeGuideModal from "./SizeGuideModal";
 import { GALLERY_VIEW_LABELS } from "@/lib/products";
 
 /**
  * Galería con miniaturas clicables. Si hay fotos reales (`images`) las muestra;
  * si no, cae a placeholders con etiquetas de vista.
+ *
+ * Trae su propio enlace a la guía de tallas: al vivir en este componente
+ * compartido, queda anclado a la galería de todas las fichas de producto
+ * (existentes y las que se creen después) sin tener que repetirlo en cada una.
  */
 export default function ProductGallery({
   images = [],
@@ -17,6 +23,7 @@ export default function ProductGallery({
   name: string;
 }) {
   const [active, setActive] = useState(0);
+  const [guideOpen, setGuideOpen] = useState(false);
   const hasPhotos = images.length > 0;
   const slots = hasPhotos ? images : GALLERY_VIEW_LABELS;
 
@@ -67,6 +74,16 @@ export default function ProductGallery({
           </button>
         ))}
       </div>
+
+      <button
+        type="button"
+        onClick={() => setGuideOpen(true)}
+        className="inline-flex w-fit items-center gap-1.5 text-sm text-text-light/60 transition-colors hover:text-accent"
+      >
+        <Ruler size={15} /> Guía de tallas
+      </button>
+
+      <SizeGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </div>
   );
 }
