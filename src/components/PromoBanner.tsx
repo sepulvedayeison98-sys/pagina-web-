@@ -41,8 +41,11 @@ function PromoPanel({ panel }: { panel: Panel }) {
       // no llega a los bordes: sin él, esos recuadros se funden con el fondo.
       className="group relative block aspect-[4/3] overflow-hidden rounded-3xl border border-white/10"
     >
+      {/* En las fotos "contain" se reserva una banda inferior para el texto:
+          así la foto sube y el título deja de caerle encima al casco. Las
+          "cover" llenan el recuadro y el degradado basta. */}
       <motion.div
-        className="h-full w-full"
+        className={`h-full w-full ${panel.fit === "contain" ? "pb-20" : ""}`}
         whileHover={{ scale: 1.06 }}
         transition={{ type: "spring", bounce: 0.1, duration: 0.6 }}
       >
@@ -54,7 +57,7 @@ function PromoPanel({ panel }: { panel: Panel }) {
         />
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink via-ink/40 to-transparent p-6">
+      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink via-ink/40 to-transparent px-6 pb-5 pt-6">
         {panel.badge && (
           <span className="mb-2 w-fit rounded-full bg-accent px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-white">
             {panel.badge}
@@ -63,7 +66,7 @@ function PromoPanel({ panel }: { panel: Panel }) {
         <h3 className="font-display text-2xl font-extrabold leading-tight text-text-light sm:text-3xl">
           {panel.title}
         </h3>
-        <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-text-light transition-colors group-hover:text-accent">
+        <span className="mt-3 inline-flex w-fit items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-text-light transition-colors group-hover:text-accent">
           {panel.cta} <ArrowRight size={15} />
         </span>
       </div>
