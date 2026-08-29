@@ -160,10 +160,24 @@ h2 {
    alfa (a diferencia de un box-shadow, que siempre es rectangular).
    Tres capas: un filo blanco muy fino (definición), un bloom rojo
    amplio (el halo) y una sombra de contacto oscura y difusa debajo
-   (para que se sienta apoyado en el aire, no cortado y pegado). */
+   (para que se sienta apoyado en el aire, no cortado y pegado).
+   Lo comparten el cuadro destacado y la escena de la oferta. */
 .promo-helmet-glow {
   filter:
     drop-shadow(0 0 2px rgba(255, 255, 255, 0.12))
     drop-shadow(0 22px 34px rgba(0, 0, 0, 0.6))
     drop-shadow(0 0 46px rgba(216, 30, 36, 0.3));
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Escena de la oferta (ComboOffer): fondo cinematográfico detrás
+   de los cascos recortados. El halo y las líneas van DEBAJO de la
+   foto, así los trazos nacen por detrás de los cascos y solo se
+   ven donde el recorte es transparente.
+   ───────────────────────────────────────────────────────────── */
+.combo-scene-glow {
+  background:
+    radial-gradient(ellipse 55% 38% at 50% 50%, rgba(216, 30, 36, 0.26), transparent 70%),
+    radial-gradient(ellipse 85% 20% at 50% 88%, rgba(216, 30, 36, 0.16), transparent 76%),
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(255, 255, 255, 0.04), transparent 62%);
 }
