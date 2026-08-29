@@ -19,6 +19,7 @@ export default function Placeholder({
   sizes,
   fit = "cover",
   bgClassName,
+  imageClassName = "",
 }: {
   src?: string | null;
   alt?: string;
@@ -39,6 +40,12 @@ export default function Placeholder({
    * una "cover" que no llegue a cubrir del todo). Por defecto bg-ink/bg-studio.
    */
   bgClassName?: string;
+  /**
+   * Clases extra sobre el <Image> mismo (no el contenedor). Para recortes con
+   * transparencia: un filter: drop-shadow() aquí sigue el contorno real del
+   * alfa, a diferencia de un box-shadow que siempre es rectangular.
+   */
+  imageClassName?: string;
 }) {
   if (src) {
     return (
@@ -50,7 +57,7 @@ export default function Placeholder({
           alt={alt ?? label ?? "Foto de producto ROVEX"}
           fill
           sizes={sizes ?? "(max-width: 768px) 100vw, 33vw"}
-          className={fit === "contain" ? "object-contain" : "object-cover"}
+          className={`${fit === "contain" ? "object-contain" : "object-cover"} ${imageClassName}`}
         />
       </div>
     );
