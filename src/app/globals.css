@@ -175,9 +175,19 @@ h2 {
    foto, así los trazos nacen por detrás de los cascos y solo se
    ven donde el recorte es transparente.
    ───────────────────────────────────────────────────────────── */
+/* Ojo con los porcentajes: esta capa desborda el bloque de los cascos
+   (es ~1.6× más ancha y ~2× más alta), así que van más chicos de lo que
+   parece para que el halo caiga sobre los cascos y no lave la sección. */
 .combo-scene-glow {
   background:
-    radial-gradient(ellipse 55% 38% at 50% 50%, rgba(216, 30, 36, 0.26), transparent 70%),
-    radial-gradient(ellipse 85% 20% at 50% 88%, rgba(216, 30, 36, 0.16), transparent 76%),
-    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(255, 255, 255, 0.04), transparent 62%);
+    radial-gradient(ellipse 31% 26% at 50% 50%, rgba(216, 30, 36, 0.3), transparent 70%),
+    radial-gradient(ellipse 44% 12% at 50% 69%, rgba(216, 30, 36, 0.18), transparent 76%);
+}
+
+/* Los trazos se cortarían en seco contra el borde del SVG y dejarían un
+   canto recto visible sobre el fondo. La máscara los apaga antes de
+   llegar ahí, así se pierden en el negro de la sección. */
+.combo-scene-lines {
+  -webkit-mask-image: radial-gradient(ellipse 52% 52% at 50% 50%, #000 28%, transparent 76%);
+  mask-image: radial-gradient(ellipse 52% 52% at 50% 50%, #000 28%, transparent 76%);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Check } from "lucide-react";
 import Reveal from "./Reveal";
 import Placeholder from "./Placeholder";
@@ -18,7 +19,11 @@ import comboCutout from "@/assets/promo-ofertas.webp";
  * cascos y se abren hacia los bordes, con longitud, opacidad y desenfoque
  * distintos por trazo. Al ir por debajo del recorte, los cascos las tapan
  * en el centro y solo asoman hacia afuera: leen como luz de fondo, no como
- * un gráfico pegado encima. viewBox cuadrado, igual que el recuadro.
+ * un gráfico pegado encima.
+ *
+ * Desborda el bloque de los cascos (inset negativo) para que la luz siga
+ * hacia el resto de la sección y no quede encerrada en un recuadro. Lo que
+ * sobra lo recorta el overflow-hidden de la sección.
  */
 function ComboSpeedLines() {
   return (
@@ -26,7 +31,7 @@ function ComboSpeedLines() {
       aria-hidden
       viewBox="0 0 400 400"
       preserveAspectRatio="xMidYMid slice"
-      className="pointer-events-none absolute inset-0 h-full w-full"
+      className="combo-scene-lines pointer-events-none absolute -inset-x-[45%] -inset-y-[70%] z-0"
     >
       <defs>
         <filter id="cs-sm" x="-50%" y="-50%" width="200%" height="200%">
@@ -39,27 +44,29 @@ function ComboSpeedLines() {
           <feGaussianBlur stdDeviation="9" />
         </filter>
       </defs>
+      {/* Los cascos ocupan ~x 72-328, y 124-275 de este viewBox: los trazos
+          arrancan dentro de esa zona (tapados) y salen hacia los bordes. */}
       <g strokeLinecap="round" fill="none">
         {/* abanico corto y brillante, justo saliendo del contorno */}
-        <line x1="182" y1="198" x2="52" y2="118" stroke="#fff" strokeWidth="2" opacity="0.7" filter="url(#cs-sm)" />
-        <line x1="218" y1="198" x2="348" y2="118" stroke="#fff" strokeWidth="2" opacity="0.66" filter="url(#cs-sm)" />
-        <line x1="186" y1="258" x2="74" y2="330" stroke="#ffb3b3" strokeWidth="1.8" opacity="0.55" filter="url(#cs-sm)" />
-        <line x1="214" y1="258" x2="326" y2="330" stroke="#ffb3b3" strokeWidth="1.8" opacity="0.52" filter="url(#cs-sm)" />
+        <line x1="170" y1="176" x2="60" y2="104" stroke="#fff" strokeWidth="2.2" opacity="0.7" filter="url(#cs-sm)" />
+        <line x1="230" y1="176" x2="340" y2="104" stroke="#fff" strokeWidth="2.2" opacity="0.66" filter="url(#cs-sm)" />
+        <line x1="174" y1="240" x2="72" y2="306" stroke="#ffb3b3" strokeWidth="1.9" opacity="0.55" filter="url(#cs-sm)" />
+        <line x1="226" y1="240" x2="328" y2="306" stroke="#ffb3b3" strokeWidth="1.9" opacity="0.52" filter="url(#cs-sm)" />
 
-        {/* medios en rojo, más difusos */}
-        <line x1="168" y1="190" x2="-24" y2="62" stroke="#f02020" strokeWidth="3.4" opacity="0.5" filter="url(#cs-md)" />
-        <line x1="232" y1="190" x2="424" y2="62" stroke="#f02020" strokeWidth="3.4" opacity="0.48" filter="url(#cs-md)" />
-        <line x1="158" y1="228" x2="-32" y2="216" stroke="#f02020" strokeWidth="3" opacity="0.42" filter="url(#cs-md)" />
-        <line x1="242" y1="228" x2="432" y2="216" stroke="#f02020" strokeWidth="3" opacity="0.4" filter="url(#cs-md)" />
-        <line x1="172" y1="268" x2="-14" y2="372" stroke="#d81e24" strokeWidth="2.8" opacity="0.38" filter="url(#cs-md)" />
-        <line x1="228" y1="268" x2="414" y2="372" stroke="#d81e24" strokeWidth="2.8" opacity="0.36" filter="url(#cs-md)" />
+        {/* medios en rojo, más difusos: cruzan el borde del bloque */}
+        <line x1="150" y1="170" x2="-70" y2="34" stroke="#f02020" strokeWidth="3.6" opacity="0.5" filter="url(#cs-md)" />
+        <line x1="250" y1="170" x2="470" y2="34" stroke="#f02020" strokeWidth="3.6" opacity="0.48" filter="url(#cs-md)" />
+        <line x1="136" y1="202" x2="-90" y2="196" stroke="#f02020" strokeWidth="3.2" opacity="0.44" filter="url(#cs-md)" />
+        <line x1="264" y1="202" x2="490" y2="196" stroke="#f02020" strokeWidth="3.2" opacity="0.42" filter="url(#cs-md)" />
+        <line x1="152" y1="244" x2="-70" y2="360" stroke="#d81e24" strokeWidth="3" opacity="0.4" filter="url(#cs-md)" />
+        <line x1="248" y1="244" x2="470" y2="360" stroke="#d81e24" strokeWidth="3" opacity="0.38" filter="url(#cs-md)" />
 
         {/* luz de piso reflejada bajo los cascos */}
-        <line x1="118" y1="322" x2="282" y2="322" stroke="#f02020" strokeWidth="5" opacity="0.3" filter="url(#cs-lg)" />
+        <line x1="96" y1="292" x2="304" y2="292" stroke="#f02020" strokeWidth="6" opacity="0.3" filter="url(#cs-lg)" />
 
         {/* trazos muy largos y difusos: profundidad de fondo */}
-        <line x1="200" y1="230" x2="-40" y2="-10" stroke="#d81e24" strokeWidth="7" opacity="0.14" filter="url(#cs-lg)" />
-        <line x1="200" y1="230" x2="440" y2="-10" stroke="#d81e24" strokeWidth="7" opacity="0.13" filter="url(#cs-lg)" />
+        <line x1="200" y1="200" x2="-140" y2="-90" stroke="#d81e24" strokeWidth="8" opacity="0.14" filter="url(#cs-lg)" />
+        <line x1="200" y1="200" x2="540" y2="-90" stroke="#d81e24" strokeWidth="8" opacity="0.13" filter="url(#cs-lg)" />
       </g>
     </svg>
   );
@@ -84,6 +91,7 @@ export default function ComboOffer({
   content: SiteContent;
 }) {
   const [open, setOpen] = useState(false);
+  const reduce = useReducedMotion();
 
   const incluye = text(content, "combo.includes")
     .split("\n")
@@ -96,37 +104,58 @@ export default function ComboOffer({
       : null;
 
   return (
-    <section id="combo" className="scroll-mt-24 bg-ink text-text-light">
+    // Negro puro, igual que el fondo que traen los recortes: la escena es
+    // toda la sección, sin recuadro. overflow-hidden recorta la luz que
+    // desborda para que no invada las secciones vecinas.
+    <section
+      id="combo"
+      className="relative scroll-mt-24 overflow-hidden bg-black text-text-light"
+    >
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 lg:grid-cols-2 lg:gap-14 lg:px-8">
-        {/* Escena del combo: fondo negro + luces detrás, cascos flotando
-            encima. Las capas van en orden: halo, líneas, cascos, insignia. */}
-        <Reveal className="order-last lg:order-first">
-          <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-black">
-            <div aria-hidden className="combo-scene-glow pointer-events-none absolute inset-0" />
-            <ComboSpeedLines />
+        {/* El halo y las líneas desbordan el bloque (inset negativo) y se
+            funden con el fondo de la sección.
 
-            <div className="absolute inset-0 z-10">
-              <Placeholder
-                className="h-full w-full"
-                src={combo.imageUrl ?? comboCutout.src}
-                alt={combo.name}
-                label="Los 2 cascos"
-                fit="contain"
-                bgClassName="bg-transparent"
-                imageClassName="promo-helmet-glow"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
+            Esta columna NO usa Reveal: ese wrapper anima con filter, y un
+            elemento con filtro recorta todo lo que se le sale — cortaba en
+            seco el halo, las líneas y el resplandor rojo del casco contra
+            el borde de la columna. Aquí se anima solo con opacidad y
+            desplazamiento, que no recortan. */}
+        <motion.div
+          className="relative order-last aspect-[3/2] w-full lg:order-first"
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          whileInView={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: reduce ? 0.4 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div
+            aria-hidden
+            className="combo-scene-glow pointer-events-none absolute -inset-x-[45%] -inset-y-[70%] z-0"
+          />
+          <ComboSpeedLines />
 
-            {ahorro && (
-              <span className="absolute left-4 top-4 z-20 rounded-full bg-accent px-4 py-2 text-sm font-extrabold text-white shadow-lg">
-                Ahorras {formatCOP(ahorro)}
-              </span>
-            )}
+          <div className="absolute inset-0 z-10">
+            <Placeholder
+              className="h-full w-full"
+              src={combo.imageUrl ?? comboCutout.src}
+              alt={combo.name}
+              label="Los 2 cascos"
+              fit="contain"
+              bgClassName="bg-transparent"
+              imageClassName="promo-helmet-glow"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
-        </Reveal>
 
-        <div>
+          {ahorro && (
+            <span className="absolute -top-2 left-0 z-20 rounded-full bg-accent px-4 py-2 text-sm font-extrabold text-white shadow-lg">
+              Ahorras {formatCOP(ahorro)}
+            </span>
+          )}
+        </motion.div>
+
+        {/* z-10: la luz que desborda del bloque de los cascos pasa por
+            detrás del texto, no por encima. */}
+        <div className="relative z-10">
           <Reveal>
             <p className="eyebrow mb-3 text-accent">
               {text(content, "combo.eyebrow")}
