@@ -77,9 +77,23 @@ reales. Las conversaciones, clientes y escalamientos a humano se ven en
 
 1. Crear una app en [developers.facebook.com](https://developers.facebook.com/apps) → tipo "Business" → añadir el producto **WhatsApp**.
 2. Vincular (o crear) el número de WhatsApp Business de ROVEX.
-3. En **WhatsApp → Configuration**, poner como *Callback URL* `https://<tu-dominio>/api/whatsapp/webhook` y como *Verify token* el mismo valor de `WHATSAPP_VERIFY_TOKEN`.
+3. En **WhatsApp → Configuration**, poner como *Callback URL* `https://cascorovex.com/api/whatsapp/webhook` y como *Verify token* el mismo valor de `WHATSAPP_VERIFY_TOKEN`.
 4. Suscribirse al campo `messages`.
 5. Generar un token permanente (System User con permiso `whatsapp_business_messaging`) en vez del token temporal de pruebas.
 
+> **Tiene que ser el dominio propio.** El proyecto tiene activada la
+> protección de despliegues de Vercel para todo lo que no sea dominio
+> propio, así que una URL `*.vercel.app` le responde a Meta con la pantalla
+> de login de Vercel: la verificación falla y Meta no explica por qué.
+
 Sin estas variables configuradas, el resto de la tienda sigue funcionando
 igual — el webhook solo se activa cuando Meta le envía tráfico real.
+
+### Cuando el asesor no responde
+
+`/admin/whatsapp` (pestaña **Conexión** del panel) verifica en vivo contra
+Graph API lo que no se ve desde afuera: si el token venció, si el app secret
+es de otra app —Meta entrega los mensajes y el webhook los rechaza con 401
+al validar la firma—, si la cuenta quedó sin la app suscrita, y si la URL
+pública contesta el reto de verificación. Cada punto en rojo trae el paso
+exacto para arreglarlo. No muestra el valor de ningún secreto.
