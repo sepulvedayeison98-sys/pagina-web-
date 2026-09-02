@@ -118,7 +118,10 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       { key: "promo1.title", label: "Recuadro 1 · título", value: "Nueva colección" },
       { key: "promo1.badge", label: "Recuadro 1 · etiqueta (opcional)", value: "" },
       { key: "promo1.cta", label: "Recuadro 1 · texto del enlace", value: "Descubrir" },
-      { key: "promo1.href", label: "Recuadro 1 · destino del enlace", value: "/#categorias" },
+      // Apuntaba a #categorias, que ya no existe mientras esa sección esté
+      // oculta: el recuadro no llevaba a ninguna parte. El catálogo es el
+      // destino natural de "Nueva colección".
+      { key: "promo1.href", label: "Recuadro 1 · destino del enlace", value: "/#catalogo" },
       { key: "promo2.title", label: "Recuadro 2 · título", value: "Ofertas exclusivas" },
       { key: "promo2.badge", label: "Recuadro 2 · etiqueta (opcional)", value: "Hasta 30% off" },
       { key: "promo2.cta", label: "Recuadro 2 · texto del enlace", value: "Ver ofertas" },
@@ -139,7 +142,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
         label: "Mostrar la sección",
         value: "no",
         help:
-          "Escribe «si» para mostrarla o «no» para ocultarla. Está oculta porque las categorías todavía no tienen foto propia y salían con la lámina genérica de la marca. Al volver a mostrarla hay que devolver también el enlace «Categorías» del menú.",
+          "Escribe «si» para mostrarla o «no» para ocultarla. Está oculta porque las categorías todavía no tienen foto propia y salían con la lámina genérica de la marca. Al volver a mostrarla hay que devolver el enlace «Categorías» del menú y, si quieres, apuntar de nuevo el recuadro 1 de los cuadros destacados a /#categorias.",
       },
       {
         key: "categorias.title",
