@@ -11,6 +11,7 @@ import {
   Boxes,
   Receipt,
   MessageCircle,
+  Webhook,
   KeyRound,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,7 @@ const TABS = [
   { href: "/admin/pedidos", label: "Pedidos", Icon: Receipt },
   { href: "/admin/resenas", label: "Reseñas", Icon: Star },
   { href: "/admin/conversaciones", label: "WhatsApp", Icon: MessageCircle },
+  { href: "/admin/whatsapp", label: "Conexión", Icon: Webhook },
 ];
 
 /** Cabecera del panel admin: marca + pestañas + ver tienda + cerrar sesión. */
