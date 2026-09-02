@@ -15,10 +15,11 @@ import Wordmark from "./Wordmark";
 import SearchModal from "./SearchModal";
 import { useCart } from "@/lib/cart/CartContext";
 
-const LEFT = [
-  { label: "Cascos", href: "/#catalogo" },
-  { label: "Categorías", href: "/#categorias" },
-];
+// "Categorías" sale del menú mientras la sección esté oculta (interruptor
+// categorias.enabled en el panel): el enlace apuntaría a un ancla que ya no
+// existe y dejaría al visitante en el mismo sitio. Vuelve cuando la sección
+// vuelva.
+const LEFT = [{ label: "Cascos", href: "/#catalogo" }];
 const RIGHT = [
   { label: "Tecnología", href: "/#tecnologia" },
   { label: "Comunidad", href: "/#comunidad" },

@@ -46,6 +46,12 @@ export default async function Home() {
   const mostrarCombo =
     combo !== null && text(content, "combo.enabled").toLowerCase() !== "no";
 
+  // Oculta hoy: las categorías no tienen foto propia y ZoomTile solo pinta la
+  // lámina genérica de la marca, así que la sección se leía como cuatro
+  // recuadros vacíos. Se enciende de nuevo desde /admin/contenido.
+  const mostrarCategorias =
+    text(content, "categorias.enabled").toLowerCase() !== "no";
+
   // Solo se muestran las categorías con al menos un producto: así
   // Multipropósito aparece sola cuando cargues el primero.
   const conProductos = new Set(products.map((p) => p.category));
@@ -87,34 +93,36 @@ export default async function Home() {
       <PromoBanner content={content} />
 
       {/* ───────────────── CATEGORÍAS ───────────────── */}
-      <section id="categorias" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <Reveal className="mb-10 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              {text(content, "categorias.title")}
-            </h2>
-          </div>
-          <Link
-            href="/#catalogo"
-            className="hidden items-center gap-1 text-sm font-semibold text-accent hover:gap-2 sm:inline-flex"
-          >
-            Ver todo <ArrowRight size={16} />
-          </Link>
-        </Reveal>
+      {mostrarCategorias && (
+        <section id="categorias" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+          <Reveal className="mb-10 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                {text(content, "categorias.title")}
+              </h2>
+            </div>
+            <Link
+              href="/#catalogo"
+              className="hidden items-center gap-1 text-sm font-semibold text-accent hover:gap-2 sm:inline-flex"
+            >
+              Ver todo <ArrowRight size={16} />
+            </Link>
+          </Reveal>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categoriasVisibles.map((cat, i) => (
-            <Reveal key={cat.id} delay={i * 0.06}>
-              <ZoomTile
-                href={categoryHref(cat.slug)}
-                title={cat.label}
-                subtitle={cat.blurb}
-                className="aspect-[3/4]"
-              />
-            </Reveal>
-          ))}
-        </div>
-      </section>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {categoriasVisibles.map((cat, i) => (
+              <Reveal key={cat.id} delay={i * 0.06}>
+                <ZoomTile
+                  href={categoryHref(cat.slug)}
+                  title={cat.label}
+                  subtitle={cat.blurb}
+                  className="aspect-[3/4]"
+                />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ───────────────── CATÁLOGO (scroll horizontal anclado) ───────────────── */}
       <ProductShowcase products={products} />

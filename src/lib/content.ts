@@ -135,6 +135,13 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     description: "Sección donde el cliente elige el tipo de casco.",
     fields: [
       {
+        key: "categorias.enabled",
+        label: "Mostrar la sección",
+        value: "no",
+        help:
+          "Escribe «si» para mostrarla o «no» para ocultarla. Está oculta porque las categorías todavía no tienen foto propia y salían con la lámina genérica de la marca. Al volver a mostrarla hay que devolver también el enlace «Categorías» del menú.",
+      },
+      {
         key: "categorias.title",
         label: "Título",
         value: "Encuentra el tuyo",
