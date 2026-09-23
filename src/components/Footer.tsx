@@ -99,6 +99,9 @@ export default async function Footer() {
             <Link href="/guia-de-tallas" className="hover:text-accent">
               Guía de tallas
             </Link>
+            <Link href="/politica-privacidad" className="hover:text-accent">
+              Política de privacidad
+            </Link>
             <Link
               href={wa("Hola ROVEX, quiero más información.")}
               target="_blank"
