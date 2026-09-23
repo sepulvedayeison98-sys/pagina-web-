@@ -9,3 +9,6 @@ export const STORE_NAME = "ROVEX";
 
 /** Nombre con el que se presenta el asesor virtual de WhatsApp. */
 export const ADVISOR_NAME = "Juliana";
+
+/** Conjunto de datos de Meta Pixel ("Rovex - Pixel sitio web"). No es secreto: viaja en el HTML de cada página. */
+export const META_PIXEL_ID = "987753931021307";

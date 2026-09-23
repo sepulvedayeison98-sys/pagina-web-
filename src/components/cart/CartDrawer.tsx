@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useModal } from "@/lib/useModal";
 import { formatCOP } from "@/lib/format";
 import { WHATSAPP_NUMBER, STORE_NAME } from "@/lib/config";
+import { trackWhatsAppContact } from "@/lib/metaPixel";
 
 /**
  * Arma el texto del pedido y devuelve el enlace wa.me para finalizar por WhatsApp.
@@ -100,6 +101,7 @@ export default function CartDrawer() {
       // sin conexión: seguimos igual al chat
     }
 
+    trackWhatsAppContact();
     const url = buildWhatsAppLink(items, subtotal, code);
     if (win) win.location.href = url;
     else window.location.href = url;

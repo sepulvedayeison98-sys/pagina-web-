@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import { WHATSAPP_NUMBER } from "@/lib/config";
 import { useCart } from "@/lib/cart/CartContext";
+import { trackWhatsAppContact } from "@/lib/metaPixel";
 
 /** Glifo oficial de WhatsApp: lucide-react no incluye logos de marca. */
 function WhatsAppIcon({ size = 26 }: { size?: number }) {
@@ -44,6 +45,7 @@ export default function WhatsAppFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribir por WhatsApp"
+      onClick={trackWhatsAppContact}
       initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 14 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
