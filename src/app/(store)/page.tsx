@@ -31,6 +31,7 @@ import {
   getCombo,
 } from "@/lib/data";
 import { text } from "@/lib/content";
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@/lib/config";
 
 const TRUST_ICONS = [Truck, Globe, RotateCcw, Banknote];
 const TECH_ICONS = [Wind, Radio, Sun, Gauge];
@@ -231,9 +232,20 @@ export default async function Home() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <Reveal key={i} delay={i * 0.04}>
-              <ZoomTile href="#" className="aspect-square" />
+              <ZoomTile href={INSTAGRAM_URL} className="aspect-square" />
             </Reveal>
           ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-text-dark/15 px-6 py-3 text-sm font-semibold transition-colors hover:border-accent hover:text-accent"
+          >
+            Síguenos en Instagram {INSTAGRAM_HANDLE} <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 

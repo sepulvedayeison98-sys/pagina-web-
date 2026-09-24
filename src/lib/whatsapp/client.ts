@@ -45,7 +45,9 @@ export async function sendWhatsAppMessage(to: string, body: string): Promise<str
         // Meta usa `to`, así que no se mandan juntos).
         ...(esBsuid(to) ? { recipient: to } : { to }),
         type: "text",
-        text: { body, preview_url: false },
+        // Con vista previa, el enlace a la tienda que manda el asesor llega
+        // con la foto y el nombre del casco: da más confianza que un link pelado.
+        text: { body, preview_url: true },
       }),
     }
   );

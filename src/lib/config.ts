@@ -7,6 +7,13 @@
 export const WHATSAPP_NUMBER = "573126625966";
 export const STORE_NAME = "ROVEX";
 
+/**
+ * Instagram de la marca. Sin el "?stkn=…" con que llega al compartir el
+ * perfil: es un rastreador de quien compartió el enlace, no parte del perfil.
+ */
+export const INSTAGRAM_URL = "https://www.instagram.com/cascosrovex/";
+export const INSTAGRAM_HANDLE = "@cascosrovex";
+
 /** Nombre con el que se presenta el asesor virtual de WhatsApp. */
 export const ADVISOR_NAME = "Juliana";
 

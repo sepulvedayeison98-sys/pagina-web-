@@ -25,6 +25,9 @@ export default function ZoomTile({
   return (
     <Link
       href={href}
+      // Enlaces a otro sitio (p. ej. Instagram) en pestaña nueva, para no
+      // sacar al visitante de la tienda.
+      {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={`group relative block overflow-hidden rounded-2xl ${className}`}
     >
       <motion.div

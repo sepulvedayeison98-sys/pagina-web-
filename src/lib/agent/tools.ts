@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCombo, getSiteContent } from "@/lib/data";
 import { text as contentText } from "@/lib/content";
 import { CATEGORIES } from "@/lib/products";
+import { siteUrl } from "@/lib/site";
 
 export interface AgentContext {
   supabase: SupabaseClient;
@@ -264,6 +265,8 @@ async function buscarProductos(input: Record<string, unknown>, ctx: AgentContext
   const productos = (data ?? []).map((p) => ({
     slug: p.slug,
     name: p.name,
+    // Ficha en la tienda: fotos, especificaciones y reseñas, para compartirla.
+    url: `${siteUrl()}/producto/${p.slug}`,
     category: p.category,
     price: p.price,
     compareAt: p.compare_at,
