@@ -164,7 +164,8 @@ Para cerrarlo: agregar la variable en Vercel (Supabase → Project Settings → 
 | `src/lib/agent/tools.ts` | Tools contra Supabase (catálogo, stock, pedidos, escalamiento). |
 | `src/lib/agent/testAction.ts` | Server action para probar el agente desde el panel sin WhatsApp. |
 | `src/components/admin/AgentTester.tsx` | UI de esa prueba, dentro de `/admin/conversaciones`. |
-| `src/components/admin/ConversationsManager.tsx` | Lista de conversaciones en vivo. |
+| `src/components/admin/ChatPanel.tsx` | Bandeja estilo WhatsApp Web: un chat por cliente, ordenado por llegada, no leídos, filtros, responder a mano, pausar el bot, archivar, eliminar y ficha del cliente. Refresca cada 3-5 s. |
+| `src/lib/whatsapp/panelActions.ts` | Envío manual desde el panel (pausa el bot en ese chat). |
 | `src/app/admin/conversaciones/page.tsx` | Página de conversaciones. |
 
 ### Supabase / infraestructura
@@ -181,7 +182,7 @@ Para cerrarlo: agregar la variable en Vercel (Supabase → Project Settings → 
 
 **Tablas:** `wa_customers`, `wa_conversations`, `products`, `inventory`,
 `orders`, `reviews`, `site_content`.
-**RPCs:** `wa_touch_customer`, `wa_get_active_conversation`,
+**RPCs:** `wa_admin_inbox`, `wa_admin_thread` (panel, solo admin), `wa_bot_paused` (webhook), `wa_touch_customer`, `wa_get_active_conversation`,
 `wa_claim_incoming_message`, `wa_recent_messages`, `wa_log_message`,
 `wa_check_stock`, `wa_create_handoff`, `wa_log_event`, `wa_set_draft_order`,
 `wa_update_lead`, `place_order`.

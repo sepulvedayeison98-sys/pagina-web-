@@ -8,8 +8,12 @@ function requireEnv(name: string): string {
   return value;
 }
 
-/** Envía un mensaje de texto libre por WhatsApp Cloud API. `to` en formato internacional sin "+". */
-export async function sendWhatsAppMessage(to: string, body: string): Promise<void> {
+/**
+ * Envía un mensaje de texto libre por WhatsApp Cloud API. `to` en formato
+ * internacional sin "+". Devuelve el id que Meta le asigna (wamid), o null
+ * si la respuesta no lo trae.
+ */
+export async function sendWhatsAppMessage(to: string, body: string): Promise<string | null> {
   const token = requireEnv("WHATSAPP_TOKEN");
   const phoneNumberId = requireEnv("WHATSAPP_PHONE_NUMBER_ID");
 
@@ -34,6 +38,9 @@ export async function sendWhatsAppMessage(to: string, body: string): Promise<voi
     const detail = await res.text().catch(() => "");
     throw new Error(`Error enviando WhatsApp (${res.status}): ${detail}`);
   }
+
+  const json = await res.json().catch(() => null);
+  return json?.messages?.[0]?.id ?? null;
 }
 
 /**
@@ -62,10 +69,31 @@ export interface IncomingWhatsAppMessage {
   from: string;
   waMessageId: string;
   name: string | null;
+  /** Solo para mensajes de texto: es lo único que el asesor sabe leer. */
   text: string | null;
+  /**
+   * Cómo se ve el mensaje en el panel. Para texto es el texto; para fotos,
+   * audios, etc. una etiqueta ("[Imagen] pie de foto"), para que quien
+   * atiende sepa que el cliente mandó algo aunque el bot no pueda leerlo.
+   */
+  display: string;
 }
 
-/** Extrae el primer mensaje de texto de un payload de webhook de WhatsApp Cloud API. */
+const ETIQUETAS: Record<string, string> = {
+  image: "Imagen",
+  audio: "Audio",
+  voice: "Nota de voz",
+  video: "Video",
+  document: "Documento",
+  sticker: "Sticker",
+  location: "Ubicación",
+  contacts: "Contacto",
+  reaction: "Reacción",
+  button: "Botón",
+  interactive: "Respuesta interactiva",
+};
+
+/** Extrae el primer mensaje entrante de un payload de webhook de WhatsApp Cloud API. */
 export function parseIncomingMessage(payload: unknown): IncomingWhatsAppMessage | null {
   const entry = (payload as any)?.entry?.[0];
   const value = entry?.changes?.[0]?.value;
@@ -75,5 +103,18 @@ export function parseIncomingMessage(payload: unknown): IncomingWhatsAppMessage 
   const name = value?.contacts?.[0]?.profile?.name ?? null;
   const text = message.type === "text" ? (message.text?.body ?? null) : null;
 
-  return { from: message.from, waMessageId: message.id, name, text };
+  let display = text ?? "";
+  if (text === null) {
+    const tipo: string = message.type ?? "desconocido";
+    const etiqueta = ETIQUETAS[tipo] ?? `Mensaje (${tipo})`;
+    const extra =
+      message[tipo]?.caption ??
+      message[tipo]?.filename ??
+      message[tipo]?.emoji ??
+      message.button?.text ??
+      null;
+    display = extra ? `[${etiqueta}] ${extra}` : `[${etiqueta}]`;
+  }
+
+  return { from: message.from, waMessageId: message.id, name, text, display };
 }

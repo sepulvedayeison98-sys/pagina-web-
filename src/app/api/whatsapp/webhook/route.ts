@@ -59,14 +59,6 @@ export async function POST(request: NextRequest) {
 /** Todo el trabajo pesado: ya se le respondió a Meta antes de llegar aquí. */
 async function atender(incoming: IncomingWhatsAppMessage) {
   try {
-    if (!incoming.text) {
-      await sendWhatsAppMessage(
-        incoming.from,
-        "Por ahora solo puedo leer mensajes de texto. ¿Me cuentas en palabras qué casco buscas?"
-      );
-      return;
-    }
-
     // Meta llama este endpoint sin sesión de usuario: la firma HMAC ya
     // verificada arriba es la autenticación real, así que se usa la service
     // role (las RPC wa_* ya no son ejecutables por `anon`/`authenticated`).
@@ -87,13 +79,34 @@ async function atender(incoming: IncomingWhatsAppMessage) {
     }
 
     // Candado de idempotencia: si Meta reenvía el mismo mensaje, aquí se corta
-    // y no se le responde dos veces al cliente.
+    // y no se le responde dos veces al cliente. Fotos, audios y demás también
+    // quedan en el chat con su etiqueta, para que se vean en el panel.
     const { data: esNuevo } = await supabase.rpc("wa_claim_incoming_message", {
       p_conversation_id: conversationId,
-      p_content: incoming.text,
+      p_content: incoming.display,
       p_wa_message_id: incoming.waMessageId,
     });
     if (esNuevo === false) return;
+
+    // Alguien tomó el chat desde el panel: el mensaje ya quedó guardado y
+    // aparece como no leído; el bot no se mete en la conversación.
+    const { data: pausado } = await supabase.rpc("wa_bot_paused", {
+      p_conversation_id: conversationId,
+    });
+    if (pausado === true) return;
+
+    if (!incoming.text) {
+      const aviso =
+        "Por ahora solo puedo leer mensajes de texto. ¿Me cuentas en palabras qué casco buscas?";
+      const wamid = await sendWhatsAppMessage(incoming.from, aviso);
+      await supabase.rpc("wa_log_message", {
+        p_conversation_id: conversationId,
+        p_role: "assistant",
+        p_content: aviso,
+        p_wa_message_id: wamid,
+      });
+      return;
+    }
 
     const { data: historyRows } = await supabase.rpc("wa_recent_messages", {
       p_conversation_id: conversationId,
@@ -105,13 +118,20 @@ async function atender(incoming: IncomingWhatsAppMessage) {
       (historyRows ?? []) as HistoryRow[]
     );
 
+    // El asesor tarda hasta ~30 s: si en ese rato alguien tomó el chat desde
+    // el panel, la respuesta se descarta en vez de pisarle la conversación.
+    const { data: pausadoAhora } = await supabase.rpc("wa_bot_paused", {
+      p_conversation_id: conversationId,
+    });
+    if (pausadoAhora === true) return;
+
+    const wamid = await sendWhatsAppMessage(incoming.from, reply);
     await supabase.rpc("wa_log_message", {
       p_conversation_id: conversationId,
       p_role: "assistant",
       p_content: reply,
+      p_wa_message_id: wamid,
     });
-
-    await sendWhatsAppMessage(incoming.from, reply);
   } catch (err) {
     console.error("whatsapp webhook error", err);
   }
