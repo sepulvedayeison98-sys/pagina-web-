@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { sendWhatsAppMessage } from "./client";
+import { esContactoWhatsApp, sendWhatsAppMessage } from "./client";
 
 /** Qué decir cuando Meta rechaza el envío, según su código de error. */
 function explicarError(detalle: string): string {
@@ -49,7 +49,7 @@ export async function enviarComoHumano(
     .eq("id", customerId)
     .maybeSingle();
   if (!cliente) return { error: "Cliente no encontrado." };
-  if (!/^\d{8,15}$/.test(cliente.phone)) {
+  if (!esContactoWhatsApp(cliente.phone)) {
     return { error: "Este chat es de prueba interna: no tiene un número de WhatsApp real." };
   }
 

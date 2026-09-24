@@ -9,9 +9,22 @@ function requireEnv(name: string): string {
 }
 
 /**
- * Envía un mensaje de texto libre por WhatsApp Cloud API. `to` en formato
- * internacional sin "+". Devuelve el id que Meta le asigna (wamid), o null
- * si la respuesta no lo trae.
+ * BSUID: el identificador que Meta usa para quien activó nombre de usuario
+ * en WhatsApp y ya no comparte su número ("US.13491208655302741918").
+ */
+export function esBsuid(id: string): boolean {
+  return /^[A-Z]{2}\.[A-Za-z0-9]+$/.test(id);
+}
+
+/** Si un id de contacto sirve para escribirle por WhatsApp (número o BSUID). */
+export function esContactoWhatsApp(id: string): boolean {
+  return /^\d{8,15}$/.test(id) || esBsuid(id);
+}
+
+/**
+ * Envía un mensaje de texto libre por WhatsApp Cloud API. `to` es el número
+ * en formato internacional sin "+", o el BSUID si el cliente no comparte su
+ * número. Devuelve el id que Meta le asigna (wamid), o null si no lo trae.
  */
 export async function sendWhatsAppMessage(to: string, body: string): Promise<string | null> {
   const token = requireEnv("WHATSAPP_TOKEN");
@@ -27,7 +40,10 @@ export async function sendWhatsAppMessage(to: string, body: string): Promise<str
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
-        to,
+        recipient_type: "individual",
+        // Con número se usa `to`; con BSUID, `recipient` (si llegan los dos,
+        // Meta usa `to`, así que no se mandan juntos).
+        ...(esBsuid(to) ? { recipient: to } : { to }),
         type: "text",
         text: { body, preview_url: false },
       }),
@@ -66,6 +82,10 @@ export function verifyWebhookSignature(
 }
 
 export interface IncomingWhatsAppMessage {
+  /**
+   * A quién responder: el número si Meta lo manda y, si no, el BSUID. Desde
+   * que existen los nombres de usuario de WhatsApp, `from` puede no venir.
+   */
   from: string;
   waMessageId: string;
   name: string | null;
@@ -100,7 +120,20 @@ export function parseIncomingMessage(payload: unknown): IncomingWhatsAppMessage 
   const message = value?.messages?.[0];
   if (!message) return null;
 
-  const name = value?.contacts?.[0]?.profile?.name ?? null;
+  const contacto = value?.contacts?.[0];
+  const from: string | null =
+    message.from ?? contacto?.wa_id ?? message.from_user_id ?? contacto?.user_id ?? null;
+  if (!from) {
+    // Sin número ni BSUID no hay a quién responder. Se deja rastro con las
+    // claves que sí llegaron para poder adaptar el código si Meta cambia algo.
+    console.error("whatsapp webhook: mensaje sin remitente", {
+      claves_mensaje: Object.keys(message),
+      claves_contacto: contacto ? Object.keys(contacto) : null,
+    });
+    return null;
+  }
+
+  const name = contacto?.profile?.name ?? contacto?.username ?? null;
   const text = message.type === "text" ? (message.text?.body ?? null) : null;
 
   let display = text ?? "";
@@ -116,5 +149,5 @@ export function parseIncomingMessage(payload: unknown): IncomingWhatsAppMessage 
     display = extra ? `[${etiqueta}] ${extra}` : `[${etiqueta}]`;
   }
 
-  return { from: message.from, waMessageId: message.id, name, text, display };
+  return { from, waMessageId: message.id, name, text, display };
 }

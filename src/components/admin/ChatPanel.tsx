@@ -103,7 +103,17 @@ function nombreDe(c: Pick<InboxRow, "name" | "phone">): string {
   return formatearTelefono(c.phone);
 }
 
+/**
+ * Número de WhatsApp o BSUID (quien activó nombre de usuario no comparte su
+ * número). Misma regla que esContactoWhatsApp del servidor; se repite aquí
+ * porque ese módulo usa crypto de Node y no puede ir al navegador.
+ */
+function esContacto(id: string): boolean {
+  return /^\d{8,15}$/.test(id) || /^[A-Z]{2}\.[A-Za-z0-9]+$/.test(id);
+}
+
 function formatearTelefono(phone: string): string {
+  if (/^[A-Z]{2}\.[A-Za-z0-9]+$/.test(phone)) return "Usuario de WhatsApp (sin número)";
   if (!/^\d{10,15}$/.test(phone)) return phone;
   if (phone.startsWith("57") && phone.length === 12) {
     return `+57 ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8)}`;
@@ -447,7 +457,7 @@ export default function ChatPanel({ initial }: { initial: InboxRow[] }) {
 
   // ── derivados del chat abierto ──
 
-  const esWhatsapp = activo ? /^\d{8,15}$/.test(activo.phone) : false;
+  const esWhatsapp = activo ? esContacto(activo.phone) : false;
   const fueraDeVentana =
     !!activo &&
     esWhatsapp &&
@@ -871,7 +881,7 @@ function FichaCliente({
 
   const items = Array.isArray(cliente.draft_order?.items) ? cliente.draft_order.items : [];
   const total = items.reduce((n, it) => n + (it.price ?? 0) * (it.qty ?? 1), 0);
-  const esWhatsapp = /^\d{8,15}$/.test(cliente.phone);
+  const esWhatsapp = esContacto(cliente.phone);
 
   async function guardar() {
     setGuardando(true);
@@ -916,7 +926,7 @@ function FichaCliente({
           </span>
           <p className="mt-2 font-semibold">{nombreDe(cliente)}</p>
           <p className="text-xs text-text-dark/50">{formatearTelefono(cliente.phone)}</p>
-          {esWhatsapp && (
+          {/^\d{8,15}$/.test(cliente.phone) && (
             <a
               href={`https://wa.me/${cliente.phone}`}
               target="_blank"
