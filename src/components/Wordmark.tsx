@@ -12,9 +12,16 @@ import logo from "@/assets/logo-rovex.webp";
 export default function Wordmark({
   className = "",
   onDark = false,
+  enlace = true,
 }: {
   className?: string;
   onDark?: boolean;
+  /**
+   * false cuando ya va dentro de otro enlace (la cabecera del panel lleva al
+   * inicio del admin): un <a> dentro de otro no es HTML válido y rompe la
+   * hidratación.
+   */
+  enlace?: boolean;
 }) {
   if (onDark) {
     return (
@@ -34,14 +41,18 @@ export default function Wordmark({
     );
   }
 
-  return (
-    <Link
-      href="/"
-      aria-label="ROVEX — inicio"
-      className={`inline-flex items-baseline font-display font-extrabold italic tracking-tight select-none text-text-dark ${className}`}
-    >
+  const clases = `inline-flex items-baseline font-display font-extrabold italic tracking-tight select-none text-text-dark ${className}`;
+  const marca = (
+    <>
       <span>ROVE</span>
       <span className="text-accent">X</span>
+    </>
+  );
+  if (!enlace) return <span className={clases}>{marca}</span>;
+
+  return (
+    <Link href="/" aria-label="ROVEX — inicio" className={clases}>
+      {marca}
     </Link>
   );
 }

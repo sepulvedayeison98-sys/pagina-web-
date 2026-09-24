@@ -56,6 +56,12 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ ok: true });
 }
 
+/**
+ * Espera antes de responder, para agrupar mensajes seguidos: mucha gente
+ * escribe "Hola" y enseguida la pregunta, o manda el mismo saludo dos veces.
+ */
+const AGRUPAR_MS = 2000;
+
 /** Todo el trabajo pesado: ya se le respondió a Meta antes de llegar aquí. */
 async function atender(incoming: IncomingWhatsAppMessage) {
   try {
@@ -95,6 +101,18 @@ async function atender(incoming: IncomingWhatsAppMessage) {
     });
     if (pausado === true) return;
 
+    // Si el cliente mandó otro mensaje después de este, responde el de ese
+    // último (su historial ya incluye este): así no le llegan dos respuestas.
+    const sigueSiendoElUltimo = async () => {
+      const { data } = await supabase.rpc("wa_is_latest_customer_message", {
+        p_conversation_id: conversationId,
+        p_wa_message_id: incoming.waMessageId,
+      });
+      return data !== false;
+    };
+    await new Promise((r) => setTimeout(r, AGRUPAR_MS));
+    if (!(await sigueSiendoElUltimo())) return;
+
     // Fotos y audios también pasan por el asesor (llegan como "[Imagen]",
     // "[Audio]"…): con contexto sabe si es el comprobante de una
     // transferencia o si tiene que pedir que se lo escriban.
@@ -116,6 +134,8 @@ async function atender(incoming: IncomingWhatsAppMessage) {
       p_conversation_id: conversationId,
     });
     if (pausadoAhora === true) return;
+    // Y si mientras tanto escribió algo más, esa respuesta ya quedó vieja.
+    if (!(await sigueSiendoElUltimo())) return;
 
     const wamid = await sendWhatsAppMessage(incoming.from, reply);
     await supabase.rpc("wa_log_message", {

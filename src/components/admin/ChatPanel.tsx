@@ -149,6 +149,45 @@ function formatoPesos(n: number): string {
   return formatCOP(n);
 }
 
+/**
+ * Formato de WhatsApp en el panel: *negrita*, _cursiva_, ~tachado~ y enlaces
+ * clicables. Sin esto los asteriscos del asesor se veían literales, cuando al
+ * cliente le llegan en negrita.
+ */
+const PATRON_FORMATO = /(https?:\/\/[^\s]+|\*[^*\n]+\*|_[^_\n]+_|~[^~\n]+~)/g;
+
+function conFormato(texto: string, oscuro: boolean): React.ReactNode[] {
+  return texto.split(PATRON_FORMATO).map((parte, i) => {
+    if (!parte) return null;
+    if (/^https?:\/\//.test(parte)) {
+      // El punto o la coma pegados al final son de la frase, no del enlace.
+      const url = parte.replace(/[.,;:!?)]+$/, "");
+      const resto = parte.slice(url.length);
+      return (
+        <span key={i}>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`break-all underline ${oscuro ? "text-white" : "text-accent"}`}
+          >
+            {url}
+          </a>
+          {resto}
+        </span>
+      );
+    }
+    const marca = parte[0];
+    if (parte.length > 2 && parte.endsWith(marca) && "*_~".includes(marca)) {
+      const interior = parte.slice(1, -1);
+      if (marca === "*") return <strong key={i}>{interior}</strong>;
+      if (marca === "_") return <em key={i}>{interior}</em>;
+      return <s key={i}>{interior}</s>;
+    }
+    return <span key={i}>{parte}</span>;
+  });
+}
+
 function necesitaHumano(c: InboxRow): boolean {
   return c.status === "escalada" || c.pending_handoffs > 0 || c.bot_paused;
 }
@@ -703,7 +742,9 @@ export default function ChatPanel({ initial }: { initial: InboxRow[] }) {
                                     )}
                                   </p>
                                 )}
-                                <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                                <p className="whitespace-pre-wrap break-words">
+                                  {conFormato(m.content, m.role === "human_agent")}
+                                </p>
                                 <p
                                   className={`mt-0.5 text-right text-[0.65rem] ${
                                     m.role === "human_agent" ? "text-white/50" : "text-text-dark/40"
@@ -758,11 +799,7 @@ export default function ChatPanel({ initial }: { initial: InboxRow[] }) {
                           }
                         }}
                         rows={1}
-                        placeholder={
-                          activo.bot_paused
-                            ? "Escribe un mensaje"
-                            : "Escribe un mensaje (al enviar, el bot se pausa en este chat)"
-                        }
+                        placeholder="Escribe un mensaje"
                         className="max-h-40 min-h-[42px] flex-1 resize-none rounded-2xl bg-text-dark/[0.05] px-4 py-2.5 text-sm placeholder:text-text-dark/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/30"
                         style={{ fieldSizing: "content" } as React.CSSProperties}
                       />
@@ -776,6 +813,7 @@ export default function ChatPanel({ initial }: { initial: InboxRow[] }) {
                       </button>
                     </div>
                     <p className="mt-1.5 px-1 text-[0.65rem] text-text-dark/35">
+                      {activo.bot_paused ? "" : "Al enviar, el bot se pausa en este chat · "}
                       Enter envía · Shift + Enter hace salto de línea
                     </p>
                   </>
