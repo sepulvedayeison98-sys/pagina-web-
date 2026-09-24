@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { enviarComoHumano } from "@/lib/whatsapp/panelActions";
+import { formatCOP } from "@/lib/format";
+import { etiquetaDia as separadorDia, hora as horaMensaje, horaLista, mismoDia } from "@/lib/fechas";
 
 /** Una fila de la bandeja: un chat por cliente (función wa_admin_inbox). */
 export interface InboxRow {
@@ -143,59 +145,8 @@ function colorAvatar(semilla: string): string {
   return colores[h % colores.length];
 }
 
-// Todas las fechas en hora de Colombia, fija: el servidor de Vercel corre en
-// UTC y el navegador en hora local, y si cada uno formatea con la suya el HTML
-// del servidor no coincide con el del cliente (y las horas salen corridas).
-const ZONA = "America/Bogota";
-const DIA_MS = 24 * 60 * 60 * 1000;
-
-const fmtClaveDia = new Intl.DateTimeFormat("en-CA", { timeZone: ZONA, year: "numeric", month: "2-digit", day: "2-digit" });
-const fmtHora = new Intl.DateTimeFormat("es-CO", { timeZone: ZONA, hour: "numeric", minute: "2-digit" });
-const fmtDiaSemana = new Intl.DateTimeFormat("es-CO", { timeZone: ZONA, weekday: "long" });
-const fmtFechaCorta = new Intl.DateTimeFormat("es-CO", { timeZone: ZONA, day: "2-digit", month: "2-digit", year: "2-digit" });
-const fmtFechaLarga = new Intl.DateTimeFormat("es-CO", { timeZone: ZONA, weekday: "long", day: "numeric", month: "long", year: "numeric" });
-
-/**
- * Node y el navegador traen versiones distintas de ICU: uno separa "p. m."
- * con espacio duro (U+00A0) y el otro con espacio fino (U+202F). Se ven
- * iguales, pero el HTML no coincide y React se queja al hidratar.
- */
-function limpio(texto: string): string {
-  return texto.replace(/[\u00a0\u202f]/g, " ");
-}
-
-/** "2026-09-24": el día calendario en Colombia, comparable como texto. */
-function claveDia(d: Date | string | number): string {
-  return fmtClaveDia.format(new Date(d));
-}
-
-function mismoDia(a: string, b: string) {
-  return claveDia(a) === claveDia(b);
-}
-
-/** Hora de la lista: como WhatsApp (hora hoy, "Ayer", día de la semana o fecha). */
-function horaLista(iso: string): string {
-  const d = new Date(iso);
-  const ahora = Date.now();
-  if (claveDia(d) === claveDia(ahora)) return limpio(fmtHora.format(d));
-  if (claveDia(d) === claveDia(ahora - DIA_MS)) return "Ayer";
-  if (ahora - d.getTime() < 6 * DIA_MS) return limpio(fmtDiaSemana.format(d));
-  return limpio(fmtFechaCorta.format(d));
-}
-
-function separadorDia(iso: string): string {
-  const ahora = Date.now();
-  if (claveDia(iso) === claveDia(ahora)) return "Hoy";
-  if (claveDia(iso) === claveDia(ahora - DIA_MS)) return "Ayer";
-  return limpio(fmtFechaLarga.format(new Date(iso)));
-}
-
-function horaMensaje(iso: string): string {
-  return limpio(fmtHora.format(new Date(iso)));
-}
-
 function formatoPesos(n: number): string {
-  return limpio(new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n));
+  return formatCOP(n);
 }
 
 function necesitaHumano(c: InboxRow): boolean {
