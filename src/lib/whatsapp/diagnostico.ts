@@ -233,7 +233,8 @@ export async function diagnosticarWhatsApp(): Promise<Diagnostico> {
     try {
       const params: Record<string, string> = {
         access_token: token,
-        fields: "display_phone_number,verified_name,quality_rating,code_verification_status",
+        fields:
+          "display_phone_number,verified_name,quality_rating,code_verification_status,name_status,platform_type,status",
       };
       if (appSecret) params.appsecret_proof = appsecretProof(token, appSecret);
 
@@ -253,6 +254,22 @@ export async function diagnosticarWhatsApp(): Promise<Diagnostico> {
           ? undefined
           : "Revisa WHATSAPP_PHONE_NUMBER_ID: es el ID numérico que aparece en WhatsApp → API Setup, no el número de teléfono. También falla si el token pertenece a otra cuenta de negocio.",
       });
+
+      // Que el número exista no basta: hasta registrarlo en Cloud API no
+      // envía ni recibe nada. platform_type pasa a CLOUD_API al registrarlo.
+      if (ok) {
+        const registrado = json.platform_type === "CLOUD_API";
+        checks.push({
+          titulo: "Registro del número en la API",
+          estado: registrado ? "ok" : "error",
+          detalle: `Plataforma ${json.platform_type ?? "n/d"} · estado ${
+            json.status ?? "n/d"
+          } · nombre visible ${json.name_status ?? "n/d"}.`,
+          arreglo: registrado
+            ? undefined
+            : "Regístralo con el formulario de abajo: muestra el motivo exacto si Meta lo rechaza. Si el nombre visible está DECLINED, corrígelo primero en WhatsApp Manager.",
+        });
+      }
     } catch (err) {
       checks.push({
         titulo: "Número de WhatsApp Business",

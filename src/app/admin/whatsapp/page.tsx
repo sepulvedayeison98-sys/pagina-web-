@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle2, RefreshCw, XCircle } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
+import NumberRegister from "@/components/admin/NumberRegister";
 import { createClient } from "@/lib/supabase/server";
 import { diagnosticarWhatsApp, type Estado } from "@/lib/whatsapp/diagnostico";
 
@@ -119,6 +120,8 @@ export default async function WhatsAppDiagnosticoPage() {
             </div>
           </dl>
         </div>
+
+        <NumberRegister />
 
         <a
           href="/admin/whatsapp"
