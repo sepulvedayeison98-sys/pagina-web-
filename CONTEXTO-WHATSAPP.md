@@ -165,6 +165,7 @@ Para cerrarlo: agregar la variable en Vercel (Supabase → Project Settings → 
 | `src/lib/agent/testAction.ts` | Server action para probar el agente desde el panel sin WhatsApp. |
 | `src/components/admin/AgentTester.tsx` | UI de esa prueba, dentro de `/admin/conversaciones`. |
 | `src/components/admin/ChatPanel.tsx` | Bandeja estilo WhatsApp Web: un chat por cliente, ordenado por llegada, no leídos, filtros, responder a mano, pausar el bot, archivar, eliminar y ficha del cliente. Refresca cada 3-5 s. |
+| `src/lib/whatsapp/notificaciones.ts` | Avisos al equipo por WhatsApp: conversación nueva (o cliente que vuelve tras 12 h) y escalamientos. Números en `WHATSAPP_NOTIFY_NUMBERS` (Vercel). Solo llegan si ese número le escribió al de ROVEX en las últimas 24 h. |
 | `src/lib/whatsapp/panelActions.ts` | Envío manual desde el panel (pausa el bot en ese chat). |
 | `src/app/admin/conversaciones/page.tsx` | Página de conversaciones. |
 

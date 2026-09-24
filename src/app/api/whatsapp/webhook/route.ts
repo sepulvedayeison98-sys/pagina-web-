@@ -8,6 +8,7 @@ import {
   type IncomingWhatsAppMessage,
 } from "@/lib/whatsapp/client";
 import { runEngine, type HistoryRow } from "@/lib/agent/engine";
+import { avisarConversacionNueva, esDelEquipo, VUELVE_TRAS_MS } from "@/lib/whatsapp/notificaciones";
 
 export const runtime = "nodejs";
 /** El asesor puede tardar ~30 s cuando encadena varias consultas al catálogo. */
@@ -94,6 +95,25 @@ async function atender(incoming: IncomingWhatsAppMessage) {
     });
     if (esNuevo === false) return;
 
+    // Aviso al equipo cuando alguien empieza a escribir: primer mensaje de la
+    // conversación, o vuelve tras horas sin escribir. Un mensaje del propio
+    // equipo no se avisa. Si el aviso falla, el cliente igual recibe respuesta.
+    if (!esDelEquipo(incoming.from)) {
+      const { data: anterior } = await supabase.rpc("wa_previous_customer_message_at", {
+        p_conversation_id: conversationId,
+        p_wa_message_id: incoming.waMessageId,
+      });
+      const vuelve = !!anterior && Date.now() - new Date(anterior as string).getTime() > VUELVE_TRAS_MS;
+      if (!anterior || vuelve) {
+        await avisarConversacionNueva({
+          nombre: incoming.name,
+          remitente: incoming.from,
+          mensaje: incoming.display,
+          vuelve,
+        }).catch((err) => console.error("aviso de conversación nueva", err));
+      }
+    }
+
     // Alguien tomó el chat desde el panel: el mensaje ya quedó guardado y
     // aparece como no leído; el bot no se mete en la conversación.
     const { data: pausado } = await supabase.rpc("wa_bot_paused", {
@@ -124,7 +144,7 @@ async function atender(incoming: IncomingWhatsAppMessage) {
     });
 
     const reply = await runEngine(
-      { supabase, customerId, conversationId, phone: incoming.from },
+      { supabase, customerId, conversationId, phone: incoming.from, customerName: incoming.name },
       (historyRows ?? []) as HistoryRow[]
     );
 

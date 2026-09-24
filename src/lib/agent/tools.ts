@@ -4,6 +4,8 @@ import { getCombo, getSiteContent } from "@/lib/data";
 import { text as contentText } from "@/lib/content";
 import { CATEGORIES } from "@/lib/products";
 import { siteUrl } from "@/lib/site";
+import { esContactoWhatsApp } from "@/lib/whatsapp/client";
+import { avisarEscalamiento } from "@/lib/whatsapp/notificaciones";
 
 export interface AgentContext {
   supabase: SupabaseClient;
@@ -11,6 +13,8 @@ export interface AgentContext {
   conversationId: string;
   /** Teléfono del remitente de WhatsApp; nunca se le pide al cliente ni al modelo. */
   phone: string;
+  /** Nombre de perfil de WhatsApp, para los avisos al equipo. */
+  customerName?: string | null;
 }
 
 const CATEGORY_IDS = CATEGORIES.map((c) => c.id);
@@ -521,5 +525,15 @@ async function escalarAHumano(input: Record<string, unknown>, ctx: AgentContext)
     p_summary: resumen,
   });
   if (error) return JSON.stringify({ error: error.message });
+
+  // Aviso al equipo por WhatsApp. La prueba del panel (sin número real) no avisa.
+  if (esContactoWhatsApp(ctx.phone)) {
+    await avisarEscalamiento({
+      nombre: ctx.customerName,
+      remitente: ctx.phone,
+      motivo,
+      resumen,
+    }).catch((err) => console.error("aviso de escalamiento", err));
+  }
   return JSON.stringify({ ok: true });
 }
