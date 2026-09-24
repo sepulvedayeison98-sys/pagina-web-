@@ -95,22 +95,14 @@ async function atender(incoming: IncomingWhatsAppMessage) {
     });
     if (pausado === true) return;
 
-    if (!incoming.text) {
-      const aviso =
-        "Por ahora solo puedo leer mensajes de texto. ¿Me cuentas en palabras qué casco buscas?";
-      const wamid = await sendWhatsAppMessage(incoming.from, aviso);
-      await supabase.rpc("wa_log_message", {
-        p_conversation_id: conversationId,
-        p_role: "assistant",
-        p_content: aviso,
-        p_wa_message_id: wamid,
-      });
-      return;
-    }
-
+    // Fotos y audios también pasan por el asesor (llegan como "[Imagen]",
+    // "[Audio]"…): con contexto sabe si es el comprobante de una
+    // transferencia o si tiene que pedir que se lo escriban.
+    // 40 mensajes: con 20, en conversaciones largas olvidaba la talla o el
+    // nombre que el cliente dio al principio.
     const { data: historyRows } = await supabase.rpc("wa_recent_messages", {
       p_conversation_id: conversationId,
-      p_limit: 20,
+      p_limit: 40,
     });
 
     const reply = await runEngine(

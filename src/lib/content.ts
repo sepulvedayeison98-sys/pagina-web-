@@ -303,6 +303,73 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     ],
   },
   {
+    id: "venta",
+    title: "Asesor de WhatsApp: reglas de venta",
+    description:
+      "Lo que el asesor virtual sabe del negocio para cerrar ventas solo. Nunca inventa nada que no esté aquí o en el catálogo: si un dato falta, no lo ofrece. Estos textos no se muestran en la tienda.",
+    fields: [
+      {
+        key: "venta.envioGratisDesde",
+        label: "Envío gratis desde (pesos, solo el número)",
+        value: "150000",
+      },
+      {
+        key: "venta.costoEnvio",
+        label: "Costo del envío por debajo de ese monto",
+        value: "",
+        help: "Ej: «$15.000 a todo el país» o «$12.000 en Medellín, $18.000 resto del país». Si lo dejas vacío, el asesor no da un valor: lo deja anotado para confirmarlo al despachar.",
+      },
+      {
+        key: "venta.envioGratisNegociable",
+        label: "¿Puede regalar el envío para cerrar?",
+        value: "si",
+        help: "«si» o «no». Con «si», cuando la compra no llega al mínimo, el asesor puede ofrecer el envío gratis como último argumento para cerrar (una vez, nunca de entrada). No da descuentos en el precio.",
+      },
+      {
+        key: "venta.tiempoEntrega",
+        label: "Tiempo de entrega",
+        value: "1 a 3 días hábiles en las principales ciudades. Cobertura nacional.",
+      },
+      {
+        key: "venta.contraentrega",
+        label: "¿Acepta pago contraentrega?",
+        value: "si",
+        help: "«si» o «no». Con «si», el cliente paga al recibir y el pedido queda listo para despachar.",
+      },
+      {
+        key: "venta.transferencia",
+        label: "Datos para pago por transferencia o Nequi",
+        value: "",
+        multiline: true,
+        help: "Banco, tipo y número de cuenta, titular (y/o número de Nequi). El asesor se los pasa al cliente y le pide el comprobante; tú confirmas el pago en Pedidos. Si lo dejas vacío, solo ofrece contraentrega.",
+      },
+      {
+        key: "venta.cambios",
+        label: "Política de cambios",
+        value: "30 días para cambio o devolución sin costo si no era tu talla.",
+      },
+      {
+        key: "venta.garantia",
+        label: "Garantía",
+        value: "2 años contra defectos de fabricación, con soporte postventa directo con ROVEX.",
+      },
+      {
+        key: "venta.colores",
+        label: "Colores disponibles por referencia",
+        value: "",
+        multiline: true,
+        help: "Una línea por casco, ej: «ICH 501 SOLID: negro mate, negro brillante, blanco». El catálogo solo dice el acabado (SOLID), no el tono. Si lo dejas vacío, el asesor anota el color que prefiere el cliente para confirmarlo al despachar.",
+      },
+      {
+        key: "venta.notas",
+        label: "Otras reglas para el asesor",
+        value: "",
+        multiline: true,
+        help: "Horario de despacho, ciudades sin cobertura, lo que sea que deba saber. Escríbelo como se lo dirías a un vendedor nuevo.",
+      },
+    ],
+  },
+  {
     id: "footer",
     title: "Pie de página",
     description: "El texto bajo el logo, en el pie.",

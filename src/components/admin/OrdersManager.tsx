@@ -136,7 +136,7 @@ export default function OrdersManager({ initial }: { initial: OrderRow[] }) {
                     {new Date(o.created_at).toLocaleString("es-CO")}
                     {o.customer_city ? ` · ${o.customer_city}` : ""}
                   </p>
-                  {o.customer_phone && (
+                  {o.customer_phone && /^\d{8,15}$/.test(o.customer_phone) && (
                     <a
                       href={`https://wa.me/${o.customer_phone.replace(/\D/g, "")}`}
                       target="_blank"
@@ -170,6 +170,14 @@ export default function OrdersManager({ initial }: { initial: OrderRow[] }) {
                   </li>
                 ))}
               </ul>
+
+              {/* Dirección, pago y envío que deja el asesor de WhatsApp:
+                  es lo que hace falta para despachar sin volver a escribirle. */}
+              {o.note && (
+                <p className="mt-3 whitespace-pre-line rounded-xl bg-text-dark/[0.04] px-3 py-2.5 text-xs leading-relaxed text-text-dark/75">
+                  {o.note}
+                </p>
+              )}
 
               {o.status !== "cancelado" && (
                 <div className="mt-4 flex flex-wrap items-center gap-2">

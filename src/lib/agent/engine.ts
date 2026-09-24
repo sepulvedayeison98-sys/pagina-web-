@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { PRIMER_CONTACTO, SYSTEM_PROMPT } from "./prompt";
+import { getSiteContent } from "@/lib/data";
+import { PRIMER_CONTACTO, SYSTEM_PROMPT, reglasDelNegocio } from "./prompt";
 import { AGENT_TOOLS, executeTool, type AgentContext } from "./tools";
 
 const client = new Anthropic();
@@ -46,8 +47,12 @@ export async function runEngine(
   // Solo el mensaje entrante en el historial ⇒ es el primer contacto y toca
   // presentarse. En los turnos siguientes no se envía ese bloque, para que
   // no vuelva a saludar a mitad de la conversación.
-  const system =
-    messages.length <= 1 ? `${SYSTEM_PROMPT}\n\n${PRIMER_CONTACTO}` : SYSTEM_PROMPT;
+  // Las reglas del negocio (envío, pagos, colores…) se leen del panel en
+  // cada turno: un cambio en Textos aplica desde el siguiente mensaje.
+  const reglas = reglasDelNegocio(await getSiteContent());
+  const system = [SYSTEM_PROMPT, reglas, messages.length <= 1 ? PRIMER_CONTACTO : null]
+    .filter(Boolean)
+    .join("\n\n");
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     // Con muchas consultas seguidas (p. ej. revisar la talla en varios
