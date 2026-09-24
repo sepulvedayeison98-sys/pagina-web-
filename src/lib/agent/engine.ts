@@ -5,8 +5,12 @@ import { AGENT_TOOLS, executeTool, type AgentContext } from "./tools";
 
 const client = new Anthropic();
 
-/** Tope de vueltas del loop de tools: evita una conversación colgada consumiendo tokens sin fin. */
-const MAX_ITERATIONS = 6;
+/**
+ * Tope de vueltas del loop de tools: evita una conversación colgada
+ * consumiendo tokens sin fin. La última vuelta siempre es sin herramientas,
+ * para obligar a contestarle al cliente con lo que ya se averiguó.
+ */
+const MAX_ITERATIONS = 8;
 
 export interface HistoryRow {
   role: "customer" | "assistant" | "system" | "human_agent";
@@ -46,11 +50,17 @@ export async function runEngine(
     messages.length <= 1 ? `${SYSTEM_PROMPT}\n\n${PRIMER_CONTACTO}` : SYSTEM_PROMPT;
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
+    // Con muchas consultas seguidas (p. ej. revisar la talla en varios
+    // cascos) el modelo podía agotar las vueltas sin escribir nada, y el
+    // cliente recibía el mensaje de respaldo aunque la respuesta ya estaba
+    // averiguada. En la última vuelta se le quitan las herramientas.
+    const ultimaVuelta = i === MAX_ITERATIONS - 1;
     const response = await client.messages.create({
       model: "claude-opus-5",
       max_tokens: 1024,
       system,
       tools: AGENT_TOOLS,
+      ...(ultimaVuelta ? { tool_choice: { type: "none" as const } } : {}),
       messages,
     });
 
@@ -82,8 +92,13 @@ export async function runEngine(
   return collectedText.join("\n\n") || FALLBACK_REPLY;
 }
 
+/**
+ * Solo si ni la vuelta final produjo texto. No promete "te escribo ahorita":
+ * el asesor solo contesta cuando el cliente escribe, así que esa promesa lo
+ * dejaba esperando para siempre. Pedirle que repita reactiva la conversación.
+ */
 const FALLBACK_REPLY =
-  "Dame un momento para confirmar bien ese dato y te escribo enseguida.";
+  "Perdona, se me enredó el sistema buscando eso. ¿Me lo repites y te respondo de una?";
 
 function extractText(content: Anthropic.ContentBlock[]): string {
   return content
