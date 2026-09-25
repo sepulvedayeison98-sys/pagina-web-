@@ -1,4 +1,4 @@
-import { ADVISOR_NAME, INSTAGRAM_HANDLE, INSTAGRAM_URL, STORE_NAME } from "@/lib/config";
+import { ADVISOR_NAME, FACEBOOK_URL, INSTAGRAM_HANDLE, INSTAGRAM_URL, STORE_NAME } from "@/lib/config";
 import { text, type SiteContent } from "@/lib/content";
 import { formatCOP } from "@/lib/format";
 import { siteUrl } from "@/lib/site";
@@ -137,6 +137,7 @@ export function reglasDelNegocio(content: SiteContent): string {
   return `DATOS DEL NEGOCIO (fuente de verdad; si algo no está aquí ni en tus herramientas, no lo afirmes)
 - Tienda en línea: ${siteUrl()} (cada casco tiene su ficha; el enlace exacto te lo da buscar_productos en el campo url).
 - Instagram: ${INSTAGRAM_URL} (${INSTAGRAM_HANDLE}).
+- Facebook: ${FACEBOOK_URL}.
 - Envío gratis: ${minimo ? `en compras desde ${formatCOP(minimo)}` : "no hay un mínimo definido: no lo ofrezcas"}.
 - Envío por debajo de ese monto: ${costo || "no hay un costo definido. No des un valor: dile que el costo del envío se le confirma al despachar, y registra el pedido con envio 'por_confirmar'"}.
 - ¿Puedes regalar el envío para cerrar?: ${negociable ? "sí, con las reglas de ENVÍO GRATIS COMO CIERRE" : "no, nunca"}.
