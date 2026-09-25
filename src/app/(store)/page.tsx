@@ -190,6 +190,7 @@ export default async function Home() {
       </section>
 
       {/* ───────────────── RESEÑAS ───────────────── */}
+      {reviews.length > 0 && (
       <section className="bg-paper">
         <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
           <Reveal className="mb-12 text-center">
@@ -217,6 +218,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ───────────────── COMUNIDAD (Instagram) ───────────────── */}
       <section id="comunidad" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">

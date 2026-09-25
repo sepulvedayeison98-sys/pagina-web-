@@ -112,12 +112,14 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="eyebrow text-text-light/40">{categoryLabel(product.category)}</span>
           <h3 className="text-base font-semibold leading-snug">{product.name}</h3>
 
-          <div className="flex items-center gap-2">
-            <Stars rating={product.rating} size={14} emptyClassName="text-text-light/25" />
-            <span className="text-xs text-text-light/45">
-              ({product.reviewCount})
-            </span>
-          </div>
+          {product.reviewCount > 0 && (
+            <div className="flex items-center gap-2">
+              <Stars rating={product.rating} size={14} emptyClassName="text-text-light/25" />
+              <span className="text-xs text-text-light/45">
+                ({product.reviewCount})
+              </span>
+            </div>
+          )}
 
           <div className="mt-auto flex items-baseline gap-2 pt-2">
             <span className="text-lg font-bold text-accent">

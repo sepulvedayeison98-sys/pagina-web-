@@ -48,10 +48,9 @@ function ProductTile({ product }: { product: Product }) {
         <h3 className="font-display text-xl font-semibold tracking-tight">
           {product.name}
         </h3>
-        <p className="line-clamp-2 text-sm text-text-dark/60">
-          {product.description ||
-            `${product.rating.toFixed(1)} de valoración · ${product.reviewCount} reseñas`}
-        </p>
+        {product.description && (
+          <p className="line-clamp-2 text-sm text-text-dark/60">{product.description}</p>
+        )}
         <div className="mt-1 flex items-baseline gap-2">
           <span className="text-lg font-bold text-accent">
             {formatCOP(product.price)}

@@ -14,6 +14,9 @@ export const STORE_NAME = "ROVEX";
 export const INSTAGRAM_URL = "https://www.instagram.com/cascosrovex/";
 export const INSTAGRAM_HANDLE = "@cascosrovex";
 
+/** Página de Facebook "Cascos Rovex" (por ID; cambiar por el nombre de usuario si se crea uno). */
+export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=1261423490389201";
+
 /** Nombre con el que se presenta el asesor virtual de WhatsApp. */
 export const ADVISOR_NAME = "Juliana";
 

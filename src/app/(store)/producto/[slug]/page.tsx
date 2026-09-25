@@ -115,12 +115,14 @@ export default async function ProductPage({
             {product.name}
           </h1>
 
-          <div className="mt-3 flex items-center gap-3">
-            <Stars rating={product.rating} emptyClassName="text-text-light/25" />
-            <span className="text-sm text-text-light/55">
-              {product.rating.toFixed(1)} · {product.reviewCount} reseñas
-            </span>
-          </div>
+          {product.reviewCount > 0 && (
+            <div className="mt-3 flex items-center gap-3">
+              <Stars rating={product.rating} emptyClassName="text-text-light/25" />
+              <span className="text-sm text-text-light/55">
+                {product.rating.toFixed(1)} · {product.reviewCount} reseñas
+              </span>
+            </div>
+          )}
 
           <div className="mt-6 flex items-baseline gap-3">
             <span className="text-3xl font-extrabold text-accent">

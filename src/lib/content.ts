@@ -84,10 +84,10 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     title: "Portada · cifras de confianza",
     description: "Los cuatro datos que aparecen abajo en el banner.",
     fields: [
-      { key: "hero.stat1.num", label: "Cifra 1", value: "4.8/5" },
-      { key: "hero.stat1.label", label: "Texto 1", value: "Valoración de pilotos" },
-      { key: "hero.stat2.num", label: "Cifra 2", value: "+4.800" },
-      { key: "hero.stat2.label", label: "Texto 2", value: "Motociclistas en Colombia" },
+      { key: "hero.stat1.num", label: "Cifra 1", value: "2 años" },
+      { key: "hero.stat1.label", label: "Texto 1", value: "Garantía de fábrica" },
+      { key: "hero.stat2.num", label: "Cifra 2", value: "Contra entrega" },
+      { key: "hero.stat2.label", label: "Texto 2", value: "Pagas al recibir" },
       { key: "hero.stat3.num", label: "Cifra 3", value: "ECE 22.06" },
       { key: "hero.stat3.label", label: "Texto 3", value: "Certificación homologada" },
       { key: "hero.stat4.num", label: "Cifra 4", value: "1-3 días" },
@@ -258,7 +258,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       {
         key: "reviews.title",
         label: "Título",
-        value: "4.8 / 5 en satisfacción",
+        value: "Lo que dicen nuestros clientes",
       },
       {
         key: "reviews.subtitle",

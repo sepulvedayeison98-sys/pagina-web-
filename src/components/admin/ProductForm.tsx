@@ -60,7 +60,7 @@ export default function ProductForm({ initial }: { initial?: ProductRow }) {
     initial?.compare_at != null ? String(initial.compare_at) : ""
   );
   const [badge, setBadge] = useState(initial?.badge ?? "");
-  const [rating, setRating] = useState(String(initial?.rating ?? "4.5"));
+  const [rating, setRating] = useState(String(initial?.rating ?? "0"));
   const [reviewCount, setReviewCount] = useState(
     String(initial?.review_count ?? "0")
   );
