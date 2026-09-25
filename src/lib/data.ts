@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { CONTENT_DEFAULTS, type SiteContent } from "./content";
 import {
   MOCK_PRODUCTS,
-  MOCK_REVIEWS,
   SIZES,
   type Category,
   type Product,
@@ -215,9 +214,9 @@ export async function getReviews(): Promise<Review[]> {
       .is("product_id", null)
       .order("review_date", { ascending: false })
       .limit(6);
-    if (error || !data || data.length === 0) return MOCK_REVIEWS;
+    if (error || !data) return [];
     return data.map(rowToReview);
   } catch {
-    return MOCK_REVIEWS;
+    return [];
   }
 }

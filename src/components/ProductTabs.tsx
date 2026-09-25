@@ -27,7 +27,7 @@ export default function ProductTabs({
   return (
     <div>
       <div className="flex flex-wrap gap-1 border-b border-text-light/10">
-        {TABS.map((t) => {
+        {TABS.filter((t) => t.id !== "resenas" || reviews.length > 0).map((t) => {
           const on = t.id === tab;
           return (
             <button
