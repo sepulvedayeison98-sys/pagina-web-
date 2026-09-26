@@ -57,7 +57,7 @@ function buildWhatsAppLink(
     `*TOTAL:  ${formatCOP(subtotal)}*\n` +
     `${divider}\n\n` +
     `*Envío a:* _(ciudad y dirección)_\n` +
-    `*Pago:* _(transferencia / contraentrega)_\n\n` +
+    `*Pago:* _(anticipado / contra entrega)_\n\n` +
     `¡Quedo atento para confirmar disponibilidad!`;
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;

@@ -30,8 +30,9 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
       <ul className="list-disc space-y-2 pl-5">
         <li>
           <strong>Datos de pedido:</strong> lo que nos compartes al finalizar
-          una compra por WhatsApp — nombre, teléfono, ciudad, dirección de
-          envío y los productos elegidos.
+          una compra por WhatsApp — nombre, documento de identidad (lo pide la
+          transportadora para la guía de envío), teléfono, ciudad, dirección
+          de envío y los productos elegidos.
         </li>
         <li>
           <strong>Conversaciones de WhatsApp:</strong> los mensajes que nos

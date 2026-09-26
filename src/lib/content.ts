@@ -323,7 +323,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
         key: "venta.envioGratisNegociable",
         label: "¿Puede regalar el envío para cerrar?",
         value: "si",
-        help: "«si» o «no». Con «si», cuando la compra no llega al mínimo, el asesor puede ofrecer el envío gratis como último argumento para cerrar (una vez, nunca de entrada). No da descuentos en el precio.",
+        help: "«si» o «no». Con «si», cuando la compra no llega al mínimo, el asesor puede ofrecer el envío gratis como último argumento para cerrar (una vez, nunca de entrada). Aparte del descuento por pago anticipado, no da otros descuentos.",
       },
       {
         key: "venta.tiempoEntrega",
@@ -338,10 +338,16 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       },
       {
         key: "venta.transferencia",
-        label: "Datos para pago por transferencia o Nequi",
+        label: "Datos para pago anticipado (transferencia / Nequi)",
         value: "",
         multiline: true,
-        help: "Banco, tipo y número de cuenta, titular (y/o número de Nequi). El asesor se los pasa al cliente y le pide el comprobante; tú confirmas el pago en Pedidos. Si lo dejas vacío, solo ofrece contraentrega.",
+        help: "Banco, tipo y número de cuenta, titular (y/o número de Nequi). El asesor se los pasa al cliente al cerrar y le pide el comprobante; tú lo confirmas en Pedidos. Si lo dejas vacío, el asesor NO ofrece pago anticipado (ni su descuento): solo contra entrega.",
+      },
+      {
+        key: "venta.descuentoAnticipado",
+        label: "Descuento por pago anticipado (%)",
+        value: "5",
+        help: "Solo el número, ej. «5». Aplica a toda la compra, combo incluido, y el total del pedido queda guardado con el descuento. «0» o vacío = sin descuento.",
       },
       {
         key: "venta.cambios",

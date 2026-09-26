@@ -148,11 +148,17 @@ export const AGENT_TOOLS: Anthropic.Tool[] = [
   {
     name: "registrar_pedido",
     description:
-      "Registra el pedido definitivo, listo para despachar. Solo después de que el cliente confirmó el resumen final (productos, tallas, total, dirección y forma de pago). Verifica el stock antes de guardar y devuelve error si algo se agotó. El teléfono se toma solo del chat.",
+      "Registra el pedido definitivo, listo para despachar. Solo después de que el cliente confirmó el resumen final (productos, tallas, total, dirección y forma de pago). Verifica el stock antes de guardar y devuelve error si algo se agotó. Devuelve el número de pedido y el total final (con el descuento por pago anticipado si aplica). El teléfono se toma solo del chat.",
     input_schema: {
       type: "object",
       properties: {
+        pedido_web: {
+          type: "integer",
+          description:
+            "Si el cliente llegó desde el carrito de la web con un mensaje 'PEDIDO ROVEX #N', el número N. Así se completa ese mismo pedido en vez de crear uno repetido. Si no cambió nada de lo que pidió en la web, NO mandes items.",
+        },
         customer_name: { type: "string", description: "Nombre y apellido del cliente." },
+        documento: { type: "string", description: "Número de documento de identidad (cédula), para la guía de envío." },
         customer_city: { type: "string" },
         direccion: {
           type: "string",
@@ -162,29 +168,44 @@ export const AGENT_TOOLS: Anthropic.Tool[] = [
           type: "string",
           description: "Referencias para el mensajero (portería, color de la casa, horario). Opcional.",
         },
-        metodo_pago: { type: "string", enum: ["contraentrega", "transferencia"] },
+        metodo_pago: { type: "string", enum: ["contraentrega", "anticipado"] },
         envio: {
           type: "string",
           enum: ["gratis_por_monto", "gratis_negociado", "pagado", "por_confirmar"],
           description:
-            "gratis_por_monto: la compra llega al mínimo. gratis_negociado: se lo regalaste para cerrar. pagado: tiene costo y ya se lo dijiste. por_confirmar: no hay costo definido en DATOS DEL NEGOCIO.",
+            "gratis_por_monto: la compra llega al mínimo (o es el combo, que trae envío gratis). gratis_negociado: se lo regalaste para cerrar. pagado: tiene costo y ya se lo dijiste. por_confirmar: no hay costo definido en DATOS DEL NEGOCIO.",
         },
         costo_envio: { type: "number", description: "Valor del envío en pesos, solo si envio es 'pagado'." },
+        colores: {
+          type: "string",
+          description: "Color o colores que prefiere el cliente, tal como los dijo (ej. 'negro mate y blanco').",
+        },
         items: {
           type: "array",
+          description:
+            "Productos del pedido. Obligatorio si no hay pedido_web, o si el cliente cambió algo respecto a lo que pidió en la web.",
           items: {
             type: "object",
             properties: {
               slug: { type: "string" },
-              size: { type: "string" },
+              size: { type: "string", description: "Talla. Para el combo: las dos tallas, ej. 'XL + L'." },
               qty: { type: "integer", minimum: 1 },
-              color: { type: "string", description: "Color que prefiere el cliente, si lo dijo." },
+              componentes: {
+                type: "array",
+                description:
+                  "Solo para el combo: los dos cascos que lo forman, con su talla (slugs de consultar_combo). Es de donde se descuenta el inventario.",
+                items: {
+                  type: "object",
+                  properties: { slug: { type: "string" }, size: { type: "string" } },
+                  required: ["slug", "size"],
+                },
+              },
             },
             required: ["slug", "size", "qty"],
           },
         },
       },
-      required: ["customer_name", "customer_city", "direccion", "metodo_pago", "envio", "items"],
+      required: ["customer_name", "documento", "customer_city", "direccion", "metodo_pago", "envio"],
     },
   },
   {
@@ -322,7 +343,15 @@ async function consultarCombo() {
     nombre: combo.name,
     precio: combo.price,
     compareAt: combo.compareAt,
-    opciones: combo.options.map((o) => ({ slug: o.slug, name: o.name, variant: o.variant, sizes: o.sizes })),
+    // Los cascos que forman el combo: sus slugs van en componentes al
+    // registrar, y url es la ficha para compartir.
+    opciones: combo.options.map((o) => ({
+      slug: o.slug,
+      name: o.name,
+      variant: o.variant,
+      sizes: o.sizes,
+      url: `${siteUrl()}/producto/${o.slug}`,
+    })),
     titulo: contentText(content, "combo.title"),
     incluye: contentText(content, "combo.includes"),
   });
@@ -399,32 +428,42 @@ interface ItemPedido {
   slug: string;
   size: string;
   qty: number;
-  color?: string;
+  componentes?: { slug: string; size: string }[];
 }
 
 const ENVIO_TEXTO: Record<string, string> = {
-  gratis_por_monto: "gratis (la compra llega al mínimo)",
+  gratis_por_monto: "gratis",
   gratis_negociado: "gratis (regalado por el asesor para cerrar)",
   pagado: "pagado por el cliente",
   por_confirmar: "POR CONFIRMAR: no hay costo definido, confirmarlo con el cliente al despachar",
 };
 
+/** Porcentaje de descuento por pago anticipado configurado en el panel (0 si no hay). */
+export function descuentoAnticipado(content: Record<string, string>): number {
+  const pct = Number(contentText(content, "venta.descuentoAnticipado").replace(",", ".").replace(/[^\d.]/g, ""));
+  return Number.isFinite(pct) && pct > 0 ? Math.min(pct, 50) : 0;
+}
+
 async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext) {
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
+  const pedidoWeb = typeof input.pedido_web === "number" && input.pedido_web > 0 ? Math.floor(input.pedido_web) : null;
   const customerName = str(input.customer_name);
+  const documento = str(input.documento);
   const customerCity = str(input.customer_city);
   const direccion = str(input.direccion);
   const indicaciones = str(input.indicaciones);
   const metodoPago = str(input.metodo_pago);
   const envio = str(input.envio);
+  const colores = str(input.colores);
   const costoEnvio = typeof input.costo_envio === "number" ? input.costo_envio : null;
   const items = (Array.isArray(input.items) ? input.items : []) as ItemPedido[];
 
   const faltan = [
-    !customerName && "nombre",
+    !customerName && "nombre y apellido",
+    !documento && "documento de identidad",
     !customerCity && "ciudad",
     !direccion && "dirección",
-    items.length === 0 && "productos",
+    items.length === 0 && !pedidoWeb && "productos",
   ].filter(Boolean);
   if (faltan.length > 0) {
     return JSON.stringify({ error: `Falta: ${faltan.join(", ")}. Pídeselo al cliente antes de registrar.` });
@@ -433,20 +472,25 @@ async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext
   // Las formas de pago salen del panel: si no está habilitada, no se registra.
   const content = await getSiteContent();
   const aceptaContraentrega = contentText(content, "venta.contraentrega").toLowerCase() !== "no";
-  const datosTransferencia = contentText(content, "venta.transferencia").trim();
+  const datosPago = contentText(content, "venta.transferencia").trim();
+  if (!["contraentrega", "anticipado"].includes(metodoPago)) {
+    return JSON.stringify({ error: "Forma de pago inválida: usa contraentrega o anticipado." });
+  }
   if (metodoPago === "contraentrega" && !aceptaContraentrega) {
-    return JSON.stringify({ error: "Contraentrega no está habilitada. Ofrece transferencia." });
+    return JSON.stringify({ error: "Contraentrega no está habilitada. Ofrece pago anticipado." });
   }
-  if (metodoPago === "transferencia" && !datosTransferencia) {
-    return JSON.stringify({ error: "No hay datos de transferencia configurados. Ofrece contraentrega." });
+  if (metodoPago === "anticipado" && !datosPago) {
+    return JSON.stringify({ error: "No hay datos para pago anticipado configurados. Ofrece contraentrega." });
   }
-  if (!["contraentrega", "transferencia"].includes(metodoPago)) {
-    return JSON.stringify({ error: "Forma de pago inválida." });
-  }
+  const pct = metodoPago === "anticipado" ? descuentoAnticipado(content) : 0;
 
   // Stock justo antes de guardar: entre la consulta y el "sí" del cliente
-  // puede haberse vendido la última unidad.
-  for (const it of items) {
+  // puede haberse vendido la última unidad. En el combo se revisan los
+  // cascos que lo forman, que es de donde sale el inventario.
+  const aRevisar = items.flatMap((it) =>
+    Array.isArray(it.componentes) && it.componentes.length > 0 ? it.componentes : [{ slug: it.slug, size: it.size }]
+  );
+  for (const it of aRevisar) {
     const { data: filas } = await ctx.supabase.rpc("wa_check_stock", { p_slug: it.slug, p_size: it.size });
     const estado = (filas as { status: string }[] | null)?.[0]?.status;
     if (estado === "agotado") {
@@ -456,16 +500,16 @@ async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext
     }
   }
 
-  const lineasColor = items
-    .filter((it) => str(it.color))
-    .map((it) => `- ${it.slug} ${it.size}: color ${str(it.color)}`);
   const nota = [
     `Pedido tomado por el asesor de WhatsApp.`,
+    `Documento: ${documento}`,
     `Dirección: ${direccion}`,
     indicaciones && `Indicaciones: ${indicaciones}`,
-    `Pago: ${metodoPago === "contraentrega" ? "contraentrega (paga al recibir)" : "transferencia (verificar comprobante antes de despachar)"}`,
+    metodoPago === "contraentrega"
+      ? "Pago: contra entrega (paga al recibir)"
+      : `Pago: ANTICIPADO — verificar el comprobante antes de despachar${pct ? ` (incluye ${pct}% de descuento)` : ""}`,
     `Envío: ${ENVIO_TEXTO[envio] ?? envio}${envio === "pagado" && costoEnvio ? ` — ${costoEnvio} COP` : ""}`,
-    lineasColor.length > 0 && `Colores:\n${lineasColor.join("\n")}`,
+    colores && `Colores: ${colores}`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -474,24 +518,28 @@ async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext
     p_customer_name: customerName,
     p_customer_phone: ctx.phone,
     p_customer_city: customerCity,
-    p_items: items.map(({ slug, size, qty }) => ({ slug, size, qty })),
+    p_items:
+      items.length > 0
+        ? items.map(({ slug, size, qty, componentes }) => ({
+            slug,
+            size,
+            qty,
+            ...(Array.isArray(componentes) && componentes.length > 0 ? { components: componentes } : {}),
+          }))
+        : null,
     p_note: nota,
+    p_descuento_pct: pct,
+    p_pedido_web: pedidoWeb,
   });
   if (error) return JSON.stringify({ error: error.message });
 
-  const code = data as number;
+  const r = data as { codigo: number; total: number; completo_pedido_web: boolean; pedido_web_encontrado: boolean };
+  const code = r.codigo;
 
-  // Total de productos con los mismos precios que usa place_order.
-  const { data: precios } = await ctx.supabase
-    .from("products")
-    .select("slug,price")
-    .in("slug", items.map((it) => it.slug));
-  const precioDe = new Map((precios ?? []).map((p) => [p.slug as string, p.price as number]));
-  const totalProductos = items.reduce((n, it) => n + (precioDe.get(it.slug) ?? 0) * (it.qty || 1), 0);
   await ctx.supabase.rpc("wa_update_lead", {
     p_customer_id: ctx.customerId,
-    // Con transferencia la venta queda cerrada pero el pago pendiente.
-    p_stage: metodoPago === "transferencia" ? "pendiente_pago" : "comprado",
+    // Con pago anticipado la venta queda cerrada pero el pago pendiente.
+    p_stage: metodoPago === "anticipado" ? "pendiente_pago" : "comprado",
     p_score: 95,
     p_note: `Pedido #${code} registrado por el agente (${metodoPago}).`,
   });
@@ -499,7 +547,7 @@ async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext
     p_conversation_id: ctx.conversationId,
     p_customer_id: ctx.customerId,
     p_kind: "order_created",
-    p_payload: { code },
+    p_payload: { code, pedido_web: pedidoWeb },
   });
   await ctx.supabase.rpc("wa_set_draft_order", {
     p_conversation_id: ctx.conversationId,
@@ -509,10 +557,15 @@ async function registrarPedido(input: Record<string, unknown>, ctx: AgentContext
   return JSON.stringify({
     ok: true,
     codigo_pedido: code,
-    total_productos: totalProductos,
+    total_a_pagar: r.total,
+    descuento_aplicado_pct: pct || undefined,
     metodo_pago: metodoPago,
+    nota_pedido_web:
+      pedidoWeb && !r.pedido_web_encontrado
+        ? `No encontré el pedido web #${pedidoWeb} sin reclamar; se registró como pedido nuevo #${code}.`
+        : undefined,
     // Para que el asesor se los pase al cliente en el mensaje de cierre.
-    datos_transferencia: metodoPago === "transferencia" ? datosTransferencia : undefined,
+    datos_pago: metodoPago === "anticipado" ? datosPago : undefined,
   });
 }
 
