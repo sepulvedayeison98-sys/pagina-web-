@@ -334,7 +334,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
         key: "venta.contraentrega",
         label: "¿Acepta pago contraentrega?",
         value: "si",
-        help: "«si» o «no». Con «si», el cliente paga al recibir y el pedido queda listo para despachar.",
+        help: "«si» o «no». Con «si», el cliente paga al recibir. Si el pago anticipado está configurado, el asesor ofrece siempre el anticipado y deja la contra entrega solo como último recurso, cuando el cliente no quiere pagar antes.",
       },
       {
         key: "venta.transferencia",
